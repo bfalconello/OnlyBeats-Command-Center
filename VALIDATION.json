@@ -15,6 +15,10 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/smart-briefing.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/storage.js": {
     "ok": true,
     "stderr": ""
