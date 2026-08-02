@@ -276,7 +276,7 @@ function notificationsPage(){const items=notificationHistory.length?notification
 function saveDashboard(){localStorage.setItem(DASHBOARD_KEY,JSON.stringify(dashboardLayout));toast('Dashboard layout saved')}
 function moveWidget(id,direction){const i=dashboardLayout.indexOf(id),j=i+direction;if(i<0||j<0||j>=dashboardLayout.length)return;[dashboardLayout[i],dashboardLayout[j]]=[dashboardLayout[j],dashboardLayout[i]];saveDashboard();renderPage()}
 function bindPersonalization(){
-  if($('customizeDashboard'))$('customizeDashboard').onclick=()=>$('dashboardBuilder').classList.toggle('hidden');
+  
   document.querySelectorAll('[data-toggle-widget]').forEach(b=>b.onclick=()=>{const id=b.dataset.toggleWidget;dashboardLayout=dashboardLayout.includes(id)?dashboardLayout.filter(x=>x!==id):[...dashboardLayout,id];saveDashboard();renderPage()});
   if($('resetDashboard'))$('resetDashboard').onclick=()=>{dashboardLayout=[...defaultDashboard];saveDashboard();renderPage()};
   if($('quickNotes'))$('quickNotes').oninput=e=>{quickNotes=e.target.value;localStorage.setItem(NOTES_KEY,quickNotes);const saved=$('lastSaved');if(saved)saved.textContent='Notes saved just now'};
@@ -747,6 +747,20 @@ function openPalette(){palette.classList.remove('hidden');input.value='';renderC
 function closePalette(){palette.classList.add('hidden')}
 function renderCommands(q){const pageRows=pages.filter(p=>p[2].toLowerCase().includes(q.toLowerCase())).map(([id,i,l])=>`<button class="command-result" data-page="${id}"><span>${i} ${l}</span><small>Open page</small></button>`);const teamRows=allTeams().filter(t=>q&&`${t.name} ${t.abbr}`.toLowerCase().includes(q.toLowerCase())).slice(0,8).map(t=>`<button class="command-result" data-command-team="${esc(t.abbr)}"><span>◈ ${esc(t.name)}</span><small>Open Team Hub</small></button>`);results.innerHTML=[...pageRows,...teamRows].join('');results.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>{navigate(b.dataset.page);closePalette()});results.querySelectorAll('[data-command-team]').forEach(b=>b.onclick=()=>{openTeam(b.dataset.commandTeam);closePalette()})}
 $('commandButton').onclick=openPalette;palette.onclick=e=>{if(e.target===palette)closePalette()};input.oninput=()=>renderCommands(input.value);$('closeGameDrawer').onclick=closeGame;$('gameDrawerBackdrop').onclick=e=>{if(e.target.id==='gameDrawerBackdrop')closeGame()};
+
+document.addEventListener('click',event=>{
+  const button=event.target?.closest?.('#customizeDashboard');
+  if(!button)return;
+  const builder=$('dashboardBuilder');
+  if(!builder)return;
+  event.preventDefault();
+  const willOpen=builder.classList.contains('hidden');
+  builder.classList.toggle('hidden');
+  button.textContent=willOpen?'Hide widgets':'Customize widgets';
+  button.setAttribute('aria-expanded',String(willOpen));
+  if(willOpen)setTimeout(()=>builder.scrollIntoView({behavior:'smooth',block:'start'}),0);
+});
+
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openPalette()}if(e.key==='Escape'){closePalette();closeGame()}});$('themeButton').onclick=()=>{settings.theme=settings.theme==='dark'?'light':'dark';applyTheme();saveSettings()};notificationHistory=load('onlybeats.notifications.v1',[]);$('notificationButton').onclick=()=>{const panel=$('notificationPanel');$('notificationList').innerHTML=notificationsPage();panel.classList.toggle('hidden')};$('closeNotifications').onclick=()=>$('notificationPanel').classList.add('hidden');$('closeFocus').onclick=closeFocus;$('focusBackdrop').onclick=e=>{if(e.target.id==='focusBackdrop')closeFocus()};setInterval(()=>{const c=$('clock');if(c)c.textContent=new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})},1000);
 window.addEventListener('error',event=>{
   runtimeErrors.unshift({page:currentPage,message:String(event.message||'Unknown runtime error'),time:new Date().toISOString()});

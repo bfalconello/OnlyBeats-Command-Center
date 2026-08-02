@@ -47,7 +47,7 @@
     "ok": true,
     "stderr": ""
   },
-  "critical_runtime_symbols": {
+  "dashboard_widget_runtime": {
     "ok": true,
     "stderr": ""
   }
