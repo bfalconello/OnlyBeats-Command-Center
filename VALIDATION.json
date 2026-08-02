@@ -27,11 +27,15 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/live-game-focus.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/app.js": {
     "ok": true,
     "stderr": ""
   },
-  "m3_features": {
+  "structure": {
     "ok": true,
     "stderr": ""
   }
