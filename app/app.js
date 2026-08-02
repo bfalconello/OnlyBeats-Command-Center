@@ -14,7 +14,8 @@ if (
   typeof smartBriefingPage !== 'function' ||
   typeof runOnlyBeatsDiagnostics !== 'function' ||
   typeof liveCommandTimelinePage !== 'function' ||
-  typeof predictionIntelligencePage !== 'function'
+  typeof predictionIntelligencePage !== 'function' ||
+  typeof gameIntelligenceHubPage !== 'function'
 ) {
   throw new Error('OnlyBeats core modules did not load. Verify index.html script order.');
 }
@@ -39,6 +40,7 @@ let scheduleTop25Only=false;
 let availabilityEntries=load(AVAILABILITY_KEY,[]);
 let pinnedGameIds=load(WATCH_KEY,[]);
 let timelineEvents=load(TIMELINE_KEY,[]);
+let gameHubGameId='';
 let editingPredictionId='';
 let editingFutureId='';
 let predictionDraftGameId='';
@@ -112,7 +114,7 @@ async function syncScores(silent=false){
     if(requestId===refreshRequestId){
       loading=false;
       lastRefreshDuration=Math.round(performance.now()-started);
-      if(['wall','dashboard','briefing','timeline','watch','schedule','rankings','news','favorites','teams','developer'].includes(currentPage))renderPage();
+      if(['wall','dashboard','briefing','timeline','watch','gamehub','schedule','rankings','news','favorites','teams','developer'].includes(currentPage))renderPage();
       if(activeGameId&&games.some(g=>g.id===activeGameId))showGame(activeGameId,false);
     }
   }
@@ -629,7 +631,7 @@ function exportPredictionsCsv(){const rows=[['Record Type','Game / Title','Categ
 
 function renderPageUnsafe(){
   const label=pages.find(p=>p[0]===currentPage)?.[2]||'Module';
-  $('content').innerHTML=currentPage==='dashboard'?dashboard():currentPage==='briefing'?smartBriefingPage():currentPage==='timeline'?liveCommandTimelinePage():currentPage==='wall'?wallPage():currentPage==='watch'?watchCenterPage():currentPage==='schedule'?schedulePage():currentPage==='favorites'?favoritesPage():currentPage==='teams'?teamHubPage():currentPage==='rankings'?intelligenceEnginePage():currentPage==='news'?newsPage():currentPage==='weather'?weatherPage():currentPage==='availability'?availabilityPage():currentPage==='predictions'?predictionsPage():currentPage==='reports'?predictionIntelligencePage():currentPage==='developer'?developerPage():currentPage==='settings'?settingsPage():placeholderPage(currentPage,label);
+  $('content').innerHTML=currentPage==='dashboard'?dashboard():currentPage==='briefing'?smartBriefingPage():currentPage==='timeline'?liveCommandTimelinePage():currentPage==='wall'?wallPage():currentPage==='watch'?watchCenterPage():currentPage==='gamehub'?gameIntelligenceHubPage():currentPage==='schedule'?schedulePage():currentPage==='favorites'?favoritesPage():currentPage==='teams'?teamHubPage():currentPage==='rankings'?intelligenceEnginePage():currentPage==='news'?newsPage():currentPage==='weather'?weatherPage():currentPage==='availability'?availabilityPage():currentPage==='predictions'?predictionsPage():currentPage==='reports'?predictionIntelligencePage():currentPage==='developer'?developerPage():currentPage==='settings'?settingsPage():placeholderPage(currentPage,label);
   bindPage();
 }
 function renderPage(){
@@ -659,7 +661,7 @@ if($('availabilityForm'))$('availabilityForm').onsubmit=e=>{e.preventDefault();c
     if($('runPageSmokeTests'))$('runPageSmokeTests').onclick=async()=>{await runOnlyBeatsPageSmokeTests();renderPage();toast('Page smoke tests completed')};
     if($('exportDiagnostics'))$('exportDiagnostics').onclick=()=>exportOnlyBeatsDiagnostics();
     if($('clearRuntimeLog'))$('clearRuntimeLog').onclick=()=>{clearOnlyBeatsRuntimeLog();renderPage();toast('Runtime log cleared')};
-  }if(currentPage==='timeline')bindLiveCommandTimeline();if(currentPage==='briefing')bindSmartBriefing();if(currentPage==='watch')bindWatchCenter();if(currentPage==='rankings')bindIntelligenceEngine();if(currentPage==='predictions')bindPredictionPage();if(currentPage==='reports'){bindPredictionIntelligence();if($('reportExportPredictions'))$('reportExportPredictions').onclick=exportPredictionsCsv;if($('yearbookNote'))$('yearbookNote').oninput=e=>localStorage.setItem('onlybeats.yearbook.note.v1',e.target.value)}document.querySelectorAll('[data-predict-game]').forEach(b=>b.onclick=()=>{predictionDraftGameId=b.dataset.predictGame;editingPredictionId='';predictionView='games';navigate('predictions')});bindPersonalization();if(currentPage==='settings')bindSettings()}
+  }if(currentPage==='gamehub')bindGameIntelligenceHub();if(currentPage==='timeline')bindLiveCommandTimeline();if(currentPage==='briefing')bindSmartBriefing();if(currentPage==='watch')bindWatchCenter();if(currentPage==='rankings')bindIntelligenceEngine();if(currentPage==='predictions')bindPredictionPage();if(currentPage==='reports'){bindPredictionIntelligence();if($('reportExportPredictions'))$('reportExportPredictions').onclick=exportPredictionsCsv;if($('yearbookNote'))$('yearbookNote').oninput=e=>localStorage.setItem('onlybeats.yearbook.note.v1',e.target.value)}document.querySelectorAll('[data-predict-game]').forEach(b=>b.onclick=()=>{predictionDraftGameId=b.dataset.predictGame;editingPredictionId='';predictionView='games';navigate('predictions')});bindPersonalization();if(currentPage==='settings')bindSettings()}
 function gamePredictionSnapshot(game){
   const rows=predictions
     .filter(p=>p.gameId===game.id)
@@ -762,6 +764,7 @@ function showGame(id,open=true){
         <button class="button" data-open-schedule-game="${g.id}">Open in Schedule</button>
         <button class="button" data-game-weather="${g.id}" ${weatherLocation?'':'disabled'}>${weatherLocation?'Load venue weather':'Weather location unavailable'}</button>
         <button class="button" data-focus-game="${g.id}">Focus Mode</button>
+        <button class="button primary" data-open-game-hub="${g.id}">Open Game Hub</button>
       </div>
     </div>
 
@@ -816,6 +819,11 @@ function showGame(id,open=true){
   document.querySelectorAll('[data-focus-game]').forEach(b=>b.onclick=()=>{
     closeGame();
     openFocus(b.dataset.focusGame);
+  });
+  document.querySelectorAll('[data-open-game-hub]').forEach(b=>b.onclick=()=>{
+    gameHubGameId=b.dataset.openGameHub;
+    closeGame();
+    navigate('gamehub');
   });
 }
 

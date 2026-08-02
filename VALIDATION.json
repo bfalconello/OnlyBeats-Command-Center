@@ -43,6 +43,10 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/game-intelligence-hub.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/diagnostics-runtime.js": {
     "ok": true,
     "stderr": ""
