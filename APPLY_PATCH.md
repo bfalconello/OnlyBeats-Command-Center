@@ -1,14 +1,14 @@
-# Apply M3.3 — Multi-Game Watch Center
+# Apply v0.12 — Intelligence Engine Phase 1
 
 Copy into the repository:
 
 - `app/app.js`
 - `app/index.html`
 - the complete `app/modules/` folder
-- `docs/M3_3_MULTI_GAME_WATCH.md`
+- `docs/V0_12_INTELLIGENCE_ENGINE_PHASE_1.md`
 
-Replace files when prompted. Preserve `.git`, CSS, assets, Rust files, and local application data.
+Replace files when prompted.
 
 Suggested commit:
 
-`M3.3: add Multi-Game Watch Center`
+`v0.12: add Intelligence Engine phase 1`
