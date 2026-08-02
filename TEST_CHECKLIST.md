@@ -1,34 +1,15 @@
-# v0.3.0 Test Checklist
+# v0.4.0 Test Checklist
 
-## Launch
-- [ ] `RUN_DESKTOP.bat` launches the app.
-- [ ] Version 0.3.0 appears in Developer Tools.
-- [ ] The Saturday Wall opens without an error.
-
-## Saturday Wall
-- [ ] Live scores load.
-- [ ] All, Live, Upcoming, and Final filters work.
-- [ ] Top 25 filter works when ranked games are available.
-- [ ] Favorites filter works.
-- [ ] Team search filters cards while typing.
-- [ ] Favorite matchups appear before non-favorite games.
-- [ ] Clicking a card opens the right-side details drawer.
-- [ ] Escape and the close button dismiss the drawer.
-
-## Persistence
-- [ ] Favorites remain after restarting.
-- [ ] Wall filters/search remain after restarting.
-- [ ] Theme and compact mode remain after restarting.
-
-## Refresh and stability
-- [ ] Manual Refresh works.
-- [ ] Automatic refresh works at the selected interval.
-- [ ] Turning auto-refresh Off stops scheduled refreshes.
-- [ ] Provider failures show a non-crashing error message.
-- [ ] Developer Tools displays the latest sync and cached game count.
-
-## Regression
-- [ ] Dashboard opens.
-- [ ] Command palette opens with Ctrl+K.
-- [ ] Settings export works.
-- [ ] GitHub Actions Windows Build completes successfully.
+- [ ] `RUN_DESKTOP.bat` launches successfully.
+- [ ] Developer Tools displays version 0.4.0.
+- [ ] Live scores refresh without an error.
+- [ ] Team Hub shows a searchable team directory.
+- [ ] Clicking a team opens the correct profile.
+- [ ] Overview, Schedule, Stats, and Roster tabs switch correctly.
+- [ ] Schedule rows open the correct game drawer.
+- [ ] Team favorite button persists after restart.
+- [ ] A team can be opened from the game drawer.
+- [ ] Ctrl+K finds teams after scores load.
+- [ ] Saturday Wall filters still work.
+- [ ] Compact mode and theme settings still work.
+- [ ] GitHub Windows Build completes successfully.

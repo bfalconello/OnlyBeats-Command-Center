@@ -48,3 +48,7 @@ All notable changes are documented here. The project follows Semantic Versioning
 ## [0.1.0] - 2026-08-02
 ### Added
 - Branded desktop foundation, dashboard shell, settings, SQLite scaffolding, and Windows scripts.
+
+## [0.4.0] - 2026-08-02
+### Added
+- Searchable Team Hub with overview, schedule, stats, roster-ready structure, favorites, and command-palette integration.
