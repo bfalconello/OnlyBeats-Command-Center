@@ -1,4 +1,4 @@
-const VERSION='0.9.1';
+const VERSION='0.9.2';
 const STORAGE_KEY='onlybeats.settings.v7';
 const LEGACY_STORAGE_KEY='onlybeats.settings.v6';
 const FAVORITES_KEY='onlybeats.favorites.v1';
@@ -8,6 +8,8 @@ const NOTES_KEY='onlybeats.notes.v1';
 const PREDICTIONS_KEY='onlybeats.predictions.v1';
 const FUTURES_KEY='onlybeats.futures.v1';
 const FUTURES_LOCK_KEY='onlybeats.futures.lock.v1';
+const SCORE_CACHE_KEY='onlybeats.scoreboard.cache.v1';
+const SCORE_REFRESH_TIMEOUT_MS=12000;
 const defaultSettings={theme:'midnight',startPage:'dashboard',compact:false,sounds:false,animations:true,refresh:'30',favoriteTeam:'',scoreAlerts:true,favoriteAlerts:true,kickoffAlerts:true,weatherLocation:'',dashboardDensity:'comfortable',pushScoring:'full'};
 const defaultWall={status:'all',favoritesOnly:false,top25Only:false,query:''};
 const defaultDashboard=['featured','favorites','ranked','predictions','weather','alerts','notes'];
@@ -27,7 +29,7 @@ let editingPredictionId='';
 let editingFutureId='';
 let predictionDraftGameId='';
 let currentPage=settings.startPage||'wall';
-let games=[];
+let games=load(SCORE_CACHE_KEY,[]);
 let loading=false;
 let lastSync=null;
 let syncError='';
@@ -43,6 +45,10 @@ let weatherLoading=false;
 let weatherError='';
 let notificationHistory=[];
 let focusedGameId=null;
+let refreshRequestId=0;
+let lastRefreshAttempt=null;
+let lastRefreshDuration=null;
+let runtimeErrors=[];
 const pages=[['dashboard','⌂','Dashboard'],['wall','▦','Saturday Wall'],['schedule','◷','Schedule'],['favorites','★','Favorites'],['teams','◈','Team Hub'],['rankings','♛','Rankings'],['news','▤','News'],['weather','☁','Weather'],['availability','♙','Player Availability'],['predictions','✓','Prediction Center'],['reports','▥','Reports'],['developer','⌘','Developer Tools'],['settings','⚙','Settings']];
 
 function load(k,d){try{const raw=localStorage.getItem(k);if(!raw)return Array.isArray(d)?[...d]:{...d};const parsed=JSON.parse(raw);return Array.isArray(d)?(Array.isArray(parsed)?parsed:[...d]):{...d,...parsed}}catch{return Array.isArray(d)?[...d]:{...d}}}
@@ -54,7 +60,21 @@ function $(id){return document.getElementById(id)}
 function applyTheme(){const theme=settings.theme==='dark'?'midnight':settings.theme;document.documentElement.dataset.theme=theme;document.body.classList.toggle('compact-mode',Boolean(settings.compact));document.body.classList.toggle('reduce-motion',!settings.animations);document.body.dataset.density=settings.dashboardDensity||'comfortable'}
 function toast(message,tone='default'){const e=$('toast');if(!e)return;e.textContent=message;e.dataset.tone=tone;e.classList.remove('hidden');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.add('hidden'),2600)}
 function renderNav(){$('nav').innerHTML=pages.map(([id,i,l])=>`<button class="nav-button ${id===currentPage?'active':''}" data-page="${id}"><span class="nav-icon">${i}</span>${l}</button>`).join('');document.querySelectorAll('.nav-button').forEach(b=>b.onclick=()=>navigate(b.dataset.page))}
-function navigate(page){currentPage=page;renderNav();renderPage()}
+function closeTransientUi(){
+  try{$('gameDrawerBackdrop')?.classList.add('hidden')}catch{}
+  try{$('gameDrawer')?.classList.remove('open')}catch{}
+  try{$('focusBackdrop')?.classList.add('hidden')}catch{}
+  try{$('focusModal')?.classList.remove('open')}catch{}
+  try{$('notificationPanel')?.classList.add('hidden')}catch{}
+  try{$('commandPalette')?.classList.add('hidden')}catch{}
+}
+function navigate(page){
+  if(!pages.some(p=>p[0]===page))return;
+  closeTransientUi();
+  currentPage=page;
+  renderNav();
+  renderPage();
+}
 function setHeading(title,eyebrow='ONLYBEATS COMMAND CENTER'){$('sectionTitle').textContent=title;$('sectionEyebrow').textContent=eyebrow}
 function esc(v=''){return String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
 function metric(label,value,sub){return `<div class="metric"><span>${label}</span><strong>${value}</strong><small>${sub}</small></div>`}
@@ -66,7 +86,51 @@ function updateProviderStatus(ok){const status=$('providerStatus'),dot=$('provid
 function captureChanges(nextGames){const nextChanged=new Set();for(const g of nextGames){const before=previousScores.get(g.id);const current=`${g.away.score}-${g.home.score}-${g.state}-${g.period}-${g.clock}`;if(before&&before!==current){nextChanged.add(g.id);if(g.away.score+g.home.score>Number(before.split('-')[0])+Number(before.split('-')[1]))announceScoreChange(g)}previousScores.set(g.id,current)}changedGames=nextChanged;if(changedGames.size)setTimeout(()=>{changedGames.clear();document.querySelectorAll('.score-changed').forEach(e=>e.classList.remove('score-changed'))},4200)}
 function announceScoreChange(g){const leader=g.away.score>g.home.score?g.away:g.home.score>g.away.score?g.home:null;const message=leader?`${leader.shortName} leads ${Math.max(g.away.score,g.home.score)}–${Math.min(g.away.score,g.home.score)}`:`${g.away.shortName} and ${g.home.shortName} are tied`;showAlert('SCORE UPDATE',message,g)}
 function showAlert(title,message,g){if(!settings.scoreAlerts)return;notificationHistory.unshift({title,message,time:new Date().toISOString(),gameId:g?.id||''});notificationHistory=notificationHistory.slice(0,30);localStorage.setItem('onlybeats.notifications.v1',JSON.stringify(notificationHistory));const host=$('alertStack');if(!host)return;const item=document.createElement('button');item.className='game-alert';item.innerHTML=`<span>⚡</span><div><small>${esc(title)}</small><strong>${esc(message)}</strong></div>`;item.onclick=()=>{showGame(g.id);item.remove()};host.prepend(item);setTimeout(()=>item.remove(),6500)}
-async function syncScores(silent=false){if(loading)return;loading=true;syncError='';if(!silent)renderPage();try{let data;if(window.__TAURI__?.core?.invoke)data=await window.__TAURI__.core.invoke('fetch_scoreboard');else{const r=await fetch('https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?limit=200');if(!r.ok)throw new Error(`HTTP ${r.status}`);data=await r.json()}const next=normalize(data);captureChanges(next);games=next;lastSync=new Date();updateProviderStatus(true)}catch(e){syncError=String(e?.message||e);updateProviderStatus(false);if(!silent)toast('Could not refresh live scores','error')}finally{loading=false;renderPage();if(activeGameId&&games.some(g=>g.id===activeGameId))showGame(activeGameId,false)}}
+function withTimeout(promise,ms,label='Request'){
+  return Promise.race([
+    promise,
+    new Promise((_,reject)=>setTimeout(()=>reject(new Error(`${label} timed out after ${Math.round(ms/1000)} seconds`)),ms))
+  ]);
+}
+async function syncScores(silent=false){
+  if(loading)return;
+  const requestId=++refreshRequestId;
+  const started=performance.now();
+  lastRefreshAttempt=new Date();
+  loading=true;
+  syncError='';
+  if(!silent&&currentPage==='wall')renderPage();
+  try{
+    let request;
+    if(window.__TAURI__?.core?.invoke){
+      request=window.__TAURI__.core.invoke('fetch_scoreboard');
+    }else{
+      request=fetch('https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?limit=200')
+        .then(r=>{if(!r.ok)throw new Error(`HTTP ${r.status}`);return r.json()});
+    }
+    const data=await withTimeout(request,SCORE_REFRESH_TIMEOUT_MS,'Live score refresh');
+    if(requestId!==refreshRequestId)return;
+    const next=normalize(data);
+    if(!Array.isArray(next))throw new Error('Score provider returned an invalid payload');
+    captureChanges(next);
+    games=next;
+    localStorage.setItem(SCORE_CACHE_KEY,JSON.stringify(games));
+    lastSync=new Date();
+    updateProviderStatus(true);
+  }catch(e){
+    if(requestId!==refreshRequestId)return;
+    syncError=String(e?.message||e);
+    updateProviderStatus(false);
+    if(!silent)toast('Could not refresh live scores; cached scores remain available','error');
+  }finally{
+    if(requestId===refreshRequestId){
+      loading=false;
+      lastRefreshDuration=Math.round(performance.now()-started);
+      renderPage();
+      if(activeGameId&&games.some(g=>g.id===activeGameId))showGame(activeGameId,false);
+    }
+  }
+}
 function scheduleRefresh(){clearInterval(refreshTimer);const seconds=Number(settings.refresh||30);if(seconds>0)refreshTimer=setInterval(()=>syncScores(true),seconds*1000)}
 function isFavoriteGame(g){return favorites.includes(g.home.abbr)||favorites.includes(g.away.abbr)}
 function isTop25(g){return Boolean(g.home.rank||g.away.rank)}
@@ -84,7 +148,7 @@ function wallPage(){setHeading('Saturday Wall','GAME-DAY MISSION CONTROL');const
 function favoritesPage(){setHeading('Favorites','YOUR TEAMS');const related=sortGames(games.filter(isFavoriteGame));return `<div class="card"><h3>Favorite teams</h3><p class="muted">Favorites are stored locally and automatically pinned on Saturday Wall.</p><div class="favorite-list">${favorites.map(x=>`<button class="favorite-chip removable" data-remove="${esc(x)}">★ ${esc(x)} ×</button>`).join('')||'<span class="muted">No teams saved yet.</span>'}</div></div><div class="wall-grid favorites-wall">${related.map(gameCard).join('')||empty('No favorite-team games on this slate','Add favorites from any game details drawer.')}</div>`}
 function errorBox(){return `<div class="error-box"><strong>Live scores unavailable</strong><p>${esc(syncError)}</p><button class="button" onclick="syncScores()">Try again</button></div>`}
 function healthPanel(){return `<div class="health-list"><div><span><i id="providerDot" class="status-dot ${syncError?'error':''}"></i><span id="providerStatus">${syncError?'Score provider unavailable':'Score provider online'}</span></span><strong>${lastSync?'Synced':'Ready'}</strong></div><div><span><i class="status-dot"></i>Local settings</span><strong>Ready</strong></div><div><span><i class="status-dot"></i>SQLite schema</span><strong>1</strong></div><div><span><i class="status-dot"></i>Build</span><strong>${VERSION}</strong></div></div>`}
-function developerPage(){setHeading('Developer Tools','DIAGNOSTICS');const teams=allTeams(),d=window.OnlyBeatsDataPlatform?window.OnlyBeatsDataPlatform.diagnostics(teams,games):{teamCount:teams.length,gameCount:games.length,enrichedCount:0,conferenceCount:0,stadiumCount:0,timezoneCount:0};return `<div class="settings-layout">${card('System Health',healthPanel())}${card('Data Platform',`<div class="detail-list"><div><span>Teams indexed</span><strong>${d.teamCount}</strong></div><div><span>Teams enriched</span><strong>${d.enrichedCount}</strong></div><div><span>Conferences represented</span><strong>${d.conferenceCount}</strong></div><div><span>Stadiums resolved</span><strong>${d.stadiumCount}</strong></div><div><span>Timezones represented</span><strong>${d.timezoneCount}</strong></div><div><span>Platform schema</span><strong>${window.OnlyBeatsDataPlatform?.version||'Unavailable'}</strong></div></div>`)}${card('Sync Information',`<div class="detail-list"><div><span>Last sync</span><strong>${lastSync?lastSync.toLocaleString():'Not yet'}</strong></div><div><span>Games cached</span><strong>${games.length}</strong></div><div><span>Live games</span><strong>${games.filter(g=>g.state==='in').length}</strong></div><div><span>Refresh interval</span><strong>${settings.refresh==='0'?'Off':settings.refresh+' seconds'}</strong></div><div><span>Runtime</span><strong>${window.__TAURI__?'Tauri desktop':'Browser preview'}</strong></div></div>`)}${card('Troubleshooting',`<p class="muted">Run the provider test first. If it remains offline, confirm internet access and review TROUBLESHOOTING.md.</p><button class="button primary" onclick="syncScores()">Run provider test</button>`)}${card('Version',`<div class="detail-list"><div><span>Application</span><strong>${VERSION}</strong></div><div><span>Database schema</span><strong>1</strong></div><div><span>Score provider</span><strong>ESPN scoreboard</strong></div><div><span>Data platform</span><strong>Shared metadata v1</strong></div><div><span>Weather provider</span><strong>Open-Meteo</strong></div><div><span>Game predictions</span><strong>${predictions.length}</strong></div><div><span>Futures stored</span><strong>${futures.length}</strong></div></div>`)}</div>`}
+function developerPage(){setHeading('Developer Tools','DIAGNOSTICS');const teams=allTeams(),d=window.OnlyBeatsDataPlatform?window.OnlyBeatsDataPlatform.diagnostics(teams,games):{teamCount:teams.length,gameCount:games.length,enrichedCount:0,conferenceCount:0,stadiumCount:0,timezoneCount:0};return `<div class="settings-layout">${card('System Health',healthPanel())}${card('Data Platform',`<div class="detail-list"><div><span>Teams indexed</span><strong>${d.teamCount}</strong></div><div><span>Teams enriched</span><strong>${d.enrichedCount}</strong></div><div><span>Conferences represented</span><strong>${d.conferenceCount}</strong></div><div><span>Stadiums resolved</span><strong>${d.stadiumCount}</strong></div><div><span>Timezones represented</span><strong>${d.timezoneCount}</strong></div><div><span>Platform schema</span><strong>${window.OnlyBeatsDataPlatform?.version||'Unavailable'}</strong></div></div>`)}${card('Sync Information',`<div class="detail-list"><div><span>Last refresh attempt</span><strong>${lastRefreshAttempt?lastRefreshAttempt.toLocaleString():'Not yet'}</strong></div><div><span>Last successful sync</span><strong>${lastSync?lastSync.toLocaleString():'Not yet'}</strong></div><div><span>Last request duration</span><strong>${lastRefreshDuration===null?'—':lastRefreshDuration+' ms'}</strong></div><div><span>Last provider error</span><strong>${esc(syncError||'None')}</strong></div><div><span>Runtime errors</span><strong>${runtimeErrors.length}</strong></div><div><span>Games cached</span><strong>${games.length}</strong></div><div><span>Live games</span><strong>${games.filter(g=>g.state==='in').length}</strong></div><div><span>Refresh interval</span><strong>${settings.refresh==='0'?'Off':settings.refresh+' seconds'}</strong></div><div><span>Runtime</span><strong>${window.__TAURI__?'Tauri desktop':'Browser preview'}</strong></div></div>`)}${card('Troubleshooting',`<p class="muted">Run the provider test first. If it remains offline, confirm internet access and review TROUBLESHOOTING.md.</p><button class="button primary" onclick="syncScores()">Run provider test</button>`)}${card('Version',`<div class="detail-list"><div><span>Application</span><strong>${VERSION}</strong></div><div><span>Database schema</span><strong>1</strong></div><div><span>Score provider</span><strong>ESPN scoreboard</strong></div><div><span>Data platform</span><strong>Shared metadata v1</strong></div><div><span>Weather provider</span><strong>Open-Meteo</strong></div><div><span>Game predictions</span><strong>${predictions.length}</strong></div><div><span>Futures stored</span><strong>${futures.length}</strong></div></div>`)}</div>`}
 
 function allTeams(){const map=new Map();for(const g of games){for(const t of [g.away,g.home]){if(t.abbr&&!map.has(t.abbr))map.set(t.abbr,{...t,games:[]});map.get(t.abbr)?.games.push(g)}}return [...map.values()].map(t=>window.OnlyBeatsDataPlatform?window.OnlyBeatsDataPlatform.enrichTeam(t,t.games):t).sort((a,b)=>a.name.localeCompare(b.name))}
 function selectedTeam(){const teams=allTeams();return teams.find(t=>t.abbr===activeTeamAbbr)||teams.find(t=>favorites.includes(t.abbr))||teams[0]||null}
@@ -212,7 +276,27 @@ function bindPredictionPage(){
 }
 function exportPredictionsCsv(){const rows=[['Record Type','Game / Title','Category / Prediction Type','Pick','Line','Confidence','Odds','Result','Score','Notes','Season','Resolution Date','Created']];for(const p of predictions){const r=predictionResult(p);rows.push(['Game',p.gameName,predictionTypeLabel(p),predictionPickLabel(p),p.line??'',p.confidence,p.odds||'',r.label,r.score??'',p.notes||'','','',p.createdAt])}for(const f of futures){const r=futureResult(f);rows.push(['Future',f.title,f.category,f.pick,'',f.confidence,f.odds||'',r.label,r.score??'',f.notes||'',f.season||'',f.resolutionDate||'',f.createdAt])}const csv=rows.map(row=>row.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\r\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`OnlyBeats-Prediction-Center-${new Date().toISOString().slice(0,10)}.csv`;a.click();toast('Prediction Center CSV created')}
 
-function renderPage(){const label=pages.find(p=>p[0]===currentPage)?.[2]||'Module';$('content').innerHTML=currentPage==='dashboard'?dashboard():currentPage==='wall'?wallPage():currentPage==='favorites'?favoritesPage():currentPage==='teams'?teamHubPage():currentPage==='rankings'?rankingsPage():currentPage==='news'?newsPage():currentPage==='weather'?weatherPage():currentPage==='predictions'?predictionsPage():currentPage==='reports'?reportsPage():currentPage==='developer'?developerPage():currentPage==='settings'?settingsPage():placeholderPage(currentPage,label);bindPage()}
+function renderPageUnsafe(){
+  const label=pages.find(p=>p[0]===currentPage)?.[2]||'Module';
+  $('content').innerHTML=currentPage==='dashboard'?dashboard():currentPage==='wall'?wallPage():currentPage==='favorites'?favoritesPage():currentPage==='teams'?teamHubPage():currentPage==='rankings'?rankingsPage():currentPage==='news'?newsPage():currentPage==='weather'?weatherPage():currentPage==='predictions'?predictionsPage():currentPage==='reports'?reportsPage():currentPage==='developer'?developerPage():currentPage==='settings'?settingsPage():placeholderPage(currentPage,label);
+  bindPage();
+}
+function renderPage(){
+  const content=$('content');
+  if(!content)return;
+  try{
+    renderPageUnsafe();
+  }catch(error){
+    const message=String(error?.message||error);
+    runtimeErrors.unshift({page:currentPage,message,time:new Date().toISOString()});
+    runtimeErrors=runtimeErrors.slice(0,20);
+    console.error('OnlyBeats page render failed',currentPage,error);
+    setHeading('Page recovery','ONLYBEATS COMMAND CENTER');
+    content.innerHTML=`<div class="error-box"><strong>${esc((pages.find(p=>p[0]===currentPage)?.[2]||'This page'))} could not load</strong><p>${esc(message)}</p><button class="button primary" id="retryPageRender">Try this page again</button><button class="button" id="openDeveloperTools">Open Developer Tools</button></div>`;
+    $('retryPageRender')?.addEventListener('click',renderPage);
+    $('openDeveloperTools')?.addEventListener('click',()=>navigate('developer'));
+  }
+}
 function bindPage(){document.querySelectorAll('[data-game]').forEach(b=>b.onclick=()=>showGame(b.dataset.game));document.querySelectorAll('[data-open-wall]').forEach(b=>b.onclick=()=>navigate('wall'));if($('refreshScores'))$('refreshScores').onclick=()=>syncScores();document.querySelectorAll('[data-status]').forEach(b=>b.onclick=()=>{wallState.status=b.dataset.status;saveWall();renderPage()});if($('favoritesFilter'))$('favoritesFilter').onclick=()=>{wallState.favoritesOnly=!wallState.favoritesOnly;saveWall();renderPage()};if($('top25Filter'))$('top25Filter').onclick=()=>{wallState.top25Only=!wallState.top25Only;saveWall();renderPage()};if($('wallSearch'))$('wallSearch').oninput=e=>{wallState.query=e.target.value;saveWall();const grid=document.querySelector('.wall-grid');if(grid)grid.innerHTML=filteredWallGames().map(gameCard).join('')||empty('No games match these filters','Try another team or clear filters.');document.querySelectorAll('[data-game]').forEach(b=>b.onclick=()=>showGame(b.dataset.game))};document.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{favorites=favorites.filter(x=>x!==b.dataset.remove);saveFavorites()});document.querySelectorAll('[data-team]').forEach(b=>b.onclick=()=>{activeTeamAbbr=b.dataset.team;teamTab='overview';renderPage()});document.querySelectorAll('[data-team-tab]').forEach(b=>b.onclick=()=>{teamTab=b.dataset.teamTab;renderPage()});if($('teamSearch'))$('teamSearch').oninput=e=>{teamQuery=e.target.value;renderPage();setTimeout(()=>{const x=$('teamSearch');if(x){x.focus();x.setSelectionRange(x.value.length,x.value.length)}},0)};if($('teamFavoriteButton'))$('teamFavoriteButton').onclick=()=>{const t=selectedTeam();if(!t)return;favorites=favorites.includes(t.abbr)?favorites.filter(x=>x!==t.abbr):[...favorites,t.abbr];localStorage.setItem(FAVORITES_KEY,JSON.stringify(favorites));renderPage()};if($('loadWeather'))$('loadWeather').onclick=()=>fetchWeather($('weatherLocation').value.trim());document.querySelectorAll('[data-focus]').forEach(b=>b.onclick=e=>{e.preventDefault();e.stopPropagation();openFocus(b.dataset.focus)});document.querySelectorAll('[data-alert-game]').forEach(b=>b.onclick=()=>{const id=b.dataset.alertGame;if(id)showGame(id)});document.querySelectorAll('[data-page-jump]').forEach(b=>b.onclick=()=>navigate(b.dataset.pageJump));if(currentPage==='predictions')bindPredictionPage();if(currentPage==='reports'){if($('reportExportPredictions'))$('reportExportPredictions').onclick=exportPredictionsCsv;if($('yearbookNote'))$('yearbookNote').oninput=e=>localStorage.setItem('onlybeats.yearbook.note.v1',e.target.value)}document.querySelectorAll('[data-predict-game]').forEach(b=>b.onclick=()=>{predictionDraftGameId=b.dataset.predictGame;editingPredictionId='';predictionView='games';navigate('predictions')});bindPersonalization();if(currentPage==='settings')bindSettings()}
 function showGame(id,open=true){const g=games.find(x=>x.id===id);if(!g)return;activeGameId=id;const choices=[g.away,g.home];$('gameDrawerBody').innerHTML=`<div class="drawer-hero"><p class="eyebrow">${esc(statusLabel(g.state))}</p><h2>${esc(g.away.shortName)} at ${esc(g.home.shortName)}</h2><p>${esc(g.status)}</p></div><div class="drawer-score">${teamLine(g.away)}${teamLine(g.home)}</div><div class="drawer-details"><div><span>Broadcast</span><strong>${esc(g.network||'Not listed')}</strong></div><div><span>Venue</span><strong>${esc(g.venue||'Not listed')}</strong></div><div><span>Location</span><strong>${esc([g.city,g.stateCode].filter(Boolean).join(', ')||'Not listed')}</strong></div><div><span>Kickoff</span><strong>${new Date(g.date).toLocaleString()}</strong></div></div><div class="drawer-section"><h3>Favorite teams</h3><div class="button-row">${choices.map(t=>`<button class="button ${favorites.includes(t.abbr)?'primary':''}" data-favorite="${esc(t.abbr)}">${favorites.includes(t.abbr)?'★ Remove':'☆ Add'} ${esc(t.shortName)}</button>`).join('')}</div></div><div class="drawer-section"><h3>Prediction Center</h3><button class="button primary" data-predict-game="${g.id}">Create prediction for this game</button></div><div class="drawer-section"><h3>Team Hub</h3><div class="button-row">${choices.map(t=>`<button class="button" data-open-team="${esc(t.abbr)}">Open ${esc(t.shortName)}</button>`).join('')}</div></div><div class="drawer-section future-panel"><span>Coming next</span><p>Weather, team stats, possession, and play-by-play will plug into this drawer in future releases.</p></div>`;if(open){$('gameDrawerBackdrop').classList.remove('hidden');$('gameDrawer').classList.add('open')}document.querySelectorAll('[data-favorite]').forEach(b=>b.onclick=()=>{const a=b.dataset.favorite;favorites=favorites.includes(a)?favorites.filter(x=>x!==a):[...favorites,a];localStorage.setItem(FAVORITES_KEY,JSON.stringify(favorites));showGame(id,false);renderPage()});document.querySelectorAll('[data-open-team]').forEach(b=>b.onclick=()=>openTeam(b.dataset.openTeam));document.querySelectorAll('[data-predict-game]').forEach(b=>b.onclick=()=>{predictionDraftGameId=b.dataset.predictGame;editingPredictionId='';predictionView='games';closeGame();navigate('predictions')})}
 function closeGame(){activeGameId=null;$('gameDrawer').classList.remove('open');setTimeout(()=>$('gameDrawerBackdrop').classList.add('hidden'),180)}
@@ -222,4 +306,30 @@ function openPalette(){palette.classList.remove('hidden');input.value='';renderC
 function closePalette(){palette.classList.add('hidden')}
 function renderCommands(q){const pageRows=pages.filter(p=>p[2].toLowerCase().includes(q.toLowerCase())).map(([id,i,l])=>`<button class="command-result" data-page="${id}"><span>${i} ${l}</span><small>Open page</small></button>`);const teamRows=allTeams().filter(t=>q&&`${t.name} ${t.abbr}`.toLowerCase().includes(q.toLowerCase())).slice(0,8).map(t=>`<button class="command-result" data-command-team="${esc(t.abbr)}"><span>◈ ${esc(t.name)}</span><small>Open Team Hub</small></button>`);results.innerHTML=[...pageRows,...teamRows].join('');results.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>{navigate(b.dataset.page);closePalette()});results.querySelectorAll('[data-command-team]').forEach(b=>b.onclick=()=>{openTeam(b.dataset.commandTeam);closePalette()})}
 $('commandButton').onclick=openPalette;palette.onclick=e=>{if(e.target===palette)closePalette()};input.oninput=()=>renderCommands(input.value);$('closeGameDrawer').onclick=closeGame;$('gameDrawerBackdrop').onclick=e=>{if(e.target.id==='gameDrawerBackdrop')closeGame()};document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openPalette()}if(e.key==='Escape'){closePalette();closeGame()}});$('themeButton').onclick=()=>{settings.theme=settings.theme==='dark'?'light':'dark';applyTheme();saveSettings()};notificationHistory=load('onlybeats.notifications.v1',[]);$('notificationButton').onclick=()=>{const panel=$('notificationPanel');$('notificationList').innerHTML=notificationsPage();panel.classList.toggle('hidden')};$('closeNotifications').onclick=()=>$('notificationPanel').classList.add('hidden');$('closeFocus').onclick=closeFocus;$('focusBackdrop').onclick=e=>{if(e.target.id==='focusBackdrop')closeFocus()};setInterval(()=>{const c=$('clock');if(c)c.textContent=new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})},1000);
-applyTheme();renderNav();renderPage();scheduleRefresh();const startupMessages=['Loading live scores…','Loading teams…','Preparing GameDay alerts…','Ready.'];let startupIndex=0;const startupTimer=setInterval(()=>{const el=$('splashStatus');if(el)el.textContent=startupMessages[startupIndex]||'Ready.';startupIndex++;if(startupIndex>=startupMessages.length){clearInterval(startupTimer);setTimeout(()=>$('splash').classList.add('hide'),300)}},380);syncScores(true);
+window.addEventListener('error',event=>{
+  runtimeErrors.unshift({page:currentPage,message:String(event.message||'Unknown runtime error'),time:new Date().toISOString()});
+  runtimeErrors=runtimeErrors.slice(0,20);
+});
+window.addEventListener('unhandledrejection',event=>{
+  runtimeErrors.unshift({page:currentPage,message:String(event.reason?.message||event.reason||'Unhandled promise rejection'),time:new Date().toISOString()});
+  runtimeErrors=runtimeErrors.slice(0,20);
+});
+applyTheme();
+renderNav();
+renderPage();
+scheduleRefresh();
+const splash=$('splash');
+const splashFailSafe=setTimeout(()=>splash?.classList.add('hide'),3500);
+const startupMessages=['Loading cached scores…','Loading teams…','Preparing GameDay alerts…','Ready.'];
+let startupIndex=0;
+const startupTimer=setInterval(()=>{
+  const el=$('splashStatus');
+  if(el)el.textContent=startupMessages[startupIndex]||'Ready.';
+  startupIndex++;
+  if(startupIndex>=startupMessages.length){
+    clearInterval(startupTimer);
+    clearTimeout(splashFailSafe);
+    setTimeout(()=>splash?.classList.add('hide'),300);
+  }
+},380);
+syncScores(true);
