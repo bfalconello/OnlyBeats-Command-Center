@@ -35,7 +35,7 @@ fn save_preference(app: tauri::AppHandle, input: PreferenceInput) -> Result<(), 
 }
 #[tauri::command]
 async fn fetch_scoreboard() -> Result<Value, String> {
-    let client = reqwest::Client::builder().timeout(Duration::from_secs(15)).user_agent("OnlyBeats-Command-Center/0.8.0").build().map_err(|e| e.to_string())?;
+    let client = reqwest::Client::builder().timeout(Duration::from_secs(15)).user_agent("OnlyBeats-Command-Center/0.9.1").build().map_err(|e| e.to_string())?;
     let url = "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?limit=200";
     client.get(url).send().await.map_err(|e| format!("Score provider connection failed: {e}"))?.error_for_status().map_err(|e| format!("Score provider returned an error: {e}"))?.json::<Value>().await.map_err(|e| format!("Invalid score response: {e}"))
 }
@@ -44,7 +44,7 @@ async fn fetch_scoreboard() -> Result<Value, String> {
 async fn fetch_weather(input: WeatherInput) -> Result<Value, String> {
     let client = reqwest::Client::builder()
         .timeout(Duration::from_secs(15))
-        .user_agent("OnlyBeats-Command-Center/0.8.0")
+        .user_agent("OnlyBeats-Command-Center/0.9.1")
         .build().map_err(|e| e.to_string())?;
     let query = urlencoding::encode(&input.location);
     let geo_url = format!("https://geocoding-api.open-meteo.com/v1/search?name={query}&count=1&language=en&format=json");

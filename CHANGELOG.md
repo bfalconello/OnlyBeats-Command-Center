@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.9.1 — Prediction Center Expansion
+
+### Added
+- Optional Odds reference field.
+- Futures predictions and manual resolution.
+- Season Lock.
+- Combined analytics and exports.
+
+
+## 0.9.0 — Prediction Intelligence
+
+### Added
+- Winner, spread, and Over/Under prediction types.
+- Unlimited positive numeric confidence and exact-value correct scoring.
+- Automatic grading, journal notes, analytics, achievements, filters, and CSV export.
+- Dashboard prediction summary and configurable push scoring.
+
+
 ## 0.8.0 — Data Platform
 - Added shared team, conference, stadium, color, location, and timezone metadata.
 - Added platform coverage diagnostics.

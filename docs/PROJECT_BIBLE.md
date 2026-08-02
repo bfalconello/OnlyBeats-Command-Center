@@ -120,3 +120,7 @@ See [DECISIONS.md](DECISIONS.md).
 - 2026-08-02: first working native desktop launch verified.
 - 2026-08-02: live-score refresh and favorites verified in v0.2.1.
 - 2026-08-02: GitHub repository established as the source of truth.
+
+## Prediction Intelligence standard
+
+The Prediction Center is a private football-analysis journal. It may track winner, spread, and total predictions, confidence, notes, outcomes, and non-financial scores. It must not place wagers, connect sportsbook accounts, or calculate financial payouts.

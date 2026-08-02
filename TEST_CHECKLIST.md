@@ -1,14 +1,22 @@
-# v0.8.0 Test Checklist
+# v0.9.1 Test Checklist
 
-- [ ] `RUN_DESKTOP.bat` launches without an error.
-- [ ] Startup sequence closes normally.
-- [ ] Live scores refresh.
-- [ ] Saturday Wall filters and Focus Mode work.
-- [ ] Team Hub loads teams from the scoreboard.
-- [ ] Team Overview shows conference, stadium, location, timezone, and color strip.
-- [ ] Opening a team from a game drawer works.
-- [ ] Developer Tools shows Data Platform metrics.
-- [ ] Weather Center still loads a location.
-- [ ] Dashboard widget order, notes, favorites, and theme persist after restart.
-- [ ] Export Settings creates a v0.8.0 JSON file.
-- [ ] Developer Tools reports version 0.8.0.
+- [ ] Application opens and reports version 0.9.1.
+- [ ] Existing v0.9.0 game predictions still appear.
+- [ ] Optional Odds saves, displays, and persists after restart.
+- [ ] Odds accepts values such as -110, +145, EVEN, and PK.
+- [ ] Odds does not change prediction score.
+- [ ] Futures tab opens.
+- [ ] National Champion future can be saved.
+- [ ] Custom future can be saved.
+- [ ] Confidence accepts decimal and large positive values.
+- [ ] Correct future score exactly equals confidence.
+- [ ] Incorrect future score equals zero.
+- [ ] Pending and Void futures do not add score.
+- [ ] Future edit and delete work before locking.
+- [ ] Season Lock stamps and protects pending futures.
+- [ ] Season can be explicitly unlocked.
+- [ ] Combined analytics update correctly.
+- [ ] Reports include futures.
+- [ ] CSV export includes Record Type, Odds, futures, season, and resolution date.
+- [ ] Settings export includes predictions, futures, and lock state.
+- [ ] Saturday Wall, Team Hub, Weather, and live-score refresh still work.

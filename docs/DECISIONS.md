@@ -48,3 +48,9 @@ Use Open-Meteo for stadium-area weather because it supports geocoding and curren
 
 ## 2026-08-02 — Game Focus Mode
 Focus Mode is an overlay rather than a separate route so users can return to the Saturday Wall without losing filters or scroll context.
+
+## 2026-08-02 — Prediction confidence scoring
+
+**Decision:** Confidence accepts any positive numeric value. Correct predictions earn the exact confidence value; incorrect predictions earn zero.
+
+**Reason:** This provides a flexible personal scoring system without calculating financial returns or connecting to wagering services.

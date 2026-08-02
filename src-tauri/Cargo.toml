@@ -1,6 +1,6 @@
 [package]
 name = "onlybeats-command-center"
-version = "0.8.0"
+version = "0.9.1"
 description = "OnlyBeats Command Center"
 authors = ["OnlyBeats"]
 edition = "2021"
