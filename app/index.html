@@ -12,7 +12,6 @@
     <img src="assets/onlybeats-logo.jpg" alt="" />
     <div><strong>ONLYBEATS</strong><span>COMMAND CENTER</span><small id="splashStatus">Initializing GameDay services…</small></div>
   </div>
-
   <div class="app-shell">
     <aside class="sidebar">
       <div class="brand">
@@ -22,10 +21,9 @@
       <nav id="nav" aria-label="Main navigation"></nav>
       <div class="sidebar-footer">
         <span class="status-dot"></span><span>Live Services</span>
-        <small>v0.9.1 • Schema 1</small>
+        <small>v0.10.0 • Schema 1</small>
       </div>
     </aside>
-
     <main>
       <header class="topbar">
         <div>
@@ -38,7 +36,6 @@
           <button id="notificationButton" class="icon-button" title="Notifications">♢<span class="badge">3</span></button>
         </div>
       </header>
-
       <section id="content" class="content" aria-live="polite"></section>
       <footer class="statusbar">
         <span><i class="status-dot"></i> Local services ready</span>
@@ -47,7 +44,6 @@
       </footer>
     </main>
   </div>
-
   <div id="commandPalette" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="commandTitle">
     <div class="command-palette">
       <label id="commandTitle" for="commandInput">Jump anywhere</label>
@@ -56,11 +52,14 @@
       <small>↑↓ Navigate · Enter Open · Esc Close</small>
     </div>
   </div>
-
   <div id="focusBackdrop" class="focus-backdrop hidden" role="dialog" aria-modal="true" aria-label="Game Focus Mode"><section id="focusPanel" class="focus-panel"><button id="closeFocus" class="drawer-close" aria-label="Close focus mode">×</button><div id="focusBody"></div></section></div>
   <div id="notificationPanel" class="notification-panel hidden"><div class="card-head"><h3>GameDay Alerts</h3><button id="closeNotifications">×</button></div><div id="notificationList"></div></div>
   <div id="gameDrawerBackdrop" class="drawer-backdrop hidden"><aside id="gameDrawer" class="game-drawer" aria-label="Game details"><button id="closeGameDrawer" class="drawer-close" aria-label="Close game details">×</button><div id="gameDrawerBody"></div></aside></div><div id="alertStack" class="alert-stack" aria-live="polite"></div>
   <div id="toast" class="toast hidden" role="status"></div>
+
+  <script src="modules/config.js"></script>
+  <script src="modules/storage.js"></script>
+  <script src="modules/ui-core.js"></script>
   <script src="data-platform.js"></script>
   <script src="app.js"></script>
 </body>

@@ -1,19 +1,9 @@
-const VERSION='0.9.3-m2.4.1';
-const STORAGE_KEY='onlybeats.settings.v7';
-const LEGACY_STORAGE_KEY='onlybeats.settings.v6';
-const FAVORITES_KEY='onlybeats.favorites.v1';
-const WALL_KEY='onlybeats.wall.v1';
-const DASHBOARD_KEY='onlybeats.dashboard.v1';
-const NOTES_KEY='onlybeats.notes.v1';
-const PREDICTIONS_KEY='onlybeats.predictions.v1';
-const FUTURES_KEY='onlybeats.futures.v1';
-const FUTURES_LOCK_KEY='onlybeats.futures.lock.v1';
-const SCORE_CACHE_KEY='onlybeats.scoreboard.cache.v1';
-const AVAILABILITY_KEY='onlybeats.availability.v1';
-const SCORE_REFRESH_TIMEOUT_MS=12000;
-const defaultSettings={theme:'midnight',startPage:'dashboard',compact:false,sounds:false,animations:true,refresh:'30',favoriteTeam:'',scoreAlerts:true,favoriteAlerts:true,kickoffAlerts:true,weatherLocation:'',dashboardDensity:'comfortable',pushScoring:'full'};
-const defaultWall={status:'all',favoritesOnly:false,top25Only:false,query:''};
-const defaultDashboard=['featured','favorites','ranked','predictions','weather','alerts','notes'];
+'use strict';
+
+if (typeof VERSION === 'undefined' || typeof loadSettings !== 'function' || typeof $ !== 'function') {
+  throw new Error('OnlyBeats core modules did not load. Verify index.html script order.');
+}
+
 let settings=loadSettings();
 let favorites=load(FAVORITES_KEY,[]);
 let wallState=load(WALL_KEY,defaultWall);
@@ -58,14 +48,10 @@ let refreshRequestId=0;
 let lastRefreshAttempt=null;
 let lastRefreshDuration=null;
 let runtimeErrors=[];
-const pages=[['dashboard','⌂','Dashboard'],['wall','▦','Saturday Wall'],['schedule','◷','Schedule'],['favorites','★','Favorites'],['teams','◈','Team Hub'],['rankings','♛','Rankings'],['news','▤','News'],['weather','☁','Weather'],['availability','♙','Player Availability'],['predictions','✓','Prediction Center'],['reports','▥','Reports'],['developer','⌘','Developer Tools'],['settings','⚙','Settings']];
 
-function load(k,d){try{const raw=localStorage.getItem(k);if(!raw)return Array.isArray(d)?[...d]:{...d};const parsed=JSON.parse(raw);return Array.isArray(d)?(Array.isArray(parsed)?parsed:[...d]):{...d,...parsed}}catch{return Array.isArray(d)?[...d]:{...d}}}
-function loadSettings(){const current=localStorage.getItem(STORAGE_KEY);if(current)return load(STORAGE_KEY,defaultSettings);const legacy=localStorage.getItem(LEGACY_STORAGE_KEY);if(legacy){try{const migrated={...defaultSettings,...JSON.parse(legacy),startPage:'wall'};localStorage.setItem(STORAGE_KEY,JSON.stringify(migrated));return migrated}catch{}}return {...defaultSettings}}
 function saveSettings(showToast=true){localStorage.setItem(STORAGE_KEY,JSON.stringify(settings));const saved=$('lastSaved');if(saved)saved.textContent='Saved just now';if(showToast)toast('Preferences saved');scheduleRefresh()}
 function saveFavorites(){localStorage.setItem(FAVORITES_KEY,JSON.stringify(favorites));renderPage()}
 function saveWall(){localStorage.setItem(WALL_KEY,JSON.stringify(wallState))}
-function $(id){return document.getElementById(id)}
 function applyTheme(){const theme=settings.theme==='dark'?'midnight':settings.theme;document.documentElement.dataset.theme=theme;document.body.classList.toggle('compact-mode',Boolean(settings.compact));document.body.classList.toggle('reduce-motion',!settings.animations);document.body.dataset.density=settings.dashboardDensity||'comfortable'}
 function toast(message,tone='default'){const e=$('toast');if(!e)return;e.textContent=message;e.dataset.tone=tone;e.classList.remove('hidden');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.add('hidden'),2600)}
 function renderNav(){$('nav').innerHTML=pages.map(([id,i,l])=>`<button class="nav-button ${id===currentPage?'active':''}" data-page="${id}"><span class="nav-icon">${i}</span>${l}</button>`).join('');document.querySelectorAll('.nav-button').forEach(b=>b.onclick=()=>navigate(b.dataset.page))}
@@ -85,10 +71,6 @@ function navigate(page){
   renderPage();
 }
 function setHeading(title,eyebrow='ONLYBEATS COMMAND CENTER'){$('sectionTitle').textContent=title;$('sectionEyebrow').textContent=eyebrow}
-function esc(v=''){return String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
-function metric(label,value,sub){return `<div class="metric"><span>${label}</span><strong>${value}</strong><small>${sub}</small></div>`}
-function card(title,body,cls=''){return `<article class="card ${cls}"><div class="card-head"><h3>${title}</h3></div>${body}</article>`}
-function empty(title,copy){return `<div class="empty-state"><div><strong>${title}</strong><p>${copy}</p></div></div>`}
 function normalize(data){return (data.events||[]).map(e=>{const c=e.competitions?.[0]||{},comps=c.competitors||[],home=comps.find(x=>x.homeAway==='home')||comps[0]||{},away=comps.find(x=>x.homeAway==='away')||comps[1]||{},state=e.status?.type?.state||'pre';return {id:e.id,name:e.name||'',date:e.date,status:e.status?.type?.shortDetail||e.status?.type?.detail||'Scheduled',state,clock:e.status?.displayClock||'',period:e.status?.period||0,network:c.broadcasts?.[0]?.names?.[0]||'',venue:c.venue?.fullName||'',city:c.venue?.address?.city||'',stateCode:c.venue?.address?.state||'',neutral:Boolean(c.neutralSite),home:team(home),away:team(away)}})}
 function team(c){return {id:c.team?.id||'',name:c.team?.displayName||'TBD',shortName:c.team?.shortDisplayName||c.team?.displayName||'TBD',abbr:c.team?.abbreviation||'',logo:c.team?.logo||'',color:c.team?.color||'',alternateColor:c.team?.alternateColor||'',score:Number(c.score||0),rank:c.curatedRank?.current&&c.curatedRank.current<99?c.curatedRank.current:null,record:c.records?.[0]?.summary||'',winner:Boolean(c.winner)}}
 function updateProviderStatus(ok){const status=$('providerStatus'),dot=$('providerDot');if(status)status.textContent=ok?'Score provider online':'Score provider unavailable';if(dot)dot.className=ok?'status-dot':'status-dot error'}

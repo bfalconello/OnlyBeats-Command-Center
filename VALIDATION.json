@@ -1,0 +1,18 @@
+{
+  "config.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "storage.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "ui-core.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "app.js": {
+    "ok": true,
+    "stderr": ""
+  }
+}
