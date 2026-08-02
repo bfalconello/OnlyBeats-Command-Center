@@ -41,3 +41,10 @@ Source, documentation, issues, pull requests, release history, and automated bui
 **Status:** Accepted
 
 Version 0.2.2 focuses on documentation, automation, and contribution standards so v0.3.0 can be developed against a stable process.
+
+
+## 2026-08-02 — Weather provider
+Use Open-Meteo for stadium-area weather because it supports geocoding and current/hourly forecast data without hard-coded API secrets. Weather failures remain non-blocking.
+
+## 2026-08-02 — Game Focus Mode
+Focus Mode is an overlay rather than a separate route so users can return to the Saturday Wall without losing filters or scroll context.

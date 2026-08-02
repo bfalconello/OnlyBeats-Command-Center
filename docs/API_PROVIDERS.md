@@ -23,3 +23,10 @@ The Rust backend currently requests a public college-football scoreboard endpoin
 
 ## Secrets
 Use GitHub Actions secrets for CI credentials and an approved OS-level or encrypted local mechanism for desktop credentials. Never place keys in JavaScript, committed JSON, screenshots, or logs.
+
+
+## Weather — Open-Meteo
+- Geocoding: `geocoding-api.open-meteo.com`
+- Forecast: `api.open-meteo.com`
+- Current release uses current conditions and seven-day hourly data.
+- Failure behavior: retain the app shell, show a clear error, and never invent conditions.

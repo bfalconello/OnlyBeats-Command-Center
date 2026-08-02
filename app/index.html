@@ -10,7 +10,7 @@
 <body>
   <div id="splash" class="splash" aria-hidden="true">
     <img src="assets/onlybeats-logo.jpg" alt="" />
-    <div><strong>ONLYBEATS</strong><span>COMMAND CENTER</span></div>
+    <div><strong>ONLYBEATS</strong><span>COMMAND CENTER</span><small id="splashStatus">Initializing GameDay services…</small></div>
   </div>
 
   <div class="app-shell">
@@ -22,7 +22,7 @@
       <nav id="nav" aria-label="Main navigation"></nav>
       <div class="sidebar-footer">
         <span class="status-dot"></span><span>Live Services</span>
-        <small>v0.5.0 • Schema 1</small>
+        <small>v0.6.0 • Schema 1</small>
       </div>
     </aside>
 
@@ -57,6 +57,8 @@
     </div>
   </div>
 
+  <div id="focusBackdrop" class="focus-backdrop hidden" role="dialog" aria-modal="true" aria-label="Game Focus Mode"><section id="focusPanel" class="focus-panel"><button id="closeFocus" class="drawer-close" aria-label="Close focus mode">×</button><div id="focusBody"></div></section></div>
+  <div id="notificationPanel" class="notification-panel hidden"><div class="card-head"><h3>GameDay Alerts</h3><button id="closeNotifications">×</button></div><div id="notificationList"></div></div>
   <div id="gameDrawerBackdrop" class="drawer-backdrop hidden"><aside id="gameDrawer" class="game-drawer" aria-label="Game details"><button id="closeGameDrawer" class="drawer-close" aria-label="Close game details">×</button><div id="gameDrawerBody"></div></aside></div><div id="alertStack" class="alert-stack" aria-live="polite"></div>
   <div id="toast" class="toast hidden" role="status"></div>
   <script src="app.js"></script>

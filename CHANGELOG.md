@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.0 — GameDay Experience
+- Added startup service sequence, Game Focus Mode, notification center, alert settings, and Open-Meteo weather integration.
+
+
 ## 0.5.0 — Intelligence Center
 - Added current-slate rankings, upset watch, favorite alerts, game signals, and provider coverage.
 - Preserved strict no-fabrication data states.

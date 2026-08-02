@@ -16,14 +16,14 @@
 - Game-details drawer
 - Developer diagnostics improvements
 
-### v0.5.0 — Team Hub ✅
+### v0.6.0 — Team Hub ✅
 - FBS team directory
 - Team identity and colors
 - Schedule and results
 - Stadium details
 - Team favorites and quick navigation
 
-### v0.5.0 — Rankings and Standings
+### v0.6.0 — Rankings and Standings
 - Poll views
 - Conference standings
 - Ranked-game filters

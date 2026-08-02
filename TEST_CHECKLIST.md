@@ -1,15 +1,14 @@
-# v0.5.0 Test Checklist
+# v0.6.0 Test Checklist
 
-- [ ] `RUN_DESKTOP.bat` builds and launches
-- [ ] Version 0.5.0 appears in the sidebar and Developer Tools
-- [ ] Saturday Wall still loads and refreshes
-- [ ] Team Hub still opens from a game drawer
-- [ ] Intelligence Center opens from Rankings
-- [ ] Ranked teams are ordered by supplied rank
-- [ ] Ranked matchup cards open the game drawer
-- [ ] Upset Watch contains only live/final games where a ranked team trails or lost
-- [ ] Favorite-team alerts respond to saved favorites
-- [ ] Game Signals shows live, final, and upcoming scoreboard data
-- [ ] No fabricated editorial headlines appear
-- [ ] Existing favorites persist after restart
-- [ ] GitHub Windows Build completes successfully
+- [ ] App builds and launches
+- [ ] Multi-stage startup messages display and dismiss
+- [ ] Saturday Wall loads and refreshes
+- [ ] Focus control opens a large game view
+- [ ] Focus view closes with X, backdrop, and Escape
+- [ ] Open details works from Focus Mode
+- [ ] Weather Center accepts a city/state and loads real conditions
+- [ ] Venue weather shortcut opens Weather Center
+- [ ] Notification panel opens and closes
+- [ ] Score alert setting persists after restart
+- [ ] Favorites, Team Hub, Rankings, and Intelligence Center still work
+- [ ] Developer Tools reports v0.6.0
