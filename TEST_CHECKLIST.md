@@ -1,16 +1,30 @@
-# Release 0.2.1 Test Checklist
+# OnlyBeats Command Center 0.2.2 Test Checklist
 
-- [ ] `RUN_DESKTOP.bat` compiles and launches the app
-- [ ] Splash screen displays OnlyBeats branding
-- [ ] Dashboard opens without an error
-- [ ] Live Games page opens
-- [ ] Refresh now completes or shows a clear provider error
-- [ ] Current games display team names, scores, and status when games are available
-- [ ] Team search filters the visible game cards
-- [ ] Clicking a game opens its details window
-- [ ] A team can be added to Favorites
-- [ ] Favorites remain after closing and reopening the app
-- [ ] Automatic refresh interval can be changed in Settings
-- [ ] Developer Tools shows build 0.2.1 and schema 1
-- [ ] Ctrl+K opens the command palette
-- [ ] Dark/light theme persists after restart
+## Repository checks
+- [ ] `.github/workflows/windows-build.yml` is present
+- [ ] Issue templates appear under GitHub **New issue**
+- [ ] README documentation links open correctly
+- [ ] Project Bible and roadmap render correctly on GitHub
+
+## Native regression
+- [ ] `RUN_DESKTOP.bat` builds and launches
+- [ ] Version displays as 0.2.2
+- [ ] Dashboard opens
+- [ ] Live Games opens
+- [ ] Refresh now completes without a crash
+- [ ] Search filters displayed games
+- [ ] A team can be added to favorites
+- [ ] Favorite remains after restart
+- [ ] Developer Tools displays provider status and last sync
+- [ ] Settings persist after restart
+
+## GitHub Actions
+- [ ] Windows Build workflow starts after push
+- [ ] JavaScript syntax step passes
+- [ ] Rust check passes
+- [ ] Tauri build passes
+- [ ] MSI and/or NSIS artifact is available to download
+
+## Documentation
+- [ ] Release notes match actual changes
+- [ ] No API keys, tokens, personal paths, `node_modules`, or `src-tauri/target` are committed

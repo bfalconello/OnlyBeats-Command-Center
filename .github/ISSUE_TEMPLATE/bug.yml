@@ -1,0 +1,59 @@
+name: Bug report
+description: Report a reproducible problem in OnlyBeats Command Center
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: App version
+      placeholder: 0.2.2
+    validations:
+      required: true
+  - type: dropdown
+    id: runtime
+    attributes:
+      label: Runtime
+      options:
+        - Native Windows desktop
+        - Browser preview
+        - GitHub Actions build
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Include the exact message shown by the app or terminal.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open Live Games
+        2. Click Refresh now
+        3. Observe...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics
+      description: Add Developer Tools status, logs, or a screenshot. Remove any secrets.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I searched for an existing issue.
+          required: true
+        - label: I removed API keys, tokens, and private information.
+          required: true

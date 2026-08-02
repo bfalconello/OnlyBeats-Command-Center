@@ -33,7 +33,7 @@ fn save_preference(app: tauri::AppHandle, input: PreferenceInput) -> Result<(), 
 }
 #[tauri::command]
 async fn fetch_scoreboard() -> Result<Value, String> {
-    let client = reqwest::Client::builder().timeout(Duration::from_secs(15)).user_agent("OnlyBeats-Command-Center/0.2.0").build().map_err(|e| e.to_string())?;
+    let client = reqwest::Client::builder().timeout(Duration::from_secs(15)).user_agent("OnlyBeats-Command-Center/0.2.2").build().map_err(|e| e.to_string())?;
     let url = "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?limit=200";
     client.get(url).send().await.map_err(|e| format!("Score provider connection failed: {e}"))?.error_for_status().map_err(|e| format!("Score provider returned an error: {e}"))?.json::<Value>().await.map_err(|e| format!("Invalid score response: {e}"))
 }
