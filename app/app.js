@@ -1,4 +1,4 @@
-const VERSION='0.9.3-m2.2';
+const VERSION='0.9.3-m2.3';
 const STORAGE_KEY='onlybeats.settings.v7';
 const LEGACY_STORAGE_KEY='onlybeats.settings.v6';
 const FAVORITES_KEY='onlybeats.favorites.v1';
@@ -606,7 +606,165 @@ if($('scheduleTop25Filter'))$('scheduleTop25Filter').onclick=()=>{scheduleTop25O
 if($('scheduleSearch'))$('scheduleSearch').oninput=e=>{scheduleQuery=e.target.value;renderPage();const input=$('scheduleSearch');if(input){input.focus();input.setSelectionRange(input.value.length,input.value.length)}};
 if($('clearScheduleFilters'))$('clearScheduleFilters').onclick=()=>{scheduleFilter='all';scheduleRange='all';scheduleQuery='';scheduleFavoritesOnly=false;scheduleTop25Only=false;renderPage()};
 if($('availabilityForm'))$('availabilityForm').onsubmit=e=>{e.preventDefault();const team=$('availabilityTeam').value,player=$('availabilityPlayer').value.trim(),status=$('availabilityStatus').value,notes=$('availabilityNotes').value.trim();if(!team||!player)return;availabilityEntries.unshift({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),team,player,status,notes,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});saveAvailability();toast('Availability note saved');renderPage()};document.querySelectorAll('[data-delete-availability]').forEach(b=>b.onclick=()=>{availabilityEntries=availabilityEntries.filter(x=>x.id!==b.dataset.deleteAvailability);saveAvailability();renderPage()});document.querySelectorAll('[data-status]').forEach(b=>b.onclick=()=>{wallState.status=b.dataset.status;saveWall();renderPage()});if($('favoritesFilter'))$('favoritesFilter').onclick=()=>{wallState.favoritesOnly=!wallState.favoritesOnly;saveWall();renderPage()};if($('top25Filter'))$('top25Filter').onclick=()=>{wallState.top25Only=!wallState.top25Only;saveWall();renderPage()};if($('wallSearch'))$('wallSearch').oninput=e=>{wallState.query=e.target.value;saveWall();const grid=document.querySelector('.wall-grid');if(grid)grid.innerHTML=filteredWallGames().map(gameCard).join('')||empty('No games match these filters','Try another team or clear filters.');document.querySelectorAll('[data-game]').forEach(b=>b.onclick=()=>showGame(b.dataset.game))};document.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{favorites=favorites.filter(x=>x!==b.dataset.remove);saveFavorites()});document.querySelectorAll('[data-team]').forEach(b=>b.onclick=()=>{activeTeamAbbr=b.dataset.team;teamTab='overview';renderPage()});document.querySelectorAll('[data-team-tab]').forEach(b=>b.onclick=()=>{teamTab=b.dataset.teamTab;renderPage()});if($('teamSearch'))$('teamSearch').oninput=e=>{teamQuery=e.target.value;renderPage();setTimeout(()=>{const x=$('teamSearch');if(x){x.focus();x.setSelectionRange(x.value.length,x.value.length)}},0)};if($('teamConferenceFilter'))$('teamConferenceFilter').onchange=e=>{teamConferenceFilter=e.target.value;renderPage()};if($('teamFavoritesFilter'))$('teamFavoritesFilter').onclick=()=>{teamFavoritesOnly=!teamFavoritesOnly;renderPage()};if($('clearTeamFilters'))$('clearTeamFilters').onclick=()=>{teamQuery='';teamConferenceFilter='all';teamFavoritesOnly=false;renderPage()};if($('teamFavoriteButton'))$('teamFavoriteButton').onclick=()=>{const t=selectedTeam();if(!t)return;favorites=favorites.includes(t.abbr)?favorites.filter(x=>x!==t.abbr):[...favorites,t.abbr];localStorage.setItem(FAVORITES_KEY,JSON.stringify(favorites));renderPage()};if($('loadWeather'))$('loadWeather').onclick=()=>fetchWeather($('weatherLocation').value.trim());document.querySelectorAll('[data-focus]').forEach(b=>b.onclick=e=>{e.preventDefault();e.stopPropagation();openFocus(b.dataset.focus)});document.querySelectorAll('[data-alert-game]').forEach(b=>b.onclick=()=>{const id=b.dataset.alertGame;if(id)showGame(id)});document.querySelectorAll('[data-page-jump]').forEach(b=>b.onclick=()=>navigate(b.dataset.pageJump));if(currentPage==='predictions')bindPredictionPage();if(currentPage==='reports'){if($('reportExportPredictions'))$('reportExportPredictions').onclick=exportPredictionsCsv;if($('yearbookNote'))$('yearbookNote').oninput=e=>localStorage.setItem('onlybeats.yearbook.note.v1',e.target.value)}document.querySelectorAll('[data-predict-game]').forEach(b=>b.onclick=()=>{predictionDraftGameId=b.dataset.predictGame;editingPredictionId='';predictionView='games';navigate('predictions')});bindPersonalization();if(currentPage==='settings')bindSettings()}
-function showGame(id,open=true){const g=games.find(x=>x.id===id);if(!g)return;activeGameId=id;const choices=[g.away,g.home];$('gameDrawerBody').innerHTML=`<div class="drawer-hero"><p class="eyebrow">${esc(statusLabel(g.state))}</p><h2>${esc(g.away.shortName)} at ${esc(g.home.shortName)}</h2><p>${esc(g.status)}</p></div><div class="drawer-score">${teamLine(g.away)}${teamLine(g.home)}</div><div class="drawer-details"><div><span>Broadcast</span><strong>${esc(g.network||'Not listed')}</strong></div><div><span>Venue</span><strong>${esc(g.venue||'Not listed')}</strong></div><div><span>Location</span><strong>${esc([g.city,g.stateCode].filter(Boolean).join(', ')||'Not listed')}</strong></div><div><span>Kickoff</span><strong>${new Date(g.date).toLocaleString()}</strong></div></div><div class="drawer-section"><h3>Favorite teams</h3><div class="button-row">${choices.map(t=>`<button class="button ${favorites.includes(t.abbr)?'primary':''}" data-favorite="${esc(t.abbr)}">${favorites.includes(t.abbr)?'★ Remove':'☆ Add'} ${esc(t.shortName)}</button>`).join('')}</div></div><div class="drawer-section"><h3>Prediction Center</h3><button class="button primary" data-predict-game="${g.id}">Create prediction for this game</button></div><div class="drawer-section"><h3>Team Hub</h3><div class="button-row">${choices.map(t=>`<button class="button" data-open-team="${esc(t.abbr)}">Open ${esc(t.shortName)}</button>`).join('')}</div></div><div class="drawer-section future-panel"><span>Coming next</span><p>Weather, team stats, possession, and play-by-play will plug into this drawer in future releases.</p></div>`;if(open){$('gameDrawerBackdrop').classList.remove('hidden');$('gameDrawer').classList.add('open')}document.querySelectorAll('[data-favorite]').forEach(b=>b.onclick=()=>{const a=b.dataset.favorite;favorites=favorites.includes(a)?favorites.filter(x=>x!==a):[...favorites,a];localStorage.setItem(FAVORITES_KEY,JSON.stringify(favorites));showGame(id,false);renderPage()});document.querySelectorAll('[data-open-team]').forEach(b=>b.onclick=()=>openTeam(b.dataset.openTeam));document.querySelectorAll('[data-predict-game]').forEach(b=>b.onclick=()=>{predictionDraftGameId=b.dataset.predictGame;editingPredictionId='';predictionView='games';closeGame();navigate('predictions')})}
+function gamePredictionSnapshot(game){
+  const rows=predictions
+    .filter(p=>p.gameId===game.id)
+    .map(p=>({...p,result:predictionResult(p,game)}));
+  const graded=rows.filter(x=>['correct','incorrect','push'].includes(x.result.status));
+  return {
+    rows,
+    graded,
+    earned:graded.reduce((sum,x)=>sum+(Number(x.result.score)||0),0),
+    pending:rows.filter(x=>x.result.status==='pending').length
+  };
+}
+function gameAvailabilitySnapshot(game){
+  const teams=[game.away.abbr,game.home.abbr];
+  const entries=availabilityEntries.filter(x=>teams.includes(x.team));
+  return {
+    entries,
+    away:entries.filter(x=>x.team===game.away.abbr),
+    home:entries.filter(x=>x.team===game.home.abbr),
+    concerning:entries.filter(x=>['Questionable','Doubtful','Unavailable','Unknown'].includes(x.status))
+  };
+}
+function gameTeamSummary(team){
+  const enriched=allTeams().find(t=>t.abbr===team.abbr)||team;
+  const snapshot=teamRecordSnapshot(enriched);
+  const availability=teamAvailabilitySnapshot(enriched);
+  return `<button class="intel-row" data-open-team="${esc(team.abbr)}">
+    <span class="intel-icon">${team.rank?`#${team.rank}`:'◈'}</span>
+    <div>
+      <strong>${esc(team.name)}</strong>
+      <small>${esc(team.record||`${snapshot.wins}-${snapshot.losses}`)} · ${esc(enriched.conference||'FBS')} · ${availability.concerning.length} availability note${availability.concerning.length===1?'':'s'}</small>
+    </div>
+    <b>›</b>
+  </button>`;
+}
+function gamePredictionSummary(game){
+  const snapshot=gamePredictionSnapshot(game);
+  if(!snapshot.rows.length){
+    return `<p class="muted">No saved prediction for this matchup.</p><button class="button primary" data-predict-game="${game.id}">Create prediction</button>`;
+  }
+  return `<div class="intel-list">${snapshot.rows.map(p=>{
+    const result=p.result;
+    return `<div class="intel-row">
+      <span class="intel-icon">${result.status==='correct'?'✓':result.status==='incorrect'?'×':result.status==='push'?'—':'○'}</span>
+      <div><strong>${esc(predictionTypeLabel(p))}: ${esc(predictionPickLabel(p,game))}</strong><small>Confidence ${formatNumber(p.confidence)}${p.odds?` · Odds ${esc(p.odds)}`:''} · ${esc(result.label)}</small></div>
+      <b>${result.score===null?'Pending':formatNumber(result.score)}</b>
+    </div>`;
+  }).join('')}</div><button class="button" data-predict-game="${game.id}">Add another prediction</button>`;
+}
+function gameAvailabilitySummary(game){
+  const snapshot=gameAvailabilitySnapshot(game);
+  if(!snapshot.entries.length){
+    return `<p class="muted">No manual availability notes for either team.</p><button class="button" data-open-availability="${game.id}">Open Player Availability</button>`;
+  }
+  return `<div class="intel-list">${snapshot.entries.slice(0,6).map(x=>`<div class="intel-row">
+    <span class="intel-icon">♙</span>
+    <div><strong>${esc(x.player)} · ${esc(x.team)}</strong><small>${esc(x.status)}${x.notes?` · ${esc(x.notes)}`:''}</small></div>
+  </div>`).join('')}</div><button class="button" data-open-availability="${game.id}">Manage availability notes</button>`;
+}
+function showGame(id,open=true){
+  const g=games.find(x=>x.id===id);
+  if(!g)return;
+  activeGameId=id;
+  const choices=[g.away,g.home];
+  const weatherLocation=[g.city,g.stateCode].filter(Boolean).join(', ');
+  const favorite=isFavoriteGame(g);
+  const ranked=isTop25(g);
+  $('gameDrawerBody').innerHTML=`
+    <div class="drawer-hero">
+      <p class="eyebrow">${esc(statusLabel(g.state))}${ranked?' · TOP 25':''}${favorite?' · FAVORITE MATCHUP':''}</p>
+      <h2>${g.away.rank?`#${g.away.rank} `:''}${esc(g.away.shortName)} at ${g.home.rank?`#${g.home.rank} `:''}${esc(g.home.shortName)}</h2>
+      <p>${esc(g.status)}${g.network?` · ${esc(g.network)}`:''}</p>
+    </div>
+    <div class="drawer-score">${teamLine(g.away)}${teamLine(g.home)}</div>
+    <div class="drawer-details">
+      <div><span>Broadcast</span><strong>${esc(g.network||'Not listed')}</strong></div>
+      <div><span>Venue</span><strong>${esc(g.venue||'Not listed')}</strong></div>
+      <div><span>Location</span><strong>${esc(weatherLocation||'Not listed')}</strong></div>
+      <div><span>Kickoff</span><strong>${new Date(g.date).toLocaleString()}</strong></div>
+    </div>
+
+    <div class="drawer-section">
+      <h3>Team Intelligence</h3>
+      <div class="intel-list">${choices.map(gameTeamSummary).join('')}</div>
+    </div>
+
+    <div class="drawer-section">
+      <h3>Your Prediction</h3>
+      ${gamePredictionSummary(g)}
+    </div>
+
+    <div class="drawer-section">
+      <h3>Player Availability</h3>
+      ${gameAvailabilitySummary(g)}
+    </div>
+
+    <div class="drawer-section">
+      <h3>GameDay Tools</h3>
+      <div class="button-row">
+        <button class="button" data-open-schedule-game="${g.id}">Open in Schedule</button>
+        <button class="button" data-game-weather="${g.id}" ${weatherLocation?'':'disabled'}>${weatherLocation?'Load venue weather':'Weather location unavailable'}</button>
+        <button class="button" data-focus-game="${g.id}">Focus Mode</button>
+      </div>
+    </div>
+
+    <div class="drawer-section">
+      <h3>Favorite teams</h3>
+      <div class="button-row">${choices.map(t=>`<button class="button ${favorites.includes(t.abbr)?'primary':''}" data-favorite="${esc(t.abbr)}">${favorites.includes(t.abbr)?'★ Remove':'☆ Add'} ${esc(t.shortName)}</button>`).join('')}</div>
+    </div>
+
+    <div class="drawer-section future-panel">
+      <span>Data coverage</span>
+      <p>Scores, rankings, team metadata, saved predictions, manual availability notes, schedule links, and venue weather shortcuts are connected. Play-by-play remains a future provider integration.</p>
+    </div>`;
+
+  if(open){
+    $('gameDrawerBackdrop').classList.remove('hidden');
+    $('gameDrawer').classList.add('open');
+  }
+
+  document.querySelectorAll('[data-favorite]').forEach(b=>b.onclick=()=>{
+    const a=b.dataset.favorite;
+    favorites=favorites.includes(a)?favorites.filter(x=>x!==a):[...favorites,a];
+    localStorage.setItem(FAVORITES_KEY,JSON.stringify(favorites));
+    showGame(id,false);
+    renderPage();
+  });
+  document.querySelectorAll('[data-open-team]').forEach(b=>b.onclick=()=>openTeam(b.dataset.openTeam));
+  document.querySelectorAll('[data-predict-game]').forEach(b=>b.onclick=()=>{
+    predictionDraftGameId=b.dataset.predictGame;
+    editingPredictionId='';
+    predictionView='games';
+    closeGame();
+    navigate('predictions');
+  });
+  document.querySelectorAll('[data-open-availability]').forEach(b=>b.onclick=()=>{
+    closeGame();
+    navigate('availability');
+  });
+  document.querySelectorAll('[data-open-schedule-game]').forEach(b=>b.onclick=()=>{
+    scheduleQuery=`${g.away.abbr} ${g.home.abbr}`;
+    scheduleRange='all';
+    scheduleFilter='all';
+    closeGame();
+    navigate('schedule');
+  });
+  document.querySelectorAll('[data-game-weather]').forEach(b=>b.onclick=()=>{
+    settings.weatherLocation=weatherLocation;
+    saveSettings(false);
+    closeGame();
+    navigate('weather');
+    fetchWeather(weatherLocation);
+  });
+  document.querySelectorAll('[data-focus-game]').forEach(b=>b.onclick=()=>{
+    closeGame();
+    openFocus(b.dataset.focusGame);
+  });
+}
+
 function closeGame(){activeGameId=null;$('gameDrawer').classList.remove('open');setTimeout(()=>$('gameDrawerBackdrop').classList.add('hidden'),180)}
 function bindSettings(){const t=$('themeSelect');t.value=settings.theme==='dark'?'midnight':settings.theme;t.onchange=()=>{settings.theme=t.value;applyTheme();saveSettings()};const d=$('densitySelect');d.value=settings.dashboardDensity||'comfortable';d.onchange=()=>{settings.dashboardDensity=d.value;applyTheme();saveSettings()};const r=$('refreshSelect');r.value=settings.refresh;r.onchange=()=>{settings.refresh=r.value;saveSettings()};const s=$('startPageSelect');s.value=settings.startPage;s.onchange=()=>{settings.startPage=s.value;saveSettings()};const ps=$('pushScoringSelect');if(ps){ps.value=settings.pushScoring||'full';ps.onchange=()=>{settings.pushScoring=ps.value;saveSettings()}};[['compactToggle','compact'],['animationToggle','animations'],['scoreAlertsToggle','scoreAlerts'],['favoriteAlertsToggle','favoriteAlerts'],['kickoffAlertsToggle','kickoffAlerts']].forEach(([id,k])=>$(id).onclick=e=>{settings[k]=!settings[k];e.currentTarget.classList.toggle('on',settings[k]);applyTheme();saveSettings()});$('testProvider').onclick=()=>syncScores();$('settingsResetDashboard').onclick=()=>{dashboardLayout=[...defaultDashboard];saveDashboard()};$('exportButton').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({settings,favorites,wallState,dashboardLayout,quickNotes,predictions,futures,futuresLocked},null,2)],{type:'application/json'}));a.download='OnlyBeats-settings-v0.9.1.json';a.click();toast('Settings export created')};$('resetButton').onclick=()=>{if(confirm('Reset preferences, dashboard, notes, filters, and favorites?')){settings={...defaultSettings};favorites=[];wallState={...defaultWall};dashboardLayout=[...defaultDashboard];quickNotes='';predictions=[];futures=[];futuresLocked=false;localStorage.clear();applyTheme();renderPage()}}}
 const palette=$('commandPalette'),input=$('commandInput'),results=$('commandResults');
