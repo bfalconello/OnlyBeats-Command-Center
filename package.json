@@ -1,0 +1,15 @@
+{
+  "name": "onlybeats-command-center",
+  "version": "0.2.1",
+  "private": true,
+  "description": "OnlyBeats Command Center desktop application",
+  "scripts": {
+    "preview": "npx --yes serve app -l 4173",
+    "tauri": "tauri",
+    "desktop:dev": "tauri dev",
+    "desktop:build": "tauri build"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.8.0"
+  }
+}

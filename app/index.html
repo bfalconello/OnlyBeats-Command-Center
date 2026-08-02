@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b0f14" />
+  <title>OnlyBeats Command Center</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="splash" class="splash" aria-hidden="true">
+    <img src="assets/onlybeats-logo.jpg" alt="" />
+    <div><strong>ONLYBEATS</strong><span>COMMAND CENTER</span></div>
+  </div>
+
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="assets/onlybeats-icon.png" alt="OnlyBeats hawk logo" />
+        <div><strong>ONLYBEATS</strong><span>COMMAND CENTER</span></div>
+      </div>
+      <nav id="nav" aria-label="Main navigation"></nav>
+      <div class="sidebar-footer">
+        <span class="status-dot"></span><span>Live Services</span>
+        <small>v0.2.1 • Schema 1</small>
+      </div>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <div>
+          <p class="eyebrow" id="sectionEyebrow">COMMAND CENTER</p>
+          <h1 id="sectionTitle">Dashboard</h1>
+        </div>
+        <div class="top-actions">
+          <button id="commandButton" class="search-button" title="Open command palette (Ctrl+K)">⌕ <span>Search anything</span><kbd>Ctrl K</kbd></button>
+          <button id="themeButton" class="icon-button" title="Toggle theme">◐</button>
+          <button id="notificationButton" class="icon-button" title="Notifications">♢<span class="badge">3</span></button>
+        </div>
+      </header>
+
+      <section id="content" class="content" aria-live="polite"></section>
+      <footer class="statusbar">
+        <span><i class="status-dot"></i> Local services ready</span>
+        <span id="lastSaved">Preferences auto-save locally</span>
+        <span id="clock"></span>
+      </footer>
+    </main>
+  </div>
+
+  <div id="commandPalette" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="commandTitle">
+    <div class="command-palette">
+      <label id="commandTitle" for="commandInput">Jump anywhere</label>
+      <input id="commandInput" autocomplete="off" placeholder="Search pages, teams, weeks, or settings…" />
+      <div id="commandResults"></div>
+      <small>↑↓ Navigate · Enter Open · Esc Close</small>
+    </div>
+  </div>
+
+  <div id="gameModal" class="modal-backdrop hidden"><div class="game-modal"><button id="closeGameModal" class="modal-close">×</button><div id="gameModalBody"></div></div></div>
+  <div id="toast" class="toast hidden" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>
