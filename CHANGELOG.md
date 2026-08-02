@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.7.1 — Dashboard Reorder Hotfix
+- Fixed drag-and-drop widget ordering.
+- Added up/down reorder controls.
+- Added drag target feedback.
+
+
+## 0.7.1 — Personal Command Center
+
+### Added
+- Customizable and reorderable dashboard widgets.
+- Quick Notes with automatic local persistence.
+- Midnight, Stadium, Ice, Classic, and Light themes.
+- Dashboard density and startup-page preferences.
+- Expanded settings export and dashboard reset.
+
+
 ## 0.6.0 — GameDay Experience
 - Added startup service sequence, Game Focus Mode, notification center, alert settings, and Open-Meteo weather integration.
 

@@ -1,14 +1,31 @@
-# v0.6.0 Test Checklist
+# v0.7.1 Test Checklist
 
-- [ ] App builds and launches
-- [ ] Multi-stage startup messages display and dismiss
-- [ ] Saturday Wall loads and refreshes
-- [ ] Focus control opens a large game view
-- [ ] Focus view closes with X, backdrop, and Escape
-- [ ] Open details works from Focus Mode
-- [ ] Weather Center accepts a city/state and loads real conditions
-- [ ] Venue weather shortcut opens Weather Center
-- [ ] Notification panel opens and closes
-- [ ] Score alert setting persists after restart
-- [ ] Favorites, Team Hub, Rankings, and Intelligence Center still work
-- [ ] Developer Tools reports v0.6.0
+## Launch and regression
+- [ ] `RUN_DESKTOP.bat` launches without a compiler or JavaScript error.
+- [ ] Startup sequence completes and the selected startup page opens.
+- [ ] Saturday Wall loads and live-score refresh still works.
+- [ ] Team Hub, Intelligence Center, Weather Center, and Game Focus Mode still open.
+
+## Personal Command Center
+- [ ] Dashboard displays the Personal Command Center hero and widgets.
+- [ ] Customize dashboard opens the widget controls.
+- [ ] A widget can be hidden and restored.
+- [ ] Dashboard cards can be dragged into a different order.
+- [ ] The new order remains after restarting the app.
+- [ ] Reset dashboard restores the standard six widgets.
+- [ ] Quick Notes save automatically and remain after restarting.
+
+## Appearance and startup
+- [ ] Midnight Gold theme works.
+- [ ] Stadium Green theme works.
+- [ ] Ice Blue theme works.
+- [ ] Classic Charcoal theme works.
+- [ ] Light theme works.
+- [ ] Compact dashboard density works.
+- [ ] A different startup page remains selected after restarting.
+
+## Data and diagnostics
+- [ ] Existing favorites remain available.
+- [ ] Export Settings creates a v0.7.1 JSON file.
+- [ ] Developer Tools reports version 0.7.1.
+- [ ] Reset All Local Data only runs after confirmation.

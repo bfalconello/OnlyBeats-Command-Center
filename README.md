@@ -1,50 +1,35 @@
 # OnlyBeats Command Center
 
-**Your Complete College Football Command Center**
+A Windows desktop command center for college football live scores, teams, current-slate intelligence, weather, alerts, and a personalized game-day dashboard.
 
-OnlyBeats Command Center is a Windows desktop application for following college football through one focused interface. The current stable foundation includes a branded dashboard, live games, search, favorites, automatic refresh, game details, settings, SQLite initialization, and developer diagnostics.
+## Current release
 
-## Current version
-**0.6.0 — Project Infrastructure**
+**v0.7.1 — Personal Command Center**
 
-This release keeps the working 0.2.1 live-game behavior and adds the documentation, automation, contribution standards, and release process required for the Saturday Wall sprint.
+This release adds customizable dashboard widgets, local Quick Notes, multiple professional themes, dashboard density controls, and improved startup preferences.
 
-## Quick start
+## Run locally
+
 1. Install the prerequisites described in `INSTALL_WINDOWS.md`.
-2. Run `CHECK_MY_PC.bat`.
-3. Run `RUN_DESKTOP.bat` for native development.
-4. Open **Saturday Wall** and select **Refresh now**.
-5. Use `BUILD_WINDOWS.bat` to create MSI and NSIS installers.
+2. Double-click `RUN_DESKTOP.bat`.
+3. Complete `TEST_CHECKLIST.md` after each upgrade.
 
-A browser preview is available through `PREVIEW_APP.bat`, but native provider features may require the desktop runtime.
+## Build the Windows installer
+
+Run `BUILD_WINDOWS.bat`, or push the source to GitHub and download the artifact from the successful **Windows Build** workflow.
+
+## Major modules
+
+- Saturday Wall
+- Live scores and automatic refresh
+- Team Hub
+- Intelligence Center
+- Weather Center
+- Game Focus Mode
+- GameDay alerts
+- Personal Command Center
+- Developer diagnostics
 
 ## Documentation
-- [Project Bible](docs/PROJECT_BIBLE.md)
-- [Architecture](docs/ARCHITECTURE.md)
-- [Design System](docs/DESIGN_SYSTEM.md)
-- [Roadmap](docs/ROADMAP.md)
-- [Decisions](docs/DECISIONS.md)
-- [API Providers](docs/API_PROVIDERS.md)
-- [Database](docs/DATABASE.md)
-- [Release Process](docs/RELEASE_PROCESS.md)
-- [Contributing](docs/CONTRIBUTING.md)
-- [Changelog](CHANGELOG.md)
 
-## Repository structure
-```text
-app/          Frontend application
-src-tauri/    Rust backend and desktop configuration
-database/     SQLite reference schema
-docs/         Product and engineering documentation
-design/       Visual assets and concepts
-.github/      CI workflows and contribution templates
-```
-
-## Automated Windows build
-Every push or pull request to `main` or `develop` runs a Windows workflow that validates JavaScript, checks Rust, builds Tauri installers, and uploads the MSI/EXE as workflow artifacts.
-
-## Roadmap
-The next feature release is **v0.6.0 — Saturday Wall**, followed by Team Hub, rankings, weather/game intel, news/reports, and the first stable v1.0 release.
-
-## Project standard
-> Precision over speed. One honest release at a time.
+See `docs/PROJECT_BIBLE.md`, `docs/ARCHITECTURE.md`, `docs/DESIGN_SYSTEM.md`, and `docs/ROADMAP.md`.
