@@ -1,6 +1,12 @@
 'use strict';
 
-if (typeof VERSION === 'undefined' || typeof loadSettings !== 'function' || typeof $ !== 'function') {
+if (
+  typeof VERSION === 'undefined' ||
+  typeof loadSettings !== 'function' ||
+  typeof $ !== 'function' ||
+  typeof navigate !== 'function' ||
+  typeof refreshActionFor !== 'function'
+) {
   throw new Error('OnlyBeats core modules did not load. Verify index.html script order.');
 }
 
@@ -54,35 +60,12 @@ function saveFavorites(){localStorage.setItem(FAVORITES_KEY,JSON.stringify(favor
 function saveWall(){localStorage.setItem(WALL_KEY,JSON.stringify(wallState))}
 function applyTheme(){const theme=settings.theme==='dark'?'midnight':settings.theme;document.documentElement.dataset.theme=theme;document.body.classList.toggle('compact-mode',Boolean(settings.compact));document.body.classList.toggle('reduce-motion',!settings.animations);document.body.dataset.density=settings.dashboardDensity||'comfortable'}
 function toast(message,tone='default'){const e=$('toast');if(!e)return;e.textContent=message;e.dataset.tone=tone;e.classList.remove('hidden');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.add('hidden'),2600)}
-function renderNav(){$('nav').innerHTML=pages.map(([id,i,l])=>`<button class="nav-button ${id===currentPage?'active':''}" data-page="${id}"><span class="nav-icon">${i}</span>${l}</button>`).join('');document.querySelectorAll('.nav-button').forEach(b=>b.onclick=()=>navigate(b.dataset.page))}
-function closeTransientUi(){
-  try{$('gameDrawerBackdrop')?.classList.add('hidden')}catch{}
-  try{$('gameDrawer')?.classList.remove('open')}catch{}
-  try{$('focusBackdrop')?.classList.add('hidden')}catch{}
-  try{$('focusModal')?.classList.remove('open')}catch{}
-  try{$('notificationPanel')?.classList.add('hidden')}catch{}
-  try{$('commandPalette')?.classList.add('hidden')}catch{}
-}
-function navigate(page){
-  if(!pages.some(p=>p[0]===page))return;
-  closeTransientUi();
-  currentPage=page;
-  renderNav();
-  renderPage();
-}
-function setHeading(title,eyebrow='ONLYBEATS COMMAND CENTER'){$('sectionTitle').textContent=title;$('sectionEyebrow').textContent=eyebrow}
 function normalize(data){return (data.events||[]).map(e=>{const c=e.competitions?.[0]||{},comps=c.competitors||[],home=comps.find(x=>x.homeAway==='home')||comps[0]||{},away=comps.find(x=>x.homeAway==='away')||comps[1]||{},state=e.status?.type?.state||'pre';return {id:e.id,name:e.name||'',date:e.date,status:e.status?.type?.shortDetail||e.status?.type?.detail||'Scheduled',state,clock:e.status?.displayClock||'',period:e.status?.period||0,network:c.broadcasts?.[0]?.names?.[0]||'',venue:c.venue?.fullName||'',city:c.venue?.address?.city||'',stateCode:c.venue?.address?.state||'',neutral:Boolean(c.neutralSite),home:team(home),away:team(away)}})}
 function team(c){return {id:c.team?.id||'',name:c.team?.displayName||'TBD',shortName:c.team?.shortDisplayName||c.team?.displayName||'TBD',abbr:c.team?.abbreviation||'',logo:c.team?.logo||'',color:c.team?.color||'',alternateColor:c.team?.alternateColor||'',score:Number(c.score||0),rank:c.curatedRank?.current&&c.curatedRank.current<99?c.curatedRank.current:null,record:c.records?.[0]?.summary||'',winner:Boolean(c.winner)}}
 function updateProviderStatus(ok){const status=$('providerStatus'),dot=$('providerDot');if(status)status.textContent=ok?'Score provider online':'Score provider unavailable';if(dot)dot.className=ok?'status-dot':'status-dot error'}
 function captureChanges(nextGames){const nextChanged=new Set();for(const g of nextGames){const before=previousScores.get(g.id);const current=`${g.away.score}-${g.home.score}-${g.state}-${g.period}-${g.clock}`;if(before&&before!==current){nextChanged.add(g.id);if(g.away.score+g.home.score>Number(before.split('-')[0])+Number(before.split('-')[1]))announceScoreChange(g)}previousScores.set(g.id,current)}changedGames=nextChanged;if(changedGames.size)setTimeout(()=>{changedGames.clear();document.querySelectorAll('.score-changed').forEach(e=>e.classList.remove('score-changed'))},4200)}
 function announceScoreChange(g){const leader=g.away.score>g.home.score?g.away:g.home.score>g.away.score?g.home:null;const message=leader?`${leader.shortName} leads ${Math.max(g.away.score,g.home.score)}–${Math.min(g.away.score,g.home.score)}`:`${g.away.shortName} and ${g.home.shortName} are tied`;showAlert('SCORE UPDATE',message,g)}
 function showAlert(title,message,g){if(!settings.scoreAlerts)return;notificationHistory.unshift({title,message,time:new Date().toISOString(),gameId:g?.id||''});notificationHistory=notificationHistory.slice(0,30);localStorage.setItem('onlybeats.notifications.v1',JSON.stringify(notificationHistory));const host=$('alertStack');if(!host)return;const item=document.createElement('button');item.className='game-alert';item.innerHTML=`<span>⚡</span><div><small>${esc(title)}</small><strong>${esc(message)}</strong></div>`;item.onclick=()=>{showGame(g.id);item.remove()};host.prepend(item);setTimeout(()=>item.remove(),6500)}
-function withTimeout(promise,ms,label='Request'){
-  return Promise.race([
-    promise,
-    new Promise((_,reject)=>setTimeout(()=>reject(new Error(`${label} timed out after ${Math.round(ms/1000)} seconds`)),ms))
-  ]);
-}
 async function syncScores(silent=false){
   if(loading)return;
   const requestId=++refreshRequestId;
@@ -123,38 +106,7 @@ async function syncScores(silent=false){
   }
 }
 
-async function runVisibleRefresh(buttonId, pendingLabel, idleLabel){
-  const button=$(buttonId);
-  if(loading){
-    toast('A score refresh is already running');
-    return;
-  }
-  if(button){
-    button.disabled=true;
-    button.textContent=pendingLabel;
-    button.setAttribute('aria-busy','true');
-  }
-  try{
-    await syncScores(false);
-  }finally{
-    const currentButton=$(buttonId);
-    if(currentButton){
-      currentButton.disabled=false;
-      currentButton.textContent=idleLabel;
-      currentButton.removeAttribute('aria-busy');
-    }
-  }
-}
-function refreshActionFor(target){
-  const button=target?.closest?.('#refreshScores,#refreshIntelligence,#refreshNewsFeed,#refreshSchedule,#retrySchedule');
-  if(!button)return null;
-  if(button.id==='refreshIntelligence')return {buttonId:'refreshIntelligence',pending:'Refreshing intelligence…',idle:'Refresh intelligence'};
-  if(button.id==='refreshNewsFeed')return {buttonId:'refreshNewsFeed',pending:'Refreshing feed…',idle:'Refresh feed'};
-  if(button.id==='refreshSchedule'||button.id==='retrySchedule')return {buttonId:button.id,pending:'Refreshing schedule…',idle:button.id==='retrySchedule'?'Try again':'Refresh schedule'};
-  return {buttonId:'refreshScores',pending:'Refreshing…',idle:'Refresh'};
-}
 
-function scheduleRefresh(){clearInterval(refreshTimer);const seconds=Number(settings.refresh||30);if(seconds>0)refreshTimer=setInterval(()=>syncScores(true),seconds*1000)}
 function isFavoriteGame(g){return favorites.includes(g.home.abbr)||favorites.includes(g.away.abbr)}
 function isTop25(g){return Boolean(g.home.rank||g.away.rank)}
 function sortGames(list){return [...list].sort((a,b)=>{const fav=Number(isFavoriteGame(b))-Number(isFavoriteGame(a));if(fav)return fav;const live=Number(b.state==='in')-Number(a.state==='in');if(live)return live;const ranked=Number(isTop25(b))-Number(isTop25(a));if(ranked)return ranked;return new Date(a.date)-new Date(b.date)})}
@@ -846,13 +798,6 @@ function openPalette(){palette.classList.remove('hidden');input.value='';renderC
 function closePalette(){palette.classList.add('hidden')}
 function renderCommands(q){const pageRows=pages.filter(p=>p[2].toLowerCase().includes(q.toLowerCase())).map(([id,i,l])=>`<button class="command-result" data-page="${id}"><span>${i} ${l}</span><small>Open page</small></button>`);const teamRows=allTeams().filter(t=>q&&`${t.name} ${t.abbr}`.toLowerCase().includes(q.toLowerCase())).slice(0,8).map(t=>`<button class="command-result" data-command-team="${esc(t.abbr)}"><span>◈ ${esc(t.name)}</span><small>Open Team Hub</small></button>`);results.innerHTML=[...pageRows,...teamRows].join('');results.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>{navigate(b.dataset.page);closePalette()});results.querySelectorAll('[data-command-team]').forEach(b=>b.onclick=()=>{openTeam(b.dataset.commandTeam);closePalette()})}
 $('commandButton').onclick=openPalette;palette.onclick=e=>{if(e.target===palette)closePalette()};input.oninput=()=>renderCommands(input.value);$('closeGameDrawer').onclick=closeGame;$('gameDrawerBackdrop').onclick=e=>{if(e.target.id==='gameDrawerBackdrop')closeGame()};
-document.addEventListener('click',event=>{
-  const action=refreshActionFor(event.target);
-  if(!action)return;
-  event.preventDefault();
-  event.stopPropagation();
-  runVisibleRefresh(action.buttonId,action.pending,action.idle);
-});
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openPalette()}if(e.key==='Escape'){closePalette();closeGame()}});$('themeButton').onclick=()=>{settings.theme=settings.theme==='dark'?'light':'dark';applyTheme();saveSettings()};notificationHistory=load('onlybeats.notifications.v1',[]);$('notificationButton').onclick=()=>{const panel=$('notificationPanel');$('notificationList').innerHTML=notificationsPage();panel.classList.toggle('hidden')};$('closeNotifications').onclick=()=>$('notificationPanel').classList.add('hidden');$('closeFocus').onclick=closeFocus;$('focusBackdrop').onclick=e=>{if(e.target.id==='focusBackdrop')closeFocus()};setInterval(()=>{const c=$('clock');if(c)c.textContent=new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})},1000);
 window.addEventListener('error',event=>{
   runtimeErrors.unshift({page:currentPage,message:String(event.message||'Unknown runtime error'),time:new Date().toISOString()});

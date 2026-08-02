@@ -1,17 +1,29 @@
 {
-  "config.js": {
+  "app/modules/config.js": {
     "ok": true,
     "stderr": ""
   },
-  "storage.js": {
+  "app/modules/storage.js": {
     "ok": true,
     "stderr": ""
   },
-  "ui-core.js": {
+  "app/modules/ui-core.js": {
     "ok": true,
     "stderr": ""
   },
-  "app.js": {
+  "app/modules/navigation.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "app/modules/refresh-ui.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "app/app.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "structure": {
     "ok": true,
     "stderr": ""
   }

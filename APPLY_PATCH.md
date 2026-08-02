@@ -1,14 +1,14 @@
-# Apply v0.10 Refactor Phase 1
+# Apply v0.10 Refactor Phase 2
 
-Copy these items into your repository:
+Copy into the repository:
 
 - `app/app.js`
 - `app/index.html`
-- `app/modules/` (the entire new folder)
-- `docs/REFACTOR_PHASE_1.md`
+- the complete `app/modules/` folder
+- `docs/REFACTOR_PHASE_2.md`
 
-Preserve the hidden `.git` folder and all existing assets, CSS, Rust files, and local data.
+Preserve `.git`, assets, CSS, Rust files, and local application data.
 
 Suggested commit:
 
-`v0.10 refactor phase 1: extract core configuration and utilities`
+`v0.10 refactor phase 2: extract navigation and refresh UI`
