@@ -1,14 +1,14 @@
-# Apply v0.10 Refactor Phase 3
+# Apply M3 — Saturday Command Center
 
-Copy these into the repository:
+Copy into the repository:
 
 - `app/app.js`
 - `app/index.html`
 - the complete `app/modules/` folder
-- `docs/REFACTOR_PHASE_3.md`
+- `docs/M3_SATURDAY_COMMAND_CENTER.md`
 
-Replace existing files when prompted. Preserve `.git`, CSS, assets, Rust files, and local application data.
+Replace files when prompted. Preserve `.git`, CSS, assets, Rust files, and local application data.
 
 Suggested commit:
 
-`v0.10 refactor phase 3: extract schedule and team intelligence`
+`M3: build Saturday Command Center`

@@ -120,7 +120,133 @@ function teamLine(t){return `<div class="wall-team ${t.winner?'winner':''}">${lo
 function gameCard(g){const fav=isFavoriteGame(g),changed=changedGames.has(g.id);return `<button class="wall-game-card state-${g.state} ${fav?'favorite-matchup':''} ${changed?'score-changed':''}" data-game="${g.id}"><div class="wall-card-top"><span class="status-badge state-${g.state}">${statusLabel(g.state)}</span><span>${esc(g.network||kickoffText(g))}</span><span class="favorite-mark">${fav?'★':''}</span></div><div class="wall-matchup">${teamLine(g.away)}${teamLine(g.home)}</div><div class="wall-card-bottom"><span>${esc(kickoffText(g))}</span><span>${esc(g.venue||'Venue TBD')}</span></div><span class="focus-link" data-focus="${g.id}">Focus</span></button>`}
 function wallToolbar(){const buttons=[['all','All Games'],['in','Live'],['pre','Upcoming'],['post','Final']];return `<div class="wall-toolbar"><div class="wall-status-tabs">${buttons.map(([id,label])=>`<button class="filter-button ${wallState.status===id?'active':''}" data-status="${id}">${label}<span>${id==='all'?games.length:games.filter(g=>g.state===id).length}</span></button>`).join('')}</div><div class="wall-tools"><button class="filter-button ${wallState.favoritesOnly?'active':''}" id="favoritesFilter">★ Favorites</button><button class="filter-button ${wallState.top25Only?'active':''}" id="top25Filter">Top 25</button><input id="wallSearch" value="${esc(wallState.query)}" placeholder="Search teams…"><button class="button primary" id="refreshScores">${loading?'Refreshing…':'Refresh'}</button></div></div>`}
 function dashboardWidget(id){const live=games.filter(g=>g.state==='in'),up=games.filter(g=>g.state==='pre'),featured=sortGames(games).slice(0,4),ranked=allTeams().filter(t=>t.rank).sort((a,b)=>a.rank-b.rank).slice(0,8);const widgets={featured:card('Featured Matchups',loading?empty('Refreshing scores…','Connecting to the live scoreboard.'):syncError?errorBox():featured.length?`<div class="mini-wall">${featured.map(gameCard).join('')}</div>`:empty('No games on the current slate','The provider returned no current games.'),'wide'),favorites:card('Favorite Teams',favorites.length?`<div class="favorite-list">${favorites.map(x=>`<button class="favorite-chip" data-team="${esc(x)}">★ ${esc(x)}</button>`).join('')}</div>`:empty('No favorites yet','Open a game and star a team.')),ranked:card('Ranked Teams',ranked.length?`<div class="ranking-list">${ranked.map(t=>`<button class="ranking-row" data-team="${esc(t.abbr)}"><span>${t.rank}</span>${logo(t)}<div><strong>${esc(t.shortName)}</strong><small>${esc(t.record||t.abbr)}</small></div><b>›</b></button>`).join('')}</div>`:empty('No rankings on this slate','Ranked teams appear when supplied by the scoreboard.')),predictions:card('Prediction Center',predictionDashboardWidget()),weather:card('Weather Shortcut',`<p class="muted">${settings.weatherLocation?`Saved location: ${esc(settings.weatherLocation)}`:'Choose a stadium city in Weather Center.'}</p><button class="button primary" data-page-jump="weather">Open Weather Center</button>`),alerts:card('Latest Alerts',notificationHistory.length?notificationHistory.slice(0,4).map(n=>`<button class="intel-row" data-alert-game="${esc(n.gameId)}"><span class="intel-icon">⚡</span><div><strong>${esc(n.title)}</strong><small>${esc(n.message)}</small></div></button>`).join(''):empty('No alerts yet','Live score changes will appear here.')),notes:card('Quick Notes',`<textarea id="quickNotes" class="quick-notes" placeholder="Write game-day notes…">${esc(quickNotes)}</textarea><small class="muted">Saved automatically on this computer.</small>`)};return `<div class="dashboard-widget" draggable="true" data-widget="${id}"><div class="widget-tools"><button class="widget-move" data-move-widget="${id}" data-direction="up" title="Move widget earlier" aria-label="Move widget earlier">↑</button><span class="widget-grip" title="Drag to reorder">⋮⋮</span><button class="widget-move" data-move-widget="${id}" data-direction="down" title="Move widget later" aria-label="Move widget later">↓</button></div>${widgets[id]||''}</div>`}
-function dashboard(){setHeading('Personal Command Center','YOUR CUSTOM GAMEDAY WORKSPACE');const live=games.filter(g=>g.state==='in'),up=games.filter(g=>g.state==='pre'),finals=games.filter(g=>g.state==='post');return `<div class="hero personal-hero"><div class="hero-copy"><p class="eyebrow">RELEASE 0.9 PREDICTION INTELLIGENCE</p><h2>Record your read. Measure your season.</h2><p>Build winner, spread, and total predictions with unlimited numeric confidence, automatic grading, a journal, and season analytics.</p><div class="button-row"><button class="button primary" id="customizeDashboard">Customize dashboard</button><button class="button" data-open-wall>Open Saturday Wall</button></div></div><img src="assets/onlybeats-icon.png" alt="OnlyBeats logo"></div><div class="metric-grid">${metric('Live Games',live.length,lastSync?'Updated '+lastSync.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):'Not synced')}${metric('Upcoming',up.length,'Current slate')}${metric('Final',finals.length,'Current slate')}${metric('Favorites',favorites.length,'Pinned locally')}</div><section id="dashboardBuilder" class="dashboard-builder hidden"><div><strong>Dashboard widgets</strong><p class="muted">Drag cards to reorder or use the arrows. Changes save locally.</p></div><div class="widget-controls">${defaultDashboard.map(id=>`<button class="button ${dashboardLayout.includes(id)?'primary':''}" data-toggle-widget="${id}">${dashboardLayout.includes(id)?'✓ ':''}${id[0].toUpperCase()+id.slice(1)}</button>`).join('')}<button class="button" id="resetDashboard">Reset layout</button></div></section><div id="personalDashboard" class="dashboard-grid personal-dashboard">${dashboardLayout.map(dashboardWidget).join('')}</div>`}
+
+function saturdayCommandSnapshot(){
+  const live=sortGames(games.filter(g=>g.state==='in'));
+  const upcoming=sortGames(games.filter(g=>g.state==='pre'));
+  const finals=sortGames(games.filter(g=>g.state==='post'));
+  const favoritesLive=live.filter(isFavoriteGame);
+  const rankedLive=live.filter(isTop25);
+  const rankedUpcoming=upcoming.filter(isTop25);
+  const upsetSignals=upsetWatchGames();
+  const prediction=combinedAnalytics();
+  const today=startOfLocalDay();
+  const tomorrow=new Date(today);tomorrow.setDate(tomorrow.getDate()+1);
+  const todayGames=sortGames(games.filter(g=>{
+    const date=new Date(g.date);
+    return date>=today&&date<tomorrow;
+  }));
+  const todayPredictionRows=predictions.filter(p=>{
+    const game=predictionGame(p);
+    if(!game)return false;
+    const date=new Date(game.date);
+    return date>=today&&date<tomorrow;
+  }).map(p=>({...p,result:predictionResult(p)}));
+  const todayGraded=todayPredictionRows.filter(p=>['correct','incorrect','push'].includes(p.result.status));
+  const todayDecisions=todayGraded.filter(p=>p.result.status!=='push');
+  const todayCorrect=todayDecisions.filter(p=>p.result.status==='correct').length;
+  const todayScore=todayGraded.reduce((sum,p)=>sum+(Number(p.result.score)||0),0);
+  const availabilityConcern=availabilityEntries.filter(x=>['Questionable','Doubtful','Unavailable','Unknown'].includes(x.status));
+  return {
+    live,upcoming,finals,favoritesLive,rankedLive,rankedUpcoming,upsetSignals,
+    todayGames,todayPredictionRows,todayGraded,todayDecisions,todayCorrect,todayScore,
+    prediction,availabilityConcern
+  };
+}
+function commandGameList(title,list,emptyTitle,emptyCopy){
+  return card(title,list.length?`<div class="intel-list">${list.slice(0,8).map(g=>intelRow(
+    g.state==='in'?'●':g.state==='post'?'✓':'◷',
+    `${g.away.rank?`#${g.away.rank} `:''}${g.away.shortName} ${g.state==='pre'?'at':g.away.score+' – '+g.home.score} ${g.home.rank?`#${g.home.rank} `:''}${g.home.shortName}`,
+    g.state==='pre'?`${new Date(g.date).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})}${g.network?` · ${g.network}`:''}`:g.status,
+    g
+  )).join('')}</div>`:empty(emptyTitle,emptyCopy));
+}
+function commandQuickLinks(){
+  const links=[
+    ['wall','▦','Saturday Wall'],
+    ['schedule','◷','Schedule'],
+    ['teams','◈','Team Intelligence'],
+    ['predictions','✓','Prediction Center'],
+    ['weather','☁','Weather'],
+    ['availability','♙','Availability'],
+    ['news','▤','Game Signals'],
+    ['reports','▥','Reports']
+  ];
+  return `<div class="command-quick-links">${links.map(([page,icon,label])=>`<button class="button" data-page-jump="${page}"><span>${icon}</span>${label}</button>`).join('')}</div>`;
+}
+function commandProviderSummary(){
+  return `<div class="detail-list">
+    <div><span>Scores</span><strong>${syncError?'Cached / Offline':lastSync?'Connected':'Ready'}</strong></div>
+    <div><span>Last score sync</span><strong>${lastSync?lastSync.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):'Not yet'}</strong></div>
+    <div><span>Weather</span><strong>${weatherData?'Loaded':settings.weatherLocation?'Location saved':'Not loaded'}</strong></div>
+    <div><span>Availability</span><strong>${availabilityEntries.length} local notes</strong></div>
+    <div><span>Prediction data</span><strong>${predictions.length+futures.length} entries</strong></div>
+  </div>`;
+}
+
+function dashboard(){
+  setHeading('Saturday Command Center','LIVE MISSION CONTROL');
+  const s=saturdayCommandSnapshot();
+  const topSignal=s.upsetSignals[0]||s.favoritesLive[0]||s.rankedLive[0]||s.rankedUpcoming[0]||s.upcoming[0]||null;
+  const todayAccuracy=s.todayDecisions.length?s.todayCorrect/s.todayDecisions.length*100:0;
+  const favoriteUpcoming=s.upcoming.filter(isFavoriteGame);
+  return `<section class="hero personal-hero command-center-hero">
+    <div class="hero-copy">
+      <p class="eyebrow">ONLYBEATS SATURDAY COMMAND CENTER</p>
+      <h2>${s.live.length?`${s.live.length} games live right now.`:'Your GameDay cockpit is ready.'}</h2>
+      <p>${s.live.length?'Track live scores, favorite teams, ranked games, prediction results, and game signals from one screen.':'The dashboard will automatically fill with live games, rankings, alerts, weather, and prediction results as the slate begins.'}</p>
+      <div class="button-row">
+        <button class="button primary" data-open-wall>Open Saturday Wall</button>
+        <button class="button" id="refreshScores">${loading?'Refreshing…':'Refresh command center'}</button>
+        <button class="button" id="customizeDashboard">Customize widgets</button>
+      </div>
+    </div>
+    <img src="assets/onlybeats-icon.png" alt="OnlyBeats logo">
+  </section>
+
+  <div class="metric-grid command-metrics">
+    ${metric('Live Games',s.live.length,`${s.favoritesLive.length} favorite · ${s.rankedLive.length} ranked`)}
+    ${metric('Today’s Games',s.todayGames.length,`${s.rankedUpcoming.length+s.rankedLive.length} ranked on slate`)}
+    ${metric('Prediction Score',formatNumber(s.todayScore),`${todayAccuracy.toFixed(1)}% today`)}
+    ${metric('Upset Signals',s.upsetSignals.length,'Live or final')}
+    ${metric('Availability Notes',s.availabilityConcern.length,'Need attention')}
+    ${metric('Season Accuracy',`${s.prediction.accuracy.toFixed(1)}%`,`${s.prediction.correct}/${s.prediction.decisions} correct`)}
+  </div>
+
+  ${syncError?`<div class="provider-notice"><div><strong>Live provider unavailable</strong><p class="muted">The Command Center is showing cached data. ${esc(syncError)}</p></div><button class="button" id="refreshScores">Try again</button></div>`:''}
+
+  ${topSignal?`<section class="card command-top-signal">
+    <div>
+      <p class="eyebrow">${topSignal.state==='in'?'TOP LIVE SIGNAL':topSignal.state==='post'?'LATEST FINAL':'NEXT FEATURED GAME'}</p>
+      <h3>${topSignal.away.rank?`#${topSignal.away.rank} `:''}${esc(topSignal.away.shortName)} at ${topSignal.home.rank?`#${topSignal.home.rank} `:''}${esc(topSignal.home.shortName)}</h3>
+      <p class="muted">${esc(topSignal.status)}${topSignal.network?` · ${esc(topSignal.network)}`:''}${topSignal.venue?` · ${esc(topSignal.venue)}`:''}</p>
+    </div>
+    <button class="button primary" data-game="${topSignal.id}">Open game</button>
+  </section>`:''}
+
+  <div class="command-center-grid">
+    ${commandGameList('Live Now',s.live,'No games live','Live games will appear here automatically.')}
+    ${commandGameList('Favorite Teams',s.favoritesLive.length?s.favoritesLive:favoriteUpcoming,'No favorite games','Star teams from any game or Team Intelligence page.')}
+    ${commandGameList('Ranked Matchups',[...s.rankedLive,...s.rankedUpcoming],'No ranked games','Top 25 matchups from the loaded slate will appear here.')}
+    ${card('Prediction Scorecard',`<div class="team-stat-grid">
+      <div><span>Today’s entries</span><strong>${s.todayPredictionRows.length}</strong></div>
+      <div><span>Correct</span><strong>${s.todayCorrect}</strong></div>
+      <div><span>Accuracy</span><strong>${todayAccuracy.toFixed(1)}%</strong></div>
+      <div><span>Score</span><strong>${formatNumber(s.todayScore)}</strong></div>
+      <div><span>Season score</span><strong>${formatNumber(s.prediction.earned)}</strong></div>
+      <div><span>Pending</span><strong>${s.prediction.pending}</strong></div>
+    </div><button class="button primary" data-page-jump="predictions">Open Prediction Center</button>`)}
+    ${card('GameDay Readiness',commandProviderSummary())}
+    ${card('Quick Navigation',commandQuickLinks(),'wide')}
+    ${card('Quick Notes',`<textarea id="quickNotes" class="quick-notes" placeholder="Write game-day notes…">${esc(quickNotes)}</textarea><small class="muted">Saved automatically on this computer.</small>`,'wide')}
+  </div>
+
+  <section id="dashboardBuilder" class="dashboard-builder hidden">
+    <div><strong>Legacy dashboard widgets</strong><p class="muted">Your personalized widget layout remains available below the Command Center.</p></div>
+    <div class="widget-controls">${defaultDashboard.map(id=>`<button class="button ${dashboardLayout.includes(id)?'primary':''}" data-toggle-widget="${id}">${dashboardLayout.includes(id)?'✓ ':''}${id[0].toUpperCase()+id.slice(1)}</button>`).join('')}<button class="button" id="resetDashboard">Reset layout</button></div>
+  </section>
+  <div id="personalDashboard" class="dashboard-grid personal-dashboard command-legacy-widgets">${dashboardLayout.map(dashboardWidget).join('')}</div>`;
+}
 function wallPage(){setHeading('Saturday Wall','GAME-DAY MISSION CONTROL');const list=filteredWallGames();return `<section class="wall-summary"><div><p class="eyebrow">LIVE BOARD</p><h2>${games.filter(g=>g.state==='in').length} live · ${games.filter(g=>g.state==='pre').length} upcoming · ${games.filter(g=>g.state==='post').length} final</h2></div><div class="sync-chip ${syncError?'error':''}"><i class="status-dot ${syncError?'error':''}"></i>${syncError?'Provider unavailable':lastSync?`Updated ${lastSync.toLocaleTimeString([],{hour:'numeric',minute:'2-digit',second:'2-digit'})}`:'Waiting for first sync'}</div></section>${wallToolbar()}${syncError?errorBox():''}<div class="wall-grid">${loading&&!games.length?empty('Loading Saturday Wall…','The first scoreboard request can take a few seconds.'):list.map(gameCard).join('')||empty('No games match these filters','Clear one or more filters or search for another team.')}</div>`}
 function favoritesPage(){setHeading('Favorites','YOUR TEAMS');const related=sortGames(games.filter(isFavoriteGame));return `<div class="card"><h3>Favorite teams</h3><p class="muted">Favorites are stored locally and automatically pinned on Saturday Wall.</p><div class="favorite-list">${favorites.map(x=>`<button class="favorite-chip removable" data-remove="${esc(x)}">★ ${esc(x)} ×</button>`).join('')||'<span class="muted">No teams saved yet.</span>'}</div></div><div class="wall-grid favorites-wall">${related.map(gameCard).join('')||empty('No favorite-team games on this slate','Add favorites from any game details drawer.')}</div>`}
 function errorBox(){return `<div class="error-box"><strong>Live scores unavailable</strong><p>${esc(syncError)}</p><button class="button" onclick="syncScores()">Try again</button></div>`}

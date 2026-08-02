@@ -31,11 +31,7 @@
     "ok": true,
     "stderr": ""
   },
-  "structure": {
-    "ok": true,
-    "stderr": ""
-  },
-  "module_entry_points": {
+  "m3_features": {
     "ok": true,
     "stderr": ""
   }
