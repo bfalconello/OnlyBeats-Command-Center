@@ -7,6 +7,10 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/multi-game-watch.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/schedule-center.js": {
     "ok": true,
     "stderr": ""
@@ -35,7 +39,7 @@
     "ok": true,
     "stderr": ""
   },
-  "prediction_runtime_symbols": {
+  "critical_runtime_symbols": {
     "ok": true,
     "stderr": ""
   }
