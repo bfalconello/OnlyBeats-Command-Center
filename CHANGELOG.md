@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.3.0] - 2026-08-02
+
+### Added
+- Saturday Wall responsive game grid.
+- Status, Top 25, Favorites, and search filters.
+- Sliding game details drawer.
+- Score-change highlighting and in-app alerts.
+- Persistent wall preferences and compact mode.
+
+### Changed
+- Saturday Wall is the default start page for migrated users.
+- Live scoreboard presentation replaced by richer game cards.
+
+
 All notable changes are documented here. The project follows Semantic Versioning.
 
 ## [0.2.2] - 2026-08-02

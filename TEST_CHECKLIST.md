@@ -1,30 +1,34 @@
-# OnlyBeats Command Center 0.2.2 Test Checklist
+# v0.3.0 Test Checklist
 
-## Repository checks
-- [ ] `.github/workflows/windows-build.yml` is present
-- [ ] Issue templates appear under GitHub **New issue**
-- [ ] README documentation links open correctly
-- [ ] Project Bible and roadmap render correctly on GitHub
+## Launch
+- [ ] `RUN_DESKTOP.bat` launches the app.
+- [ ] Version 0.3.0 appears in Developer Tools.
+- [ ] The Saturday Wall opens without an error.
 
-## Native regression
-- [ ] `RUN_DESKTOP.bat` builds and launches
-- [ ] Version displays as 0.2.2
-- [ ] Dashboard opens
-- [ ] Live Games opens
-- [ ] Refresh now completes without a crash
-- [ ] Search filters displayed games
-- [ ] A team can be added to favorites
-- [ ] Favorite remains after restart
-- [ ] Developer Tools displays provider status and last sync
-- [ ] Settings persist after restart
+## Saturday Wall
+- [ ] Live scores load.
+- [ ] All, Live, Upcoming, and Final filters work.
+- [ ] Top 25 filter works when ranked games are available.
+- [ ] Favorites filter works.
+- [ ] Team search filters cards while typing.
+- [ ] Favorite matchups appear before non-favorite games.
+- [ ] Clicking a card opens the right-side details drawer.
+- [ ] Escape and the close button dismiss the drawer.
 
-## GitHub Actions
-- [ ] Windows Build workflow starts after push
-- [ ] JavaScript syntax step passes
-- [ ] Rust check passes
-- [ ] Tauri build passes
-- [ ] MSI and/or NSIS artifact is available to download
+## Persistence
+- [ ] Favorites remain after restarting.
+- [ ] Wall filters/search remain after restarting.
+- [ ] Theme and compact mode remain after restarting.
 
-## Documentation
-- [ ] Release notes match actual changes
-- [ ] No API keys, tokens, personal paths, `node_modules`, or `src-tauri/target` are committed
+## Refresh and stability
+- [ ] Manual Refresh works.
+- [ ] Automatic refresh works at the selected interval.
+- [ ] Turning auto-refresh Off stops scheduled refreshes.
+- [ ] Provider failures show a non-crashing error message.
+- [ ] Developer Tools displays the latest sync and cached game count.
+
+## Regression
+- [ ] Dashboard opens.
+- [ ] Command palette opens with Ctrl+K.
+- [ ] Settings export works.
+- [ ] GitHub Actions Windows Build completes successfully.

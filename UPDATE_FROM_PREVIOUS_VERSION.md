@@ -1,17 +1,11 @@
-# Update from 0.2.1 to 0.2.2
+# Update from v0.2.2 to v0.3.0
 
-Version 0.2.2 is an infrastructure update with no database migration.
+1. Keep the existing v0.2.2 folder as a rollback copy.
+2. Extract v0.3.0 into a new folder.
+3. Run `RUN_DESKTOP.bat`.
+4. Open Saturday Wall and refresh scores.
+5. Confirm existing favorite teams appear.
+6. Complete `TEST_CHECKLIST.md`.
+7. After testing, copy the v0.3.0 files into the local Git repository, commit, and push.
 
-## Recommended GitHub workflow
-1. Keep the working 0.2.1 folder until testing is complete.
-2. Extract this release into a temporary folder.
-3. Copy the release contents into the local cloned GitHub repository.
-4. Do not remove the repository's hidden `.git` folder.
-5. Do not copy `node_modules` or `src-tauri/target`.
-6. Review changes in GitHub Desktop.
-7. Commit with: `Sprint 1A: establish project infrastructure`.
-8. Push to GitHub.
-9. Open the **Actions** tab and verify the Windows Build workflow.
-10. Run `RUN_DESKTOP.bat` locally and complete `TEST_CHECKLIST.md`.
-
-Settings and favorites continue using the same local application storage.
+No database migration is required. Existing local favorites are reused. v0.2 preference data is migrated automatically.
