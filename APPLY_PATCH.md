@@ -1,12 +1,14 @@
-# Apply v0.13.1 — Dashboard Widgets Hotfix
+# Apply v0.13.2 — Developer Tooling Phase 1
 
 Copy into the repository:
 
 - `app/app.js`
 - `app/index.html`
 - the complete `app/modules/` folder
-- `docs/V0_13_1_DASHBOARD_WIDGETS_HOTFIX.md`
+- `docs/V0_13_2_DEVELOPER_TOOLING.md`
+
+Replace files when prompted.
 
 Suggested commit:
 
-`v0.13.1: repair dashboard widget customization`
+`v0.13.2: add runtime diagnostics and page smoke tests`

@@ -11,7 +11,8 @@ if (
   typeof openFocus !== 'function' ||
   typeof watchCenterPage !== 'function' ||
   typeof intelligenceEnginePage !== 'function' ||
-  typeof smartBriefingPage !== 'function'
+  typeof smartBriefingPage !== 'function' ||
+  typeof runOnlyBeatsDiagnostics !== 'function'
 ) {
   throw new Error('OnlyBeats core modules did not load. Verify index.html script order.');
 }
@@ -256,8 +257,77 @@ function wallPage(){setHeading('Saturday Wall','GAME-DAY MISSION CONTROL');const
 function favoritesPage(){setHeading('Favorites','YOUR TEAMS');const related=sortGames(games.filter(isFavoriteGame));return `<div class="card"><h3>Favorite teams</h3><p class="muted">Favorites are stored locally and automatically pinned on Saturday Wall.</p><div class="favorite-list">${favorites.map(x=>`<button class="favorite-chip removable" data-remove="${esc(x)}">★ ${esc(x)} ×</button>`).join('')||'<span class="muted">No teams saved yet.</span>'}</div></div><div class="wall-grid favorites-wall">${related.map(gameCard).join('')||empty('No favorite-team games on this slate','Add favorites from any game details drawer.')}</div>`}
 function errorBox(){return `<div class="error-box"><strong>Live scores unavailable</strong><p>${esc(syncError)}</p><button class="button" onclick="syncScores()">Try again</button></div>`}
 function healthPanel(){return `<div class="health-list"><div><span><i id="providerDot" class="status-dot ${syncError?'error':''}"></i><span id="providerStatus">${syncError?'Score provider unavailable':'Score provider online'}</span></span><strong>${lastSync?'Synced':'Ready'}</strong></div><div><span><i class="status-dot"></i>Local settings</span><strong>Ready</strong></div><div><span><i class="status-dot"></i>SQLite schema</span><strong>1</strong></div><div><span><i class="status-dot"></i>Build</span><strong>${VERSION}</strong></div></div>`}
-function developerPage(){setHeading('Developer Tools','DIAGNOSTICS');const teams=allTeams(),d=window.OnlyBeatsDataPlatform?window.OnlyBeatsDataPlatform.diagnostics(teams,games):{teamCount:teams.length,gameCount:games.length,enrichedCount:0,conferenceCount:0,stadiumCount:0,timezoneCount:0};return `<div class="settings-layout">${card('System Health',healthPanel())}${card('Data Platform',`<div class="detail-list"><div><span>Teams indexed</span><strong>${d.teamCount}</strong></div><div><span>Teams enriched</span><strong>${d.enrichedCount}</strong></div><div><span>Conferences represented</span><strong>${d.conferenceCount}</strong></div><div><span>Stadiums resolved</span><strong>${d.stadiumCount}</strong></div><div><span>Timezones represented</span><strong>${d.timezoneCount}</strong></div><div><span>Platform schema</span><strong>${window.OnlyBeatsDataPlatform?.version||'Unavailable'}</strong></div></div>`)}${card('Sync Information',`<div class="detail-list"><div><span>Last refresh attempt</span><strong>${lastRefreshAttempt?lastRefreshAttempt.toLocaleString():'Not yet'}</strong></div><div><span>Last successful sync</span><strong>${lastSync?lastSync.toLocaleString():'Not yet'}</strong></div><div><span>Last request duration</span><strong>${lastRefreshDuration===null?'—':lastRefreshDuration+' ms'}</strong></div><div><span>Last provider error</span><strong>${esc(syncError||'None')}</strong></div><div><span>Runtime errors</span><strong>${runtimeErrors.length}</strong></div><div><span>Games cached</span><strong>${games.length}</strong></div><div><span>Live games</span><strong>${games.filter(g=>g.state==='in').length}</strong></div><div><span>Refresh interval</span><strong>${settings.refresh==='0'?'Off':settings.refresh+' seconds'}</strong></div><div><span>Runtime</span><strong>${window.__TAURI__?'Tauri desktop':'Browser preview'}</strong></div></div>`)}${card('Troubleshooting',`<p class="muted">Run the provider test first. If it remains offline, confirm internet access and review TROUBLESHOOTING.md.</p><button class="button primary" onclick="syncScores()">Run provider test</button>`)}${card('Version',`<div class="detail-list"><div><span>Application</span><strong>${VERSION}</strong></div><div><span>Database schema</span><strong>1</strong></div><div><span>Score provider</span><strong>ESPN scoreboard</strong></div><div><span>Data platform</span><strong>Shared metadata v1</strong></div><div><span>Weather provider</span><strong>Open-Meteo</strong></div><div><span>Game predictions</span><strong>${predictions.length}</strong></div><div><span>Futures stored</span><strong>${futures.length}</strong></div></div>`)}</div>`}
+function developerPage(){
+  setHeading('Developer Tools','DIAGNOSTICS · HEALTH · LOGS');
+  const report=getOnlyBeatsDiagnostics();
+  const checks=report.checks||[];
+  const healthy=checks.filter(check=>check.ok).length;
+  const failed=checks.length-healthy;
+  const recent=getOnlyBeatsRuntimeLog().slice(-20).reverse();
 
+  return `<section class="intel-hero">
+    <div>
+      <p class="eyebrow">DEVELOPER TOOLING</p>
+      <h2>${failed?`${failed} runtime check${failed===1?'':'s'} need attention.`:'All runtime checks passed.'}</h2>
+      <p>Validate critical pages, required functions, refresh state, storage, and recent errors before shipping another build.</p>
+    </div>
+    <div class="button-row">
+      <button class="button primary" id="runRuntimeDiagnostics">Run diagnostics</button>
+      <button class="button" id="runPageSmokeTests">Run page smoke tests</button>
+      <button class="button" id="exportDiagnostics">Export diagnostics</button>
+      <button class="button" id="clearRuntimeLog">Clear log</button>
+    </div>
+  </section>
+
+  <div class="metric-grid">
+    ${metric('Checks Passed',healthy,`${checks.length} total`)}
+    ${metric('Checks Failed',failed,failed?'Review below':'Healthy')}
+    ${metric('Runtime Errors',getOnlyBeatsRuntimeLog().filter(entry=>entry.level==='error').length,'Current session')}
+    ${metric('Current Page',currentPage,'Active route')}
+    ${metric('Loaded Games',games.length,'Live or cached')}
+    ${metric('Version',VERSION,'Desktop build')}
+  </div>
+
+  <div class="reports-grid">
+    ${card('Runtime Health',`<div class="intel-list">${checks.map(check=>`<div class="intel-row">
+      <span class="intel-icon">${check.ok?'✓':'×'}</span>
+      <div><strong>${esc(check.name)}</strong><small>${esc(check.detail||'')}</small></div>
+      <b>${check.ok?'PASS':'FAIL'}</b>
+    </div>`).join('')||empty('No diagnostics run','Click Run diagnostics to evaluate the application.')}</div>`,'wide')}
+
+    ${card('Recent Runtime Log',recent.length?`<div class="intel-list">${recent.map(entry=>`<div class="intel-row">
+      <span class="intel-icon">${entry.level==='error'?'!':entry.level==='warn'?'△':'•'}</span>
+      <div><strong>${esc(entry.message)}</strong><small>${new Date(entry.time).toLocaleTimeString()} · ${esc(entry.context||'app')}</small></div>
+      <b>${esc(entry.level.toUpperCase())}</b>
+    </div>`).join('')}</div>`:empty('No runtime events','Errors, warnings, and diagnostic runs will appear here.'),'wide')}
+
+    ${card('Provider State',`<div class="detail-list">
+      <div><span>Scores</span><strong>${syncError?'Cached / Error':lastSync?'Connected':'Ready'}</strong></div>
+      <div><span>Last sync</span><strong>${lastSync?lastSync.toLocaleTimeString():'Not yet'}</strong></div>
+      <div><span>Refresh active</span><strong>${loading?'Yes':'No'}</strong></div>
+      <div><span>Weather</span><strong>${weatherData?'Loaded':'Not loaded'}</strong></div>
+      <div><span>Predictions</span><strong>${predictions.length}</strong></div>
+      <div><span>Futures</span><strong>${futures.length}</strong></div>
+    </div>`)}
+
+    ${card('Release Checklist',`<div class="coverage-list">
+      <span><i class="status-dot"></i> App launches</span>
+      <span><i class="status-dot"></i> Navigation module loaded</span>
+      <span><i class="status-dot"></i> Refresh module loaded</span>
+      <span><i class="status-dot"></i> Prediction helper present</span>
+      <span><i class="status-dot"></i> Schedule and Team modules loaded</span>
+      <span><i class="status-dot"></i> Intelligence and Briefing loaded</span>
+    </div>`)}
+
+    ${card('Build Information',`<div class="detail-list">
+      <div><span>Version</span><strong>${esc(VERSION)}</strong></div>
+      <div><span>Schema</span><strong>1</strong></div>
+      <div><span>User agent</span><strong>${esc(navigator.userAgent)}</strong></div>
+      <div><span>Online</span><strong>${navigator.onLine?'Yes':'No'}</strong></div>
+      <div><span>Storage available</span><strong>${report.storageAvailable?'Yes':'No'}</strong></div>
+    </div>`,'wide')}
+  </div>`;
+}
 
 function rankedTeams(){return allTeams().filter(t=>t.rank).sort((a,b)=>a.rank-b.rank)}
 function upsetWatchGames(){return sortGames(games.filter(g=>{if(g.state==='pre')return false;const ranked=g.away.rank?g.away:g.home.rank?g.home:null,other=ranked===g.away?g.home:g.away;if(!ranked)return false;return other.score>ranked.score||Boolean(other.winner)}))}
@@ -580,7 +650,12 @@ if($('scheduleFavoritesFilter'))$('scheduleFavoritesFilter').onclick=()=>{schedu
 if($('scheduleTop25Filter'))$('scheduleTop25Filter').onclick=()=>{scheduleTop25Only=!scheduleTop25Only;renderPage()};
 if($('scheduleSearch'))$('scheduleSearch').oninput=e=>{scheduleQuery=e.target.value;renderPage();const input=$('scheduleSearch');if(input){input.focus();input.setSelectionRange(input.value.length,input.value.length)}};
 if($('clearScheduleFilters'))$('clearScheduleFilters').onclick=()=>{scheduleFilter='all';scheduleRange='all';scheduleQuery='';scheduleFavoritesOnly=false;scheduleTop25Only=false;renderPage()};
-if($('availabilityForm'))$('availabilityForm').onsubmit=e=>{e.preventDefault();const team=$('availabilityTeam').value,player=$('availabilityPlayer').value.trim(),status=$('availabilityStatus').value,notes=$('availabilityNotes').value.trim();if(!team||!player)return;availabilityEntries.unshift({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),team,player,status,notes,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});saveAvailability();toast('Availability note saved');renderPage()};document.querySelectorAll('[data-delete-availability]').forEach(b=>b.onclick=()=>{availabilityEntries=availabilityEntries.filter(x=>x.id!==b.dataset.deleteAvailability);saveAvailability();renderPage()});document.querySelectorAll('[data-status]').forEach(b=>b.onclick=()=>{wallState.status=b.dataset.status;saveWall();renderPage()});if($('favoritesFilter'))$('favoritesFilter').onclick=()=>{wallState.favoritesOnly=!wallState.favoritesOnly;saveWall();renderPage()};if($('top25Filter'))$('top25Filter').onclick=()=>{wallState.top25Only=!wallState.top25Only;saveWall();renderPage()};if($('wallSearch'))$('wallSearch').oninput=e=>{wallState.query=e.target.value;saveWall();const grid=document.querySelector('.wall-grid');if(grid)grid.innerHTML=filteredWallGames().map(gameCard).join('')||empty('No games match these filters','Try another team or clear filters.');document.querySelectorAll('[data-game]').forEach(b=>b.onclick=()=>showGame(b.dataset.game))};document.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{favorites=favorites.filter(x=>x!==b.dataset.remove);saveFavorites()});document.querySelectorAll('[data-team]').forEach(b=>b.onclick=()=>{activeTeamAbbr=b.dataset.team;teamTab='overview';renderPage()});document.querySelectorAll('[data-team-tab]').forEach(b=>b.onclick=()=>{teamTab=b.dataset.teamTab;renderPage()});if($('teamSearch'))$('teamSearch').oninput=e=>{teamQuery=e.target.value;renderPage();setTimeout(()=>{const x=$('teamSearch');if(x){x.focus();x.setSelectionRange(x.value.length,x.value.length)}},0)};if($('teamConferenceFilter'))$('teamConferenceFilter').onchange=e=>{teamConferenceFilter=e.target.value;renderPage()};if($('teamFavoritesFilter'))$('teamFavoritesFilter').onclick=()=>{teamFavoritesOnly=!teamFavoritesOnly;renderPage()};if($('clearTeamFilters'))$('clearTeamFilters').onclick=()=>{teamQuery='';teamConferenceFilter='all';teamFavoritesOnly=false;renderPage()};if($('teamFavoriteButton'))$('teamFavoriteButton').onclick=()=>{const t=selectedTeam();if(!t)return;favorites=favorites.includes(t.abbr)?favorites.filter(x=>x!==t.abbr):[...favorites,t.abbr];localStorage.setItem(FAVORITES_KEY,JSON.stringify(favorites));renderPage()};if($('loadWeather'))$('loadWeather').onclick=()=>fetchWeather($('weatherLocation').value.trim());document.querySelectorAll('[data-focus]').forEach(b=>b.onclick=e=>{e.preventDefault();e.stopPropagation();openFocus(b.dataset.focus)});document.querySelectorAll('[data-alert-game]').forEach(b=>b.onclick=()=>{const id=b.dataset.alertGame;if(id)showGame(id)});document.querySelectorAll('[data-page-jump]').forEach(b=>b.onclick=()=>navigate(b.dataset.pageJump));if(currentPage==='briefing')bindSmartBriefing();if(currentPage==='watch')bindWatchCenter();if(currentPage==='rankings')bindIntelligenceEngine();if(currentPage==='predictions')bindPredictionPage();if(currentPage==='reports'){if($('reportExportPredictions'))$('reportExportPredictions').onclick=exportPredictionsCsv;if($('yearbookNote'))$('yearbookNote').oninput=e=>localStorage.setItem('onlybeats.yearbook.note.v1',e.target.value)}document.querySelectorAll('[data-predict-game]').forEach(b=>b.onclick=()=>{predictionDraftGameId=b.dataset.predictGame;editingPredictionId='';predictionView='games';navigate('predictions')});bindPersonalization();if(currentPage==='settings')bindSettings()}
+if($('availabilityForm'))$('availabilityForm').onsubmit=e=>{e.preventDefault();const team=$('availabilityTeam').value,player=$('availabilityPlayer').value.trim(),status=$('availabilityStatus').value,notes=$('availabilityNotes').value.trim();if(!team||!player)return;availabilityEntries.unshift({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),team,player,status,notes,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});saveAvailability();toast('Availability note saved');renderPage()};document.querySelectorAll('[data-delete-availability]').forEach(b=>b.onclick=()=>{availabilityEntries=availabilityEntries.filter(x=>x.id!==b.dataset.deleteAvailability);saveAvailability();renderPage()});document.querySelectorAll('[data-status]').forEach(b=>b.onclick=()=>{wallState.status=b.dataset.status;saveWall();renderPage()});if($('favoritesFilter'))$('favoritesFilter').onclick=()=>{wallState.favoritesOnly=!wallState.favoritesOnly;saveWall();renderPage()};if($('top25Filter'))$('top25Filter').onclick=()=>{wallState.top25Only=!wallState.top25Only;saveWall();renderPage()};if($('wallSearch'))$('wallSearch').oninput=e=>{wallState.query=e.target.value;saveWall();const grid=document.querySelector('.wall-grid');if(grid)grid.innerHTML=filteredWallGames().map(gameCard).join('')||empty('No games match these filters','Try another team or clear filters.');document.querySelectorAll('[data-game]').forEach(b=>b.onclick=()=>showGame(b.dataset.game))};document.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{favorites=favorites.filter(x=>x!==b.dataset.remove);saveFavorites()});document.querySelectorAll('[data-team]').forEach(b=>b.onclick=()=>{activeTeamAbbr=b.dataset.team;teamTab='overview';renderPage()});document.querySelectorAll('[data-team-tab]').forEach(b=>b.onclick=()=>{teamTab=b.dataset.teamTab;renderPage()});if($('teamSearch'))$('teamSearch').oninput=e=>{teamQuery=e.target.value;renderPage();setTimeout(()=>{const x=$('teamSearch');if(x){x.focus();x.setSelectionRange(x.value.length,x.value.length)}},0)};if($('teamConferenceFilter'))$('teamConferenceFilter').onchange=e=>{teamConferenceFilter=e.target.value;renderPage()};if($('teamFavoritesFilter'))$('teamFavoritesFilter').onclick=()=>{teamFavoritesOnly=!teamFavoritesOnly;renderPage()};if($('clearTeamFilters'))$('clearTeamFilters').onclick=()=>{teamQuery='';teamConferenceFilter='all';teamFavoritesOnly=false;renderPage()};if($('teamFavoriteButton'))$('teamFavoriteButton').onclick=()=>{const t=selectedTeam();if(!t)return;favorites=favorites.includes(t.abbr)?favorites.filter(x=>x!==t.abbr):[...favorites,t.abbr];localStorage.setItem(FAVORITES_KEY,JSON.stringify(favorites));renderPage()};if($('loadWeather'))$('loadWeather').onclick=()=>fetchWeather($('weatherLocation').value.trim());document.querySelectorAll('[data-focus]').forEach(b=>b.onclick=e=>{e.preventDefault();e.stopPropagation();openFocus(b.dataset.focus)});document.querySelectorAll('[data-alert-game]').forEach(b=>b.onclick=()=>{const id=b.dataset.alertGame;if(id)showGame(id)});document.querySelectorAll('[data-page-jump]').forEach(b=>b.onclick=()=>navigate(b.dataset.pageJump));if(currentPage==='developer'){
+    if($('runRuntimeDiagnostics'))$('runRuntimeDiagnostics').onclick=()=>{runOnlyBeatsDiagnostics();renderPage();toast('Diagnostics completed')};
+    if($('runPageSmokeTests'))$('runPageSmokeTests').onclick=async()=>{await runOnlyBeatsPageSmokeTests();renderPage();toast('Page smoke tests completed')};
+    if($('exportDiagnostics'))$('exportDiagnostics').onclick=()=>exportOnlyBeatsDiagnostics();
+    if($('clearRuntimeLog'))$('clearRuntimeLog').onclick=()=>{clearOnlyBeatsRuntimeLog();renderPage();toast('Runtime log cleared')};
+  }if(currentPage==='briefing')bindSmartBriefing();if(currentPage==='watch')bindWatchCenter();if(currentPage==='rankings')bindIntelligenceEngine();if(currentPage==='predictions')bindPredictionPage();if(currentPage==='reports'){if($('reportExportPredictions'))$('reportExportPredictions').onclick=exportPredictionsCsv;if($('yearbookNote'))$('yearbookNote').oninput=e=>localStorage.setItem('onlybeats.yearbook.note.v1',e.target.value)}document.querySelectorAll('[data-predict-game]').forEach(b=>b.onclick=()=>{predictionDraftGameId=b.dataset.predictGame;editingPredictionId='';predictionView='games';navigate('predictions')});bindPersonalization();if(currentPage==='settings')bindSettings()}
 function gamePredictionSnapshot(game){
   const rows=predictions
     .filter(p=>p.gameId===game.id)
@@ -772,6 +847,7 @@ window.addEventListener('unhandledrejection',event=>{
 });
 applyTheme();
 renderNav();
+setTimeout(()=>runOnlyBeatsDiagnostics(),250);
 renderPage();
 scheduleRefresh();
 const splash=$('splash');
