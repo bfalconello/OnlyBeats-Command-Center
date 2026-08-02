@@ -19,11 +19,23 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/team-intelligence.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "app/modules/schedule-center.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/app.js": {
     "ok": true,
     "stderr": ""
   },
   "structure": {
+    "ok": true,
+    "stderr": ""
+  },
+  "module_entry_points": {
     "ok": true,
     "stderr": ""
   }
