@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.0 — Data Platform
+- Added shared team, conference, stadium, color, location, and timezone metadata.
+- Added platform coverage diagnostics.
+- Updated Team Hub to consume centralized metadata.
+
+
 ## 0.7.1 — Dashboard Reorder Hotfix
 - Fixed drag-and-drop widget ordering.
 - Added up/down reorder controls.

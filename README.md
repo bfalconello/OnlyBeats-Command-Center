@@ -4,7 +4,7 @@ A Windows desktop command center for college football live scores, teams, curren
 
 ## Current release
 
-**v0.7.1 — Personal Command Center**
+**v0.8.0 — Data Platform**
 
 This release adds customizable dashboard widgets, local Quick Notes, multiple professional themes, dashboard density controls, and improved startup preferences.
 
