@@ -31,6 +31,10 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/prediction-intelligence.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/live-game-focus.js": {
     "ok": true,
     "stderr": ""

@@ -1,12 +1,14 @@
-# Apply v0.14 — Live Command Timeline
+# Apply v0.15 — Prediction Intelligence
 
 Copy into the repository:
 
 - `app/app.js`
 - `app/index.html`
 - the complete `app/modules/` folder
-- `docs/V0_14_LIVE_COMMAND_TIMELINE.md`
+- `docs/V0_15_PREDICTION_INTELLIGENCE.md`
+
+Replace files when prompted.
 
 Suggested commit:
 
-`v0.14: add Live Command Timeline phase 1`
+`v0.15: add Prediction Intelligence phase 1`
