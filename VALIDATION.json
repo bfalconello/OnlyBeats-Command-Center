@@ -1,12 +1,4 @@
 {
-  "app/modules/config.js": {
-    "ok": true,
-    "stderr": ""
-  },
-  "app/modules/storage.js": {
-    "ok": true,
-    "stderr": ""
-  },
   "app/modules/ui-core.js": {
     "ok": true,
     "stderr": ""
@@ -15,7 +7,11 @@
     "ok": true,
     "stderr": ""
   },
-  "app/modules/refresh-ui.js": {
+  "app/modules/schedule-center.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "app/modules/storage.js": {
     "ok": true,
     "stderr": ""
   },
@@ -23,11 +19,15 @@
     "ok": true,
     "stderr": ""
   },
-  "app/modules/schedule-center.js": {
+  "app/modules/live-game-focus.js": {
     "ok": true,
     "stderr": ""
   },
-  "app/modules/live-game-focus.js": {
+  "app/modules/refresh-ui.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "app/modules/config.js": {
     "ok": true,
     "stderr": ""
   },
@@ -35,7 +35,7 @@
     "ok": true,
     "stderr": ""
   },
-  "structure": {
+  "prediction_runtime_symbols": {
     "ok": true,
     "stderr": ""
   }

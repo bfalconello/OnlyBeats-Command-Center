@@ -400,25 +400,106 @@ function achievements(a){const items=[['First Read',predictions.length+futures.l
 function predictionsPage(){setHeading('Prediction Center','YOUR COLLEGE FOOTBALL ANALYTICS JOURNAL');const c=combinedAnalytics(),a=c.games,fa=c.futures;const gameRows=a.rows.filter(x=>predictionFilter==='all'||x.result.status===predictionFilter).sort((x,y)=>new Date(y.createdAt)-new Date(x.createdAt));const futureRows=fa.rows.filter(x=>futureFilter==='all'||x.result.status===futureFilter).sort((x,y)=>new Date(y.createdAt)-new Date(x.createdAt));return `<section class="prediction-hero"><div><p class="eyebrow">PREDICTION INTELLIGENCE</p><h2>Your confidence. Your score. Your season.</h2><p>Game predictions and season-long futures share one non-financial confidence scoring system.</p></div><button class="button" id="exportPredictions">Export CSV</button></section><div class="prediction-tabs"><button class="filter-chip ${predictionView==='games'?'active':''}" data-prediction-view="games">Game Predictions</button><button class="filter-chip ${predictionView==='futures'?'active':''}" data-prediction-view="futures">Futures</button><button class="filter-chip ${predictionView==='analytics'?'active':''}" data-prediction-view="analytics">Analytics</button><button class="filter-chip" data-page-jump="reports">Timeline & Reports</button></div><div class="metric-grid prediction-metrics">${metric('Combined Score',formatNumber(c.earned),`${formatNumber(c.entered)} confidence graded`)}${metric('Overall Accuracy',`${c.accuracy.toFixed(1)}%`,`${c.correct} correct`)}${metric('Efficiency',`${c.efficiency.toFixed(1)}%`,'Score ÷ confidence')}${metric('Game Score',formatNumber(a.earned),`${a.pending} pending`)}${metric('Futures Score',formatNumber(fa.earned),`${fa.pending} pending`)}${metric('Futures Accuracy',`${fa.accuracy.toFixed(1)}%`,`${fa.graded.length} resolved`)}</div>${predictionView==='games'?`<div class="prediction-layout"><div>${predictionForm()}<section class="card prediction-history"><div class="card-head"><h3>Game Prediction Journal</h3><div class="prediction-filters">${['all','pending','correct','incorrect','push'].map(x=>`<button class="filter-chip ${predictionFilter===x?'active':''}" data-prediction-filter="${x}">${x[0].toUpperCase()+x.slice(1)}</button>`).join('')}</div></div><div class="prediction-list">${gameRows.map(predictionCard).join('')||empty('No predictions in this view','Save a prediction or choose another result filter.')}</div></section></div><aside class="prediction-sidebar">${card('Confidence Intelligence',confidenceBands(a.rows))}${card('Personal Bests',`<div class="detail-list"><div><span>Highest confidence correct</span><strong>${a.highWin?formatNumber(a.highWin.confidence):'—'}</strong></div><div><span>Highest confidence miss</span><strong>${a.highMiss?formatNumber(a.highMiss.confidence):'—'}</strong></div><div><span>Longest streak</span><strong>${a.longest}</strong></div><div><span>Total game predictions</span><strong>${predictions.length}</strong></div></div>`)}${card('Achievements',achievements(a))}</aside></div>`:predictionView==='futures'?`<div class="futures-toolbar card"><div><strong>Season Futures</strong><p class="muted">Track championship, award, playoff, conference, rivalry, win-total, and custom outcomes.</p></div><button class="button ${futuresLocked?'danger':'primary'}" id="toggleSeasonLock">${futuresLocked?'Unlock season':'Lock preseason futures'}</button></div><div class="prediction-layout"><div>${futureForm()}<section class="card prediction-history"><div class="card-head"><h3>Futures Journal</h3><div class="prediction-filters">${['all','pending','correct','incorrect','void'].map(x=>`<button class="filter-chip ${futureFilter===x?'active':''}" data-future-filter="${x}">${x[0].toUpperCase()+x.slice(1)}</button>`).join('')}</div></div><div class="prediction-list">${futureRows.map(futureCard).join('')||empty('No futures in this view','Add a national champion, conference champion, award, playoff, or custom future.')}</div></section></div><aside class="prediction-sidebar">${card('Futures Summary',`<div class="detail-list"><div><span>Pending</span><strong>${fa.pending}</strong></div><div><span>Resolved</span><strong>${fa.graded.length}</strong></div><div><span>Accuracy</span><strong>${fa.accuracy.toFixed(1)}%</strong></div><div><span>Score</span><strong>${formatNumber(fa.earned)}</strong></div></div>`)}${card('Season Lock',`<p class="muted">Locking stamps all pending preseason futures and prevents accidental edits until you explicitly unlock them.</p><strong>${futuresLocked?'Locked':'Open'}</strong>`)}</aside></div>`:`<div class="reports-grid">${card('Confidence Calibration',confidenceCalibrationHtml())}${card('Weekly Performance',predictionByWeek().length?`<div class="report-table">${predictionByWeek().map(w=>`<div><span>${esc(w.week)}</span><strong>${w.accuracy.toFixed(1)}%</strong><small>${w.correct}/${w.graded} correct · ${formatNumber(w.score)} score</small></div>`).join('')}</div>`:empty('No weekly data yet','Graded predictions will build a weekly history.'))}${card('Combined Season Totals',`<div class="detail-list"><div><span>Game predictions</span><strong>${predictions.length}</strong></div><div><span>Futures</span><strong>${futures.length}</strong></div><div><span>Combined score</span><strong>${formatNumber(c.earned)}</strong></div><div><span>Combined accuracy</span><strong>${c.accuracy.toFixed(1)}%</strong></div></div>`)}${card('Futures Performance',`<div class="detail-list"><div><span>Correct</span><strong>${fa.correct.length}</strong></div><div><span>Incorrect</span><strong>${fa.graded.length-fa.correct.length}</strong></div><div><span>Pending</span><strong>${fa.pending}</strong></div><div><span>Score</span><strong>${formatNumber(fa.earned)}</strong></div></div>`)}</div>`}`}
 function analyticsByType(a){return ['winner','spread','total'].map(type=>{const rows=a.rows.filter(x=>x.type===type&&['correct','incorrect'].includes(x.result.status));const correct=rows.filter(x=>x.result.status==='correct').length;return {type,label:type==='winner'?'Winner':type==='spread'?'Spread':'Over / Under',count:rows.length,accuracy:rows.length?correct/rows.length*100:0,score:rows.reduce((n,x)=>n+(Number(x.result.score)||0),0)}})}
 function predictionTeamLeaders(a){const map=new Map();for(const x of a.rows){if(x.type==='total'||!['correct','incorrect'].includes(x.result.status))continue;const key=x.pick;if(!map.has(key))map.set(key,{team:key,total:0,correct:0,score:0});const row=map.get(key);row.total++;row.correct+=x.result.status==='correct'?1:0;row.score+=Number(x.result.score)||0}return [...map.values()].map(x=>({...x,accuracy:x.total?x.correct/x.total*100:0})).sort((a,b)=>b.accuracy-a.accuracy||b.total-a.total)}
+
+function insightBar(label,value,max,detail=''){
+  const safeMax=Math.max(1,Number(max)||1);
+  const width=Math.max(2,Math.min(100,(Number(value)||0)/safeMax*100));
+  return `<div class="confidence-row"><div><strong>${esc(label)}</strong><small>${esc(detail)}</small></div><div class="confidence-track"><span style="width:${width}%"></span></div><b>${Number(value||0).toFixed(1)}%</b></div>`;
+}
+function predictionTypeInsights(){
+  const types=[
+    {id:'winner',label:'Winner'},
+    {id:'spread',label:'Spread'},
+    {id:'total',label:'Over / Under'}
+  ];
+  return types.map(type=>{
+    const rows=predictions.filter(p=>p.type===type.id).map(p=>predictionResult(p));
+    const decisions=rows.filter(r=>['correct','incorrect'].includes(r.status));
+    const correct=decisions.filter(r=>r.status==='correct').length;
+    const score=rows.reduce((sum,r)=>sum+(Number(r.score)||0),0);
+    return {label:type.label,total:predictions.filter(p=>p.type===type.id).length,graded:decisions.length,correct,accuracy:decisions.length?correct/decisions.length*100:0,score};
+  });
+}
+function teamInsightRows(){
+  const teams=predictionTeamLeaders(predictionAnalytics());
+  return teams.map(team=>({
+    ...team,
+    accuracy:Number(team.accuracy)||0,
+    score:Number(team.score)||0
+  }));
+}
+function weeklyInsightChart(){
+  const weeks=predictionByWeek();
+  if(!weeks.length)return empty('No weekly trend yet','Graded predictions will create a weekly performance history.');
+  const max=Math.max(...weeks.map(w=>w.accuracy),1);
+  return `<div class="confidence-list">${weeks.map(w=>insightBar(w.week,w.accuracy,max,`${w.correct}/${w.graded} correct · ${formatNumber(w.score)} score`)).join('')}</div>`;
+}
+function typeInsightChart(){
+  const types=predictionTypeInsights();
+  const max=Math.max(...types.map(t=>t.accuracy),1);
+  return `<div class="confidence-list">${types.map(t=>insightBar(t.label,t.accuracy,max,`${t.correct}/${t.graded} correct · ${formatNumber(t.score)} score`)).join('')}</div>`;
+}
+function teamInsightChart(){
+  const teams=teamInsightRows().slice(0,10);
+  if(!teams.length)return empty('No team insights yet','Predictions tied to teams will appear here.');
+  const max=Math.max(...teams.map(t=>t.accuracy),1);
+  return `<div class="confidence-list">${teams.map(t=>insightBar(t.team,t.accuracy,max,`${t.correct}/${t.total} correct · ${formatNumber(t.score)} score`)).join('')}</div>`;
+}
+function calibrationSummary(){
+  const buckets=confidenceBuckets();
+  const usable=buckets.filter(b=>b.graded>0);
+  if(!usable.length)return {label:'Not enough graded data',detail:'Grade more predictions to evaluate confidence calibration.'};
+  const best=[...usable].sort((a,b)=>b.accuracy-a.accuracy||b.graded-a.graded)[0];
+  const weakest=[...usable].sort((a,b)=>a.accuracy-b.accuracy||b.graded-a.graded)[0];
+  return {
+    label:`Best confidence range: ${best.label}`,
+    detail:`${best.accuracy.toFixed(1)}% accuracy · Weakest: ${weakest.label} at ${weakest.accuracy.toFixed(1)}%`
+  };
+}
+
 function reportsPage(){
-  setHeading('Prediction Reports','SEASON YEARBOOK · TIMELINE · EXPORT');
-  const c=combinedAnalytics(),a=c.games,fa=c.futures,types=analyticsByType(a),leaders=predictionTeamLeaders(a),weeks=predictionByWeek(),timeline=predictionTimeline();
-  const typeBody=`<div class="report-table">${types.map(x=>`<div><span>${x.label}</span><strong>${x.accuracy.toFixed(1)}%</strong><small>${x.count} graded · ${formatNumber(x.score)} score</small></div>`).join('')}</div>`;
-  const leaderBody=leaders.length?`<div class="report-table">${leaders.slice(0,8).map(x=>`<div><span>${esc(x.team)}</span><strong>${x.accuracy.toFixed(1)}%</strong><small>${x.correct}-${x.total-x.correct} · ${formatNumber(x.score)} score</small></div>`).join('')}</div>`:empty('No team leaders yet','Graded winner or spread predictions will appear here.');
-  const futureBody=fa.rows.length?`<div class="report-table">${fa.rows.slice(0,8).map(x=>`<div><span>${esc(x.title)}</span><strong>${x.result.label}</strong><small>${esc(x.pick)} · ${formatNumber(x.confidence)} confidence${x.odds?` · ${esc(x.odds)}`:''}</small></div>`).join('')}</div>`:empty('No futures yet','Add season-long predictions in Prediction Center.');
-  const weekBody=weeks.length?`<div class="report-table">${weeks.map(w=>`<div><span>${esc(w.week)}</span><strong>${w.accuracy.toFixed(1)}%</strong><small>${w.total} entries · ${w.correct}/${w.graded} correct · ${formatNumber(w.score)} score</small></div>`).join('')}</div>`:empty('No weekly scorecard','Save and grade predictions to populate weekly results.');
-  const timelineBody=timeline.length?`<div class="intel-list prediction-timeline">${timeline.slice(0,50).map(x=>`<div class="intel-row"><span class="intel-icon">${x.result.status==='correct'?'✓':x.result.status==='incorrect'?'×':x.result.status==='push'?'—':'○'}</span><div><strong>${esc(x.g?`${x.g.away.shortName} at ${x.g.home.shortName}`:x.p.gameName||'Saved prediction')}</strong><small>${x.date.toLocaleDateString()} · ${esc(predictionTypeLabel(x.p))} · Confidence ${formatNumber(x.p.confidence)}</small></div><b>${x.result.score===null?'Pending':formatNumber(x.result.score)}</b></div>`).join('')}</div>`:empty('No prediction timeline','Your prediction journal will appear chronologically here.');
-  const note=`<textarea id="yearbookNote" class="quick-notes" placeholder="Write a season reflection…">${esc(localStorage.getItem('onlybeats.yearbook.note.v1')||'')}</textarea><small class="muted">Saved locally as part of your season journal.</small>`;
-  return `<section class="prediction-hero"><div><p class="eyebrow">SEASON YEARBOOK</p><h2>Your complete prediction season.</h2><p>Game predictions, futures, confidence calibration, weekly performance, and journal entries are summarized together.</p></div><button class="button primary" id="reportExportPredictions">Export prediction CSV</button></section>
-  <div class="metric-grid prediction-metrics">${metric('Combined Score',formatNumber(c.earned),`${formatNumber(c.entered)} confidence graded`)}${metric('Overall Accuracy',`${c.accuracy.toFixed(1)}%`,`${c.correct} correct`)}${metric('Game Score',formatNumber(a.earned),`${predictions.length} predictions`)}${metric('Futures Score',formatNumber(fa.earned),`${futures.length} futures`)}${metric('Pending',c.pending,'Games and futures')}${metric('Longest Streak',a.longest,'Game predictions')}</div>
+  setHeading('Prediction Insights','VISUAL ANALYTICS · SEASON YEARBOOK');
+  const combined=combinedAnalytics();
+  const game=combined.games;
+  const future=combined.futures;
+  const summary=calibrationSummary();
+  const timeline=predictionTimeline();
+  const note=localStorage.getItem('onlybeats.yearbook.note.v1')||'';
+
+  return `<section class="prediction-hero">
+    <div>
+      <p class="eyebrow">PREDICTION INSIGHTS</p>
+      <h2>Understand where your predictions are strongest.</h2>
+      <p>Review confidence calibration, weekly trends, prediction types, team performance, and the full season timeline.</p>
+    </div>
+    <button class="button primary" id="reportExportPredictions">Export prediction CSV</button>
+  </section>
+
+  <div class="metric-grid prediction-metrics">
+    ${metric('Combined Score',formatNumber(combined.earned),`${formatNumber(combined.entered)} confidence graded`)}
+    ${metric('Overall Accuracy',`${combined.accuracy.toFixed(1)}%`,`${combined.correct}/${combined.decisions} correct`)}
+    ${metric('Game Score',formatNumber(game.earned),`${predictions.length} game predictions`)}
+    ${metric('Futures Score',formatNumber(future.earned),`${futures.length} futures`)}
+    ${metric('Longest Streak',game.longest,'Game predictions')}
+    ${metric('Pending',combined.pending,'Games and futures')}
+  </div>
+
+  <section class="card command-top-signal">
+    <div>
+      <p class="eyebrow">CALIBRATION SUMMARY</p>
+      <h3>${esc(summary.label)}</h3>
+      <p class="muted">${esc(summary.detail)}</p>
+    </div>
+    <button class="button" data-page-jump="predictions">Open Prediction Center</button>
+  </section>
+
   <div class="reports-grid">
-    ${card('Prediction Timeline',timelineBody,'wide')}
-    ${card('Weekly Scorecard',weekBody)}
-    ${card('Confidence Calibration',confidenceCalibrationHtml())}
-    ${card('Performance by Prediction Type',typeBody)}
-    ${card('Top Team Reads',leaderBody)}
-    ${card('Futures Yearbook',futureBody)}
-    ${card('Yearbook Note',note,'wide')}
+    ${card('Confidence Calibration',confidenceCalibrationHtml(),'wide')}
+    ${card('Weekly Accuracy Trend',weeklyInsightChart(),'wide')}
+    ${card('Performance by Prediction Type',typeInsightChart())}
+    ${card('Top Team Reads',teamInsightChart())}
+    ${card('Prediction Timeline',timeline.length?`<div class="intel-list prediction-timeline">${timeline.slice(0,50).map(item=>`<div class="intel-row"><span class="intel-icon">${item.result.status==='correct'?'✓':item.result.status==='incorrect'?'×':item.result.status==='push'?'—':'○'}</span><div><strong>${esc(item.g?`${item.g.away.shortName} at ${item.g.home.shortName}`:item.p.gameName||'Saved prediction')}</strong><small>${item.date.toLocaleDateString()} · ${esc(predictionTypeLabel(item.p))} · Confidence ${formatNumber(item.p.confidence)}</small></div><b>${item.result.score===null?'Pending':formatNumber(item.result.score)}</b></div>`).join('')}</div>`:empty('No timeline yet','Saved predictions will appear chronologically here.'),'wide')}
+    ${card('Season Reflection',`<textarea id="yearbookNote" class="quick-notes" placeholder="Write a season reflection…">${esc(note)}</textarea><small class="muted">Saved locally as part of your season yearbook.</small>`,'wide')}
   </div>`;
 }
 
@@ -436,7 +517,7 @@ function refreshPredictionPickOptions(existing){
     if($('predictionLineField'))$('predictionLineField').classList.remove('hidden');
   }else{
     pick.innerHTML=game
-      ? [game.away,game.home].map(t=>`<option value="${esc(t.abbr)}">${esc(t.name)}</option>`).join('')
+      ? [game.away,game.home].map(team=>`<option value="${esc(team.abbr)}">${esc(team.name)}</option>`).join('')
       : '';
     if($('predictionPickLabel'))$('predictionPickLabel').textContent=type==='winner'?'Winner':'Team';
     if($('predictionLineField'))$('predictionLineField').classList.toggle('hidden',type==='winner');
