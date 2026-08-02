@@ -16,7 +16,7 @@
 - Game-details drawer
 - Developer diagnostics improvements
 
-### v0.4.0 — Team Hub ✅
+### v0.5.0 — Team Hub ✅
 - FBS team directory
 - Team identity and colors
 - Schedule and results

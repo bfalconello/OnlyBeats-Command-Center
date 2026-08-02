@@ -5,7 +5,7 @@
 OnlyBeats Command Center is a Windows desktop application for following college football through one focused interface. The current stable foundation includes a branded dashboard, live games, search, favorites, automatic refresh, game details, settings, SQLite initialization, and developer diagnostics.
 
 ## Current version
-**0.4.0 — Project Infrastructure**
+**0.5.0 — Project Infrastructure**
 
 This release keeps the working 0.2.1 live-game behavior and adds the documentation, automation, contribution standards, and release process required for the Saturday Wall sprint.
 
@@ -44,7 +44,7 @@ design/       Visual assets and concepts
 Every push or pull request to `main` or `develop` runs a Windows workflow that validates JavaScript, checks Rust, builds Tauri installers, and uploads the MSI/EXE as workflow artifacts.
 
 ## Roadmap
-The next feature release is **v0.4.0 — Saturday Wall**, followed by Team Hub, rankings, weather/game intel, news/reports, and the first stable v1.0 release.
+The next feature release is **v0.5.0 — Saturday Wall**, followed by Team Hub, rankings, weather/game intel, news/reports, and the first stable v1.0 release.
 
 ## Project standard
 > Precision over speed. One honest release at a time.

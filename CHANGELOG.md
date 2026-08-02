@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.0 — Intelligence Center
+- Added current-slate rankings, upset watch, favorite alerts, game signals, and provider coverage.
+- Preserved strict no-fabrication data states.
+
+
 ## [0.3.0] - 2026-08-02
 
 ### Added
@@ -49,6 +54,6 @@ All notable changes are documented here. The project follows Semantic Versioning
 ### Added
 - Branded desktop foundation, dashboard shell, settings, SQLite scaffolding, and Windows scripts.
 
-## [0.4.0] - 2026-08-02
+## [0.5.0] - 2026-08-02
 ### Added
 - Searchable Team Hub with overview, schedule, stats, roster-ready structure, favorites, and command-palette integration.
