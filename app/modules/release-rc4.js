@@ -72,6 +72,7 @@ function rc4RouteRendererMap(){
     dashboard:typeof unifiedCommandDashboardPage==='function',
     briefing:typeof smartBriefingPage==='function',
     timeline:typeof liveCommandTimelinePage==='function',
+    archive:typeof seasonArchivePage==='function',
     wall:typeof wallPage==='function',
     watch:typeof watchCenterPage==='function',
     gamehub:typeof gameIntelligenceHubPage==='function',

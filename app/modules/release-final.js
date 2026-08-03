@@ -25,6 +25,7 @@ function runProductionReleaseChecks(){
     productionCheck('Team Intelligence',typeof teamHubPage==='function','Team renderer'),
     productionCheck('Game Intelligence Hub',typeof gameIntelligenceHubPage==='function','Game Hub renderer'),
     productionCheck('Live Command Timeline',typeof liveCommandTimelinePage==='function','Timeline renderer'),
+    productionCheck('Season Archive',typeof seasonArchivePage==='function','Archive renderer'),
     productionCheck('Smart Briefing',typeof smartBriefingPage==='function','Briefing renderer'),
     productionCheck('Watch Center',typeof watchCenterPage==='function','Watch renderer'),
     productionCheck('Runtime diagnostics',typeof runOnlyBeatsDiagnostics==='function','Diagnostics runtime'),
