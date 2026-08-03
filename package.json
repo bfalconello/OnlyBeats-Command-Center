@@ -1,7 +1,7 @@
 {
   "name": "onlybeats-command-center",
-  "version": "3.1.0",
-  "description": "OnlyBeats smart startup, recovery, and sync readiness edition",
+  "version": "3.2.1",
+  "description": "OnlyBeats live NCAA weather with built-in FBS stadium coordinates",
   "main": "desktop/main.js",
   "author": {
     "name": "OnlyBeats"

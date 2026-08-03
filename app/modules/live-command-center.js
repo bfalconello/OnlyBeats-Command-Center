@@ -435,8 +435,7 @@ function liveCommandCenterPage(){
         ['Scores & schedule',liveDataAdapter?.('scores')?.configured,'Required for real-time games'],
         ['Rankings',liveDataAdapter?.('rankings')?.configured,'Top 25 panel'],
         ['Weather',liveDataAdapter?.('weather')?.configured,'Outdoor game conditions'],
-        ['Availability',liveDataAdapter?.('availability')?.configured,'Player availability'],
-        ['Licensed market data',liveDataAdapter?.('lines')?.configured,'Optional licensed feed']
+        ['Availability',liveDataAdapter?.('availability')?.configured,'Player availability']
       ].map(([name,ok,detail])=>`<div class="release-status-row ${ok?'quality-pass':'quality-warn'}"><span>${ok?'✓':'△'} ${esc(name)}<small>${esc(detail)}</small></span><strong>${ok?'READY':'NOT CONNECTED'}</strong></div>`).join('')}
     </div>`)}
   </div>`;

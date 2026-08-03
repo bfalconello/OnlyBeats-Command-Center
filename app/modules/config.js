@@ -3,7 +3,7 @@
 // OnlyBeats shared application configuration.
 // Loaded before app.js as a classic script so existing global references remain compatible.
 
-const VERSION='3.1.0';
+const VERSION='3.2.1';
 const STORAGE_KEY='onlybeats.settings.v7';
 const LEGACY_STORAGE_KEY='onlybeats.settings.v6';
 const FAVORITES_KEY='onlybeats.favorites.v1';
@@ -43,10 +43,13 @@ const PUBLIC_RELEASE_KEY='onlybeats.public-release.v1';
 const RELEASE_NOTES_SEEN_KEY='onlybeats.release-notes-seen.v1';
 const SMART_STARTUP_KEY='onlybeats.smart-startup.v1';
 const STARTUP_DIAGNOSTICS_KEY='onlybeats.startup-diagnostics.v1';
+const LIVE_NCAA_CONFIG_KEY='onlybeats.live-ncaa-config.v1';
+const LIVE_NCAA_CACHE_KEY='onlybeats.live-ncaa-cache.v1';
+const STADIUM_GEOCODE_CACHE_KEY='onlybeats.stadium-geocode-cache.v1';
 const AVAILABILITY_KEY='onlybeats.availability.v1';
 const SCORE_REFRESH_TIMEOUT_MS=12000;
 const defaultSettings={theme:'midnight',startPage:'dashboard',compact:false,sounds:false,animations:true,refresh:'30',favoriteTeam:'',scoreAlerts:true,favoriteAlerts:true,kickoffAlerts:true,weatherLocation:'',dashboardDensity:'comfortable',pushScoring:'full',highContrast:false,largeText:false,performanceMode:false};
 const defaultWall={status:'all',favoritesOnly:false,top25Only:false,query:''};
 const defaultDashboard=['featured','favorites','ranked','predictions','weather','alerts','notes'];
 
-const pages=[['dashboard','⌂','Dashboard'],['launch','⬢','Release Hub'],['startup','◌','Startup & Recovery'],['briefing','☷','Briefing'],['timeline','≋','Timeline'],['archive','▣','Season Archive'],['analytics','▥','Analytics Center'],['datahealth','⌁','Data Health'],['performance','⚡','Performance'],['alerts','⚠','Live Alerts'],['mission','⌘','Mission Control'],['about','ⓘ','About & Storage'],['quality','◎','UI Quality'],['insights','✦','Smart Insights'],['gameday','◉','GameDay Command'],['livecommand','◈','Live Command Center'],['devices','▱','Devices & Sync'],['cloud','☁','Cloud Sync'],['account','◉','Account & Devices'],['platform','⌁','Live Data Platform'],['release','⬡','Desktop Release'],['windows','◆','Windows Experience'],['wall','▦','Saturday Wall'],['watch','◫','Watch Center'],['gamehub','◇','Game Hub'],['schedule','◷','Schedule'],['favorites','★','Favorites'],['teams','◈','Team Hub'],['rankings','♛','Rankings'],['news','▤','News'],['weather','☁','Weather'],['availability','♙','Player Availability'],['predictions','✓','Prediction Center'],['lab','◇','Prediction Lab'],['reports','▥','Reports'],['developer','⌘','Developer Tools'],['settings','⚙','Settings']];
+const pages=[['dashboard','⌂','Dashboard'],['launch','⬢','Release Hub'],['startup','◌','Startup & Recovery'],['briefing','☷','Briefing'],['timeline','≋','Timeline'],['archive','▣','Season Archive'],['analytics','▥','Analytics Center'],['datahealth','⌁','Data Health'],['performance','⚡','Performance'],['alerts','⚠','Live Alerts'],['mission','⌘','Mission Control'],['about','ⓘ','About & Storage'],['quality','◎','UI Quality'],['insights','✦','Smart Insights'],['gameday','◉','GameDay Command'],['livecommand','◈','Live Command Center'],['devices','▱','Devices & Sync'],['cloud','☁','Cloud Sync'],['account','◉','Account & Devices'],['platform','⌁','Live Data Platform'],['liveprovider','◎','Live NCAA Setup'],['release','⬡','Desktop Release'],['windows','◆','Windows Experience'],['wall','▦','Saturday Wall'],['watch','◫','Watch Center'],['gamehub','◇','Game Hub'],['schedule','◷','Schedule'],['favorites','★','Favorites'],['teams','◈','Team Hub'],['rankings','♛','Rankings'],['news','▤','News'],['weather','☁','Weather'],['availability','♙','Player Availability'],['predictions','✓','Prediction Center'],['lab','◇','Prediction Lab'],['reports','▥','Reports'],['developer','⌘','Developer Tools'],['settings','⚙','Settings']];

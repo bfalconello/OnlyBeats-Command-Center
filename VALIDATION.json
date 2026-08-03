@@ -15,11 +15,19 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/live-ncaa-integration.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/intelligence-engine.js": {
     "ok": true,
     "stderr": ""
   },
   "app/modules/production-version.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "app/modules/fbs-stadium-database.js": {
     "ok": true,
     "stderr": ""
   },
@@ -203,19 +211,19 @@
     "ok": true,
     "stderr": ""
   },
-  "package_json": {
+  "stadium_records": {
+    "ok": true,
+    "count": 128
+  },
+  "stadium_alias_matching": {
     "ok": true,
     "stderr": ""
   },
-  "configured_route_coverage": {
+  "geocoding_fallback": {
     "ok": true,
     "stderr": ""
   },
-  "smart_startup_runtime": {
-    "ok": true,
-    "stderr": ""
-  },
-  "offline_recovery": {
+  "weather_resolution_order": {
     "ok": true,
     "stderr": ""
   },

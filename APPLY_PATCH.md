@@ -1,18 +1,15 @@
-# Apply OnlyBeats v3.1 — Smart Startup & Sync Readiness
+# Apply OnlyBeats v3.2.1 — Stadium Weather Hotfix
 
-Copy the entire extracted package over the current master repository and replace existing files.
+Copy the entire extracted package over the current master repository
+and replace existing files.
 
 Important additions:
 
-- `app/modules/smart-startup.js`
-- updated `app/app.js`
-- updated `app/index.html`
-- updated `app/modules/config.js`
-- updated `app/modules/release-rc4.js`
-- updated `app/modules/release-final.js`
-- updated `package.json`
-- updated `BUILD_WINDOWS_INSTALLER.bat`
+- `app/modules/fbs-stadium-database.js`
+- updated `app/modules/live-ncaa-integration.js`
+- updated release checks and installer metadata
+- stadium data attribution documentation
 
 Suggested commit:
 
-`v3.1.0: add smart startup diagnostics and offline recovery`
+`v3.2.1: add built-in FBS stadium weather fallback`

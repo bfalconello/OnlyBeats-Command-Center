@@ -7,8 +7,7 @@ const LIVE_DATA_FEEDS=[
   {id:'scores',label:'Scores & Schedule',required:true,defaultInterval:60},
   {id:'rankings',label:'Rankings',required:false,defaultInterval:900},
   {id:'weather',label:'Weather',required:false,defaultInterval:600},
-  {id:'availability',label:'Player Availability',required:false,defaultInterval:300},
-  {id:'lines',label:'Prediction Market Data',required:false,defaultInterval:300}
+  {id:'availability',label:'Player Availability',required:false,defaultInterval:300}
 ];
 
 let liveDataPlatformState={
@@ -183,8 +182,7 @@ function normalizeLiveData(feedId,payload){
     scores:normalizeLiveScoreRecord,
     rankings:normalizeRankingRecord,
     weather:normalizeWeatherRecord,
-    availability:normalizeAvailabilityRecord,
-    lines:normalizeLineRecord
+    availability:normalizeAvailabilityRecord
   }[feedId];
   if(!normalizer)return [];
   return rows.map(normalizer).filter(Boolean);
@@ -209,10 +207,6 @@ function applyLiveDataFeed(feedId,records){
 
   if(feedId==='weather'&&records.length){
     window.ONLYBEATS_NORMALIZED_WEATHER=records;
-  }
-
-  if(feedId==='lines'){
-    window.ONLYBEATS_NORMALIZED_LINES=records;
   }
 
   return records.length;
