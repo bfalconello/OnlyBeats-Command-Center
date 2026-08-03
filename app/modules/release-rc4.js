@@ -81,6 +81,7 @@ function rc4RouteRendererMap(){
     about:typeof aboutStoragePage==='function',
     quality:typeof uiQualityPage==='function',
     insights:typeof smartInsightsPage==='function',
+    gameday:typeof gameDayCommandPage==='function',
     wall:typeof wallPage==='function',
     watch:typeof watchCenterPage==='function',
     gamehub:typeof gameIntelligenceHubPage==='function',

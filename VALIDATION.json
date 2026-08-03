@@ -63,6 +63,10 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/gameday-command.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/release-readiness.js": {
     "ok": true,
     "stderr": ""
@@ -131,7 +135,7 @@
     "ok": true,
     "stderr": ""
   },
-  "smart_insights_runtime_symbols": {
+  "gameday_runtime_symbols": {
     "ok": true,
     "stderr": ""
   }
