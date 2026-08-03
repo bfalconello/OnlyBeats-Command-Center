@@ -16,7 +16,8 @@ if (
   typeof liveCommandTimelinePage !== 'function' ||
   typeof predictionIntelligencePage !== 'function' ||
   typeof gameIntelligenceHubPage !== 'function' ||
-  typeof unifiedCommandDashboardPage !== 'function'
+  typeof unifiedCommandDashboardPage !== 'function' ||
+  typeof initializeReleaseCandidate !== 'function'
 ) {
   throw new Error('OnlyBeats core modules did not load. Verify index.html script order.');
 }
@@ -72,7 +73,7 @@ let runtimeErrors=[];
 function saveSettings(showToast=true){localStorage.setItem(STORAGE_KEY,JSON.stringify(settings));const saved=$('lastSaved');if(saved)saved.textContent='Saved just now';if(showToast)toast('Preferences saved');scheduleRefresh()}
 function saveFavorites(){localStorage.setItem(FAVORITES_KEY,JSON.stringify(favorites));renderPage()}
 function saveWall(){localStorage.setItem(WALL_KEY,JSON.stringify(wallState))}
-function applyTheme(){const theme=settings.theme==='dark'?'midnight':settings.theme;document.documentElement.dataset.theme=theme;document.body.classList.toggle('compact-mode',Boolean(settings.compact));document.body.classList.toggle('reduce-motion',!settings.animations);document.body.dataset.density=settings.dashboardDensity||'comfortable'}
+function applyTheme(){const theme=settings.theme==='dark'?'midnight':settings.theme;document.documentElement.dataset.theme=theme;document.body.classList.toggle('compact-mode',Boolean(settings.compact));document.body.classList.toggle('reduce-motion',!settings.animations);document.body.dataset.density=settings.dashboardDensity||'comfortable';if(typeof applyReleasePreferences==='function')applyReleasePreferences()}
 function toast(message,tone='default'){const e=$('toast');if(!e)return;e.textContent=message;e.dataset.tone=tone;e.classList.remove('hidden');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.add('hidden'),2600)}
 function normalize(data){return (data.events||[]).map(e=>{const c=e.competitions?.[0]||{},comps=c.competitors||[],home=comps.find(x=>x.homeAway==='home')||comps[0]||{},away=comps.find(x=>x.homeAway==='away')||comps[1]||{},state=e.status?.type?.state||'pre';return {id:e.id,name:e.name||'',date:e.date,status:e.status?.type?.shortDetail||e.status?.type?.detail||'Scheduled',state,clock:e.status?.displayClock||'',period:e.status?.period||0,network:c.broadcasts?.[0]?.names?.[0]||'',venue:c.venue?.fullName||'',city:c.venue?.address?.city||'',stateCode:c.venue?.address?.state||'',neutral:Boolean(c.neutralSite),home:team(home),away:team(away)}})}
 function team(c){return {id:c.team?.id||'',name:c.team?.displayName||'TBD',shortName:c.team?.shortDisplayName||c.team?.displayName||'TBD',abbr:c.team?.abbreviation||'',logo:c.team?.logo||'',color:c.team?.color||'',alternateColor:c.team?.alternateColor||'',score:Number(c.score||0),rank:c.curatedRank?.current&&c.curatedRank.current<99?c.curatedRank.current:null,record:c.records?.[0]?.summary||'',winner:Boolean(c.winner)}}
@@ -375,7 +376,28 @@ function availabilityPage(){
 }
 function placeholderPage(id,label){setHeading(label,'COMING IN A PLANNED RELEASE');return `<div class="hero"><div class="hero-copy"><p class="eyebrow">ROADMAP MODULE</p><h2>${label}</h2><p>This route is prepared and will receive its full module in a future release.</p></div><img src="assets/onlybeats-icon.png"></div>`}
 function toggle(id,label,on){return `<div class="toggle-row"><div><strong>${label}</strong></div><button id="${id}" class="toggle ${on?'on':''}"></button></div>`}
-function settingsPage(){setHeading('Settings','PERSONAL COMMAND CENTER');return `<div class="settings-layout"><section class="card settings-card"><h3>Appearance</h3><div class="field"><label>Theme</label><select id="themeSelect"><option value="midnight">Midnight Gold</option><option value="stadium">Stadium Green</option><option value="ice">Ice Blue</option><option value="classic">Classic Charcoal</option><option value="light">Light</option></select></div><div class="field"><label>Dashboard density</label><select id="densitySelect"><option value="comfortable">Comfortable</option><option value="compact">Compact</option></select></div>${toggle('compactToggle','Compact game cards',settings.compact)}${toggle('animationToggle','Interface animations',settings.animations)}</section><section class="card settings-card"><h3>GameDay alerts</h3>${toggle('scoreAlertsToggle','Score-change alerts',settings.scoreAlerts)}${toggle('favoriteAlertsToggle','Favorite-team alerts',settings.favoriteAlerts)}${toggle('kickoffAlertsToggle','Kickoff reminders',settings.kickoffAlerts)}</section><section class="card settings-card"><h3>Live scores</h3><div class="field"><label>Automatic refresh</label><select id="refreshSelect"><option value="15">15 seconds</option><option value="30">30 seconds</option><option value="60">60 seconds</option><option value="0">Off</option></select></div><button class="button primary" id="testProvider">Test live-score provider</button></section><section class="card settings-card"><h3>Startup</h3><div class="field"><label>Start page</label><select id="startPageSelect">${pages.map(([id,,l])=>`<option value="${id}">${l}</option>`).join('')}</select></div><p class="muted">Your selected page opens automatically next time.</p></section><section class="card settings-card"><h3>Dashboard</h3><p class="muted">Restore the standard seven-widget Personal Command Center layout.</p><button class="button" id="settingsResetDashboard">Reset dashboard layout</button></section><section class="card settings-card"><h3>Prediction scoring</h3><div class="field"><label>Push score</label><select id="pushScoringSelect"><option value="full">Full confidence</option><option value="half">Half confidence</option><option value="zero">Zero</option></select></div><p class="muted">Correct predictions always earn the exact confidence entered.</p></section><section class="card settings-card"><h3>Data & recovery</h3><div class="button-row"><button id="exportButton" class="button primary">Export settings</button><button id="resetButton" class="button danger">Reset all local data</button></div><p class="muted">App ${VERSION} · Database schema 1</p></section></div>`}
+function settingsPage(){
+  setHeading('Settings','RELEASE CANDIDATE · PERSONAL COMMAND CENTER');
+  return `<div class="settings-layout">
+    <section class="card settings-card">
+      <h3>Appearance & accessibility</h3>
+      <div class="field"><label>Theme</label><select id="themeSelect"><option value="midnight">Midnight Gold</option><option value="stadium">Stadium Green</option><option value="ice">Ice Blue</option><option value="classic">Classic Charcoal</option><option value="light">Light</option></select></div>
+      <div class="field"><label>Dashboard density</label><select id="densitySelect"><option value="comfortable">Comfortable</option><option value="compact">Compact</option></select></div>
+      ${toggle('compactToggle','Compact game cards',settings.compact)}
+      ${toggle('animationToggle','Interface animations',settings.animations)}
+      ${toggle('highContrastToggle','High-contrast interface',settings.highContrast)}
+      ${toggle('largeTextToggle','Larger interface text',settings.largeText)}
+    </section>
+    <section class="card settings-card"><h3>GameDay alerts</h3>${toggle('scoreAlertsToggle','Score-change alerts',settings.scoreAlerts)}${toggle('favoriteAlertsToggle','Favorite-team alerts',settings.favoriteAlerts)}${toggle('kickoffAlertsToggle','Kickoff reminders',settings.kickoffAlerts)}</section>
+    <section class="card settings-card"><h3>Live scores</h3><div class="field"><label>Automatic refresh</label><select id="refreshSelect"><option value="15">15 seconds</option><option value="30">30 seconds</option><option value="60">60 seconds</option><option value="0">Off</option></select></div><button class="button primary" id="testProvider">Test live-score provider</button></section>
+    <section class="card settings-card"><h3>Startup</h3><div class="field"><label>Start page</label><select id="startPageSelect">${pages.map(([id,,label])=>`<option value="${id}">${label}</option>`).join('')}</select></div><p class="muted">Your selected page opens automatically next time.</p></section>
+    <section class="card settings-card"><h3>Keyboard shortcuts</h3><p class="muted">Navigate major pages without leaving the keyboard.</p><button class="button" id="openShortcutGuide">View shortcut guide</button></section>
+    <section class="card settings-card"><h3>Dashboard</h3><p class="muted">Restore the standard seven-widget Personal Command Center layout.</p><button class="button" id="settingsResetDashboard">Reset dashboard layout</button></section>
+    <section class="card settings-card"><h3>Prediction scoring</h3><div class="field"><label>Push score</label><select id="pushScoringSelect"><option value="full">Full confidence</option><option value="half">Half confidence</option><option value="zero">Zero</option></select></div><p class="muted">Correct predictions always earn the exact confidence entered.</p></section>
+    ${releaseReadinessSettingsCard()}
+    <section class="card settings-card"><h3>Data & recovery</h3><div class="button-row"><button id="exportButton" class="button primary">Export settings</button><button id="resetButton" class="button danger">Reset all local data</button></div><p class="muted">OnlyBeats ${VERSION} · Database schema 1</p></section>
+  </div>`;
+}
 
 function savePredictions(){localStorage.setItem(PREDICTIONS_KEY,JSON.stringify(predictions))}
 function saveFutures(){localStorage.setItem(FUTURES_KEY,JSON.stringify(futures));localStorage.setItem(FUTURES_LOCK_KEY,JSON.stringify({locked:futuresLocked}))}
@@ -829,7 +851,7 @@ function showGame(id,open=true){
 }
 
 function closeGame(){activeGameId=null;$('gameDrawer').classList.remove('open');setTimeout(()=>$('gameDrawerBackdrop').classList.add('hidden'),180)}
-function bindSettings(){const t=$('themeSelect');t.value=settings.theme==='dark'?'midnight':settings.theme;t.onchange=()=>{settings.theme=t.value;applyTheme();saveSettings()};const d=$('densitySelect');d.value=settings.dashboardDensity||'comfortable';d.onchange=()=>{settings.dashboardDensity=d.value;applyTheme();saveSettings()};const r=$('refreshSelect');r.value=settings.refresh;r.onchange=()=>{settings.refresh=r.value;saveSettings()};const s=$('startPageSelect');s.value=settings.startPage;s.onchange=()=>{settings.startPage=s.value;saveSettings()};const ps=$('pushScoringSelect');if(ps){ps.value=settings.pushScoring||'full';ps.onchange=()=>{settings.pushScoring=ps.value;saveSettings()}};[['compactToggle','compact'],['animationToggle','animations'],['scoreAlertsToggle','scoreAlerts'],['favoriteAlertsToggle','favoriteAlerts'],['kickoffAlertsToggle','kickoffAlerts']].forEach(([id,k])=>$(id).onclick=e=>{settings[k]=!settings[k];e.currentTarget.classList.toggle('on',settings[k]);applyTheme();saveSettings()});$('testProvider').onclick=()=>syncScores();$('settingsResetDashboard').onclick=()=>{dashboardLayout=[...defaultDashboard];saveDashboard()};$('exportButton').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({settings,favorites,wallState,dashboardLayout,quickNotes,predictions,futures,futuresLocked},null,2)],{type:'application/json'}));a.download='OnlyBeats-settings-v0.9.1.json';a.click();toast('Settings export created')};$('resetButton').onclick=()=>{if(confirm('Reset preferences, dashboard, notes, filters, and favorites?')){settings={...defaultSettings};favorites=[];wallState={...defaultWall};dashboardLayout=[...defaultDashboard];quickNotes='';predictions=[];futures=[];futuresLocked=false;localStorage.clear();applyTheme();renderPage()}}}
+function bindSettings(){const t=$('themeSelect');t.value=settings.theme==='dark'?'midnight':settings.theme;t.onchange=()=>{settings.theme=t.value;applyTheme();saveSettings()};const d=$('densitySelect');d.value=settings.dashboardDensity||'comfortable';d.onchange=()=>{settings.dashboardDensity=d.value;applyTheme();saveSettings()};const r=$('refreshSelect');r.value=settings.refresh;r.onchange=()=>{settings.refresh=r.value;saveSettings()};const s=$('startPageSelect');s.value=settings.startPage;s.onchange=()=>{settings.startPage=s.value;saveSettings()};const ps=$('pushScoringSelect');if(ps){ps.value=settings.pushScoring||'full';ps.onchange=()=>{settings.pushScoring=ps.value;saveSettings()}};[['compactToggle','compact'],['animationToggle','animations'],['highContrastToggle','highContrast'],['largeTextToggle','largeText'],['scoreAlertsToggle','scoreAlerts'],['favoriteAlertsToggle','favoriteAlerts'],['kickoffAlertsToggle','kickoffAlerts']].forEach(([id,k])=>$(id).onclick=e=>{settings[k]=!settings[k];e.currentTarget.classList.toggle('on',settings[k]);applyTheme();saveSettings()});$('testProvider').onclick=()=>syncScores();$('settingsResetDashboard').onclick=()=>{dashboardLayout=[...defaultDashboard];saveDashboard()};$('exportButton').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({settings,favorites,wallState,dashboardLayout,quickNotes,predictions,futures,futuresLocked},null,2)],{type:'application/json'}));a.download='OnlyBeats-settings-v0.9.1.json';a.click();toast('Settings export created')};$('resetButton').onclick=()=>{if(confirm('Reset preferences, dashboard, notes, filters, and favorites?')){settings={...defaultSettings};favorites=[];wallState={...defaultWall};dashboardLayout=[...defaultDashboard];quickNotes='';predictions=[];futures=[];futuresLocked=false;localStorage.clear();applyTheme();renderPage()}};bindReleaseReadinessSettings()}
 const palette=$('commandPalette'),input=$('commandInput'),results=$('commandResults');
 function openPalette(){palette.classList.remove('hidden');input.value='';renderCommands('');setTimeout(()=>input.focus(),0)}
 function closePalette(){palette.classList.add('hidden')}
@@ -859,6 +881,7 @@ window.addEventListener('unhandledrejection',event=>{
   runtimeErrors=runtimeErrors.slice(0,20);
 });
 applyTheme();
+initializeReleaseCandidate();
 renderNav();
 setTimeout(()=>runOnlyBeatsDiagnostics(),250);
 setTimeout(()=>captureTimelineSnapshot('startup'),500);
@@ -866,7 +889,7 @@ renderPage();
 scheduleRefresh();
 const splash=$('splash');
 const splashFailSafe=setTimeout(()=>splash?.classList.add('hide'),3500);
-const startupMessages=['Loading cached scores…','Loading teams…','Preparing GameDay alerts…','Ready.'];
+const startupMessages=['Loading release configuration…','Checking local storage…','Preparing GameDay services…','Running startup health check…','Ready.'];
 let startupIndex=0;
 const startupTimer=setInterval(()=>{
   const el=$('splashStatus');

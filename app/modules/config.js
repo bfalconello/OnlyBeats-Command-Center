@@ -3,7 +3,7 @@
 // OnlyBeats shared application configuration.
 // Loaded before app.js as a classic script so existing global references remain compatible.
 
-const VERSION='0.17.0-dashboard.1';
+const VERSION='1.0.0-rc.1';
 const STORAGE_KEY='onlybeats.settings.v7';
 const LEGACY_STORAGE_KEY='onlybeats.settings.v6';
 const FAVORITES_KEY='onlybeats.favorites.v1';
@@ -18,7 +18,7 @@ const WATCH_KEY='onlybeats.watch-center.v1';
 const TIMELINE_KEY='onlybeats.timeline.v1';
 const AVAILABILITY_KEY='onlybeats.availability.v1';
 const SCORE_REFRESH_TIMEOUT_MS=12000;
-const defaultSettings={theme:'midnight',startPage:'dashboard',compact:false,sounds:false,animations:true,refresh:'30',favoriteTeam:'',scoreAlerts:true,favoriteAlerts:true,kickoffAlerts:true,weatherLocation:'',dashboardDensity:'comfortable',pushScoring:'full'};
+const defaultSettings={theme:'midnight',startPage:'dashboard',compact:false,sounds:false,animations:true,refresh:'30',favoriteTeam:'',scoreAlerts:true,favoriteAlerts:true,kickoffAlerts:true,weatherLocation:'',dashboardDensity:'comfortable',pushScoring:'full',highContrast:false,largeText:false};
 const defaultWall={status:'all',favoritesOnly:false,top25Only:false,query:''};
 const defaultDashboard=['featured','favorites','ranked','predictions','weather','alerts','notes'];
 

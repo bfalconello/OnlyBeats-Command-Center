@@ -1,14 +1,14 @@
-# Apply v0.17 — Unified Command Dashboard
+# Apply OnlyBeats v1.0 Release Candidate 1
 
 Copy into the repository:
 
 - `app/app.js`
 - `app/index.html`
 - the complete `app/modules/` folder
-- `docs/V0_17_UNIFIED_COMMAND_DASHBOARD.md`
+- `docs/V1_0_RC1_RELEASE_NOTES.md`
 
 Replace files when prompted.
 
 Suggested commit:
 
-`v0.17: add Unified Command Dashboard phase 1`
+`v1.0.0-rc.1: add release polish and readiness checks`
