@@ -1,11 +1,11 @@
 name: Windows Build
 
 on:
-  push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main, develop]
   workflow_dispatch:
+
+  push:
+    branches:
+      - main
 
 permissions:
   contents: read
@@ -13,50 +13,46 @@ permissions:
 jobs:
   build-windows:
     runs-on: windows-latest
-    timeout-minutes: 45
 
     steps:
-      - name: Check out repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
 
-      - name: Set up Rust
-        uses: dtolnay/rust-toolchain@stable
+      - name: Install Dependencies
+        run: npm install
 
-      - name: Cache Rust build
-        uses: swatinem/rust-cache@v2
-        with:
-          workspaces: src-tauri
+      - name: Build Windows Installer
+        run: npm run dist:win
 
-      - name: Install JavaScript dependencies
+      - name: Verify Installer Exists
         shell: pwsh
         run: |
-          if (Test-Path package-lock.json) {
-            npm ci
-          } else {
-            npm install
+          if (!(Test-Path "dist")) {
+            Write-Error "dist folder not found."
           }
 
-      - name: Validate JavaScript syntax
-        run: node --check app/app.js
+          Get-ChildItem dist -Recurse
 
-      - name: Validate Rust
-        working-directory: src-tauri
-        run: cargo check
-
-      - name: Build Windows installers
-        run: npm run desktop:build
-
-      - name: Upload Windows bundles
+      - name: Upload Windows Installer
         uses: actions/upload-artifact@v4
         with:
-          name: OnlyBeats-Command-Center-Windows-${{ github.sha }}
+          name: OnlyBeats-Windows-Installer
           path: |
-            src-tauri/target/release/bundle/msi/*.msi
-            src-tauri/target/release/bundle/nsis/*.exe
+            dist/**/*.exe
           if-no-files-found: error
-          retention-days: 14
+
+      - name: Build Summary
+        if: success()
+        shell: pwsh
+        run: |
+          Write-Host ""
+          Write-Host "======================================"
+          Write-Host "OnlyBeats Windows Build Complete"
+          Write-Host "======================================"
+          Get-ChildItem dist -Recurse
