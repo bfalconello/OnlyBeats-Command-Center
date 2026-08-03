@@ -47,6 +47,10 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/mobile-companion.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/public-release.js": {
     "ok": true,
     "stderr": ""
@@ -227,6 +231,10 @@
     "ok": true,
     "stderr": ""
   },
+  "app/firebase-cloud-adapter.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/live-data-providers.js": {
     "ok": true,
     "stderr": ""
@@ -243,19 +251,19 @@
     "ok": true,
     "stderr": ""
   },
-  "shared_game_transfer_helper": {
+  "cloud_sync_engine": {
     "ok": true
   },
-  "legacy_state_synchronization": {
+  "firebase_adapter": {
     "ok": true
   },
-  "session_storage_synchronization": {
+  "account_security_rules": {
     "ok": true
   },
-  "all_known_navigation_paths": {
+  "mobile_companion": {
     "ok": true
   },
-  "developer_qa_integration": {
+  "no_embedded_credentials": {
     "ok": true
   },
   "installer_configuration": {

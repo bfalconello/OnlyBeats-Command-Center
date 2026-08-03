@@ -58,6 +58,8 @@ function runProductionReleaseChecks(){
     productionCheck('Adaptive shell detection',typeof qaApplicationShellSnapshot==='function'&&typeof qaWaitForApplicationShell==='function','Detects the actual mounted interface without assuming #app'),
     productionCheck('Ultimate Game Hub',typeof ultimateGameHubPage==='function'&&typeof buildUltimateGameHubModel==='function','Unified matchup control room'),
     productionCheck('Game Hub transfer',typeof openUltimateGameHub==='function','Shared selected-game navigation across all pages'),
+    productionCheck('Cloud private beta',typeof cloudLocalSnapshot==='function'&&typeof cloudApplyRemoteSnapshot==='function','Local-first cloud sync and conflicts'),
+    productionCheck('Mobile companion',typeof mobileCompanionPage==='function','Installable responsive mobile beta'),
     productionCheck('Live Data Platform',typeof liveDataPlatformPage==='function','Provider platform renderer'),
     productionCheck('Desktop Release Center',typeof desktopReleasePage==='function','Release center renderer'),
     productionCheck('Professional Windows Experience',typeof professionalWindowsPage==='function','Windows experience renderer'),

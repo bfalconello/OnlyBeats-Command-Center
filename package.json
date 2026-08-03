@@ -1,7 +1,7 @@
 {
   "name": "onlybeats-command-center",
-  "version": "4.6.1",
-  "description": "OnlyBeats Ultimate Game Hub selected-game transfer hotfix",
+  "version": "5.0.0-beta.1",
+  "description": "OnlyBeats cloud sync and mobile private beta",
   "main": "desktop/main.js",
   "author": {
     "name": "OnlyBeats"
@@ -13,7 +13,8 @@
     "pack": "electron-builder --dir",
     "dist:win": "electron-builder --win nsis",
     "dist": "electron-builder",
-    "desktop:build": "npm run dist:win"
+    "desktop:build": "npm run dist:win",
+    "serve:mobile": "npx http-server app -p 8080 -c-1"
   },
   "devDependencies": {
     "electron": "^37.2.0",

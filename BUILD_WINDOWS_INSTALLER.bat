@@ -1,44 +1,17 @@
 @echo off
 cd /d "%~dp0"
-
 echo ======================================
-echo OnlyBeats v4.6.1 Installer Builder
+echo OnlyBeats v5.0.0-beta.1 Builder
 echo ======================================
 echo.
-
-echo Installing dependencies...
 call npm install
-if errorlevel 1 (
-  echo.
-  echo ERROR: Dependency installation failed.
-  pause
-  exit /b 1
-)
-
-echo.
-echo Building OnlyBeats v4.6.1 installer...
+if errorlevel 1 (echo ERROR: npm install failed.&pause&exit /b 1)
 call npm run dist:win
-if errorlevel 1 (
-  echo.
-  echo ERROR: Installer build failed.
-  echo Review the error above.
-  pause
-  exit /b 1
-)
-
+if errorlevel 1 (echo ERROR: installer build failed.&pause&exit /b 1)
 echo.
-echo ======================================
-echo Installer build completed
-echo ======================================
-echo.
-
-if exist "dist\OnlyBeats-Setup-4.6.1.exe" (
-  echo Installer found:
-  echo dist\OnlyBeats-Setup-4.6.1.exe
+if exist "dist\OnlyBeats-Setup-5.0.0-beta.1.exe" (
+ echo Installer found: dist\OnlyBeats-Setup-5.0.0-beta.1.exe
 ) else (
-  echo WARNING: Expected installer was not found.
-  echo Check the dist folder.
+ echo WARNING: expected installer was not found.
 )
-
-echo.
 pause

@@ -96,6 +96,7 @@ function rc4RouteRendererMap(){
     livecommand:typeof liveCommandCenterPage==='function',
     devices:typeof devicesSyncPage==='function',
     cloud:typeof cloudSyncPage==='function',
+    mobile:typeof mobileCompanionPage==='function',
     account:typeof accountDevicesPage==='function',
     platform:typeof liveDataPlatformPage==='function',
     release:typeof desktopReleasePage==='function',

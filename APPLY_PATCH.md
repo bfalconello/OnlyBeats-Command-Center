@@ -1,8 +1,7 @@
-# Apply OnlyBeats v4.6.1
+# Apply OnlyBeats v5.0.0-beta.1
 
-Copy the entire extracted package over the current master repository
-and replace existing files.
+Copy the entire extracted package over the current master repository and replace existing files.
 
 Suggested commit:
 
-`v4.6.1: fix selected-game transfer into Ultimate Game Hub`
+`v5.0.0-beta.1: add cloud sync and mobile private beta`
