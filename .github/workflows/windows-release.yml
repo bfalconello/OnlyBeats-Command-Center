@@ -1,4 +1,4 @@
-name: Windows Desktop Release
+name: OnlyBeats Windows Release
 
 on:
   workflow_dispatch:

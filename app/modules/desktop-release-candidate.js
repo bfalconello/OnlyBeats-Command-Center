@@ -1,6 +1,6 @@
 'use strict';
 
-// OnlyBeats v2.6 Desktop Release Candidate.
+// OnlyBeats v2.6.1 Professional Windows Edition.
 // Installer and updater readiness without claiming signing or publishing is configured.
 
 let desktopReleaseState={
@@ -96,7 +96,7 @@ function desktopReleasePage(){
 
   return `<section class="intel-hero">
     <div>
-      <p class="eyebrow">ONLYBEATS DESKTOP RELEASE CANDIDATE</p>
+      <p class="eyebrow">ONLYBEATS PROFESSIONAL WINDOWS EDITION</p>
       <h2>${summary.failed?`${summary.failed} release item${summary.failed===1?'':'s'} still need review.`:'Desktop release checks are ready.'}</h2>
       <p>Validate installer packaging, first-run setup, backups, recovery, release metadata, signing readiness, and update-channel configuration.</p>
     </div>
@@ -108,7 +108,7 @@ function desktopReleasePage(){
   </section>
 
   <div class="metric-grid">
-    ${metric('Release Version','2.6.0-rc.1','Desktop release candidate')}
+    ${metric('Release Version','2.6.1','Professional Windows Edition')}
     ${metric('Checks Passing',`${summary.passed}/${summary.checks.length}`,summary.failed?'Review remaining items':'Ready')}
     ${metric('Runtime',runtime.electron?'Electron':'Web preview',runtime.packaged?'Packaged':'Development')}
     ${metric('First-Run Setup',`${setup.completed}/${setup.total}`,desktopReleaseState.firstRunComplete?'Complete':'In progress')}
@@ -156,7 +156,7 @@ function desktopReleasePage(){
       <div><span>Development launch</span><strong>npm run start</strong></div>
       <div><span>Build unpacked app</span><strong>npm run pack</strong></div>
       <div><span>Build Windows installer</span><strong>npm run dist:win</strong></div>
-      <div><span>Expected output</span><strong>dist/OnlyBeats-Setup-2.6.0.exe</strong></div>
+      <div><span>Expected output</span><strong>dist/OnlyBeats-Setup-2.6.1.exe</strong></div>
     </div>`,'wide')}
   </div>`;
 }
@@ -166,7 +166,7 @@ function exportDesktopReleaseReport(){
   const summary=desktopReleaseSummary();
   const payload={
     generatedAt:new Date().toISOString(),
-    releaseVersion:'2.6.0-rc.1',
+    releaseVersion:'2.6.1',
     appVersion:VERSION,
     runtime,
     state:desktopReleaseState,

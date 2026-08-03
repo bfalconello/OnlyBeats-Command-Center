@@ -1,17 +1,19 @@
 {
   "name": "onlybeats-command-center",
-  "version": "2.6.0",
-  "description": "OnlyBeats college football command center",
+  "version": "2.6.1",
+  "description": "OnlyBeats professional college football command center for Windows",
   "main": "desktop/main.js",
-  "author": "OnlyBeats",
+  "author": {
+    "name": "OnlyBeats"
+  },
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
     "start": "electron .",
     "pack": "electron-builder --dir",
     "dist:win": "electron-builder --win nsis",
-    "desktop:build": "electron-builder --win nsis",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "desktop:build": "npm run dist:win"
   },
   "devDependencies": {
     "electron": "^37.2.0",
@@ -40,7 +42,8 @@
           ]
         }
       ],
-      "artifactName": "OnlyBeats-Setup-${version}.${ext}"
+      "artifactName": "OnlyBeats-Setup-${version}.${ext}",
+      "icon": "build/icon.ico"
     },
     "nsis": {
       "oneClick": false,
@@ -49,8 +52,17 @@
       "createStartMenuShortcut": true,
       "shortcutName": "OnlyBeats",
       "deleteAppDataOnUninstall": false,
-      "runAfterFinish": true
+      "runAfterFinish": true,
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeader": "build/installer-header.bmp",
+      "installerSidebar": "build/installer-sidebar.bmp",
+      "uninstallerSidebar": "build/installer-sidebar.bmp",
+      "menuCategory": true,
+      "perMachine": false,
+      "displayLanguageSelector": false
     },
-    "publish": null
+    "publish": null,
+    "copyright": "Copyright © 2026 OnlyBeats"
   }
 }

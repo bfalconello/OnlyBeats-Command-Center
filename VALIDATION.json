@@ -59,6 +59,10 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/professional-windows.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/command-center-2.js": {
     "ok": true,
     "stderr": ""
@@ -183,11 +187,15 @@
     "ok": true,
     "stderr": ""
   },
-  "installer_configuration": {
+  "branding_assets": {
     "ok": true,
     "stderr": ""
   },
-  "desktop_release_runtime_symbols": {
+  "installer_metadata": {
+    "ok": true,
+    "stderr": ""
+  },
+  "professional_windows_runtime_symbols": {
     "ok": true,
     "stderr": ""
   }

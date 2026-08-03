@@ -86,6 +86,7 @@ function rc4RouteRendererMap(){
     cloud:typeof cloudSyncPage==='function',
     platform:typeof liveDataPlatformPage==='function',
     release:typeof desktopReleasePage==='function',
+    windows:typeof professionalWindowsPage==='function',
     wall:typeof wallPage==='function',
     watch:typeof watchCenterPage==='function',
     gamehub:typeof gameIntelligenceHubPage==='function',
