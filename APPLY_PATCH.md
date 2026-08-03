@@ -1,22 +1,16 @@
-# Apply OnlyBeats v2.6.1 — Professional Windows Edition
+# Apply OnlyBeats v2.7 — Cloud Platform
 
-Copy the complete package into the repository and replace existing files.
+Copy the entire extracted package into the repository and replace existing files.
 
-Important additions include:
+Important additions:
 
-- `app/assets/`
-- `app/modules/professional-windows.js`
-- `build/icon.ico`
-- `build/installer-header.bmp`
-- `build/installer-sidebar.bmp`
-- updated `desktop/`
+- `app/modules/cloud-platform.js`
+- updated `app/app.js`
+- updated `app/index.html`
+- updated `app/modules/config.js`
 - updated `package.json`
-- `docs/V2_6_1_PROFESSIONAL_WINDOWS.md`
-
-Build the installer with:
-
-`BUILD_WINDOWS_INSTALLER.bat`
+- `docs/V2_7_CLOUD_PLATFORM.md`
 
 Suggested commit:
 
-`v2.6.1: add professional Windows branding and backup manager`
+`v2.7.0: add account, trusted devices, and automatic backup platform`

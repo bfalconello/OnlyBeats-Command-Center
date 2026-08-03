@@ -139,6 +139,10 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/cloud-platform.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/smart-insights.js": {
     "ok": true,
     "stderr": ""
@@ -187,15 +191,11 @@
     "ok": true,
     "stderr": ""
   },
-  "branding_assets": {
+  "cloud_platform_runtime_symbols": {
     "ok": true,
     "stderr": ""
   },
-  "installer_metadata": {
-    "ok": true,
-    "stderr": ""
-  },
-  "professional_windows_runtime_symbols": {
+  "credential_safety": {
     "ok": true,
     "stderr": ""
   }

@@ -84,6 +84,7 @@ function rc4RouteRendererMap(){
     gameday:typeof gameDayCommandPage==='function',
     devices:typeof devicesSyncPage==='function',
     cloud:typeof cloudSyncPage==='function',
+    account:typeof accountDevicesPage==='function',
     platform:typeof liveDataPlatformPage==='function',
     release:typeof desktopReleasePage==='function',
     windows:typeof professionalWindowsPage==='function',
