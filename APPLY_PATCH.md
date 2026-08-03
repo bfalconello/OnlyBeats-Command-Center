@@ -1,14 +1,16 @@
-# Apply OnlyBeats v1.9 — GameDay Command Center
+# Apply OnlyBeats v2.0 — Cross-Device Foundation
 
 Copy into the repository:
 
 - `app/app.js`
 - `app/index.html`
+- `app/manifest.webmanifest`
+- `app/service-worker.js`
 - the complete `app/modules/` folder
-- `docs/V1_9_GAMEDAY_COMMAND.md`
+- `docs/V2_0_CROSS_DEVICE_FOUNDATION.md`
 
 Replace files when prompted.
 
 Suggested commit:
 
-`v1.9.0: add GameDay Command Center phase 1`
+`v2.0.0: add PWA and cross-device foundation`

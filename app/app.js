@@ -32,7 +32,8 @@ if (
   typeof aboutStoragePage !== 'function' ||
   typeof uiQualityPage !== 'function' ||
   typeof smartInsightsPage !== 'function' ||
-  typeof gameDayCommandPage !== 'function'
+  typeof gameDayCommandPage !== 'function' ||
+  typeof devicesSyncPage !== 'function'
 ) {
   throw new Error('OnlyBeats core modules did not load. Verify index.html script order.');
 }
@@ -712,7 +713,7 @@ if($('availabilityForm'))$('availabilityForm').onsubmit=e=>{e.preventDefault();c
     if($('runPageSmokeTests'))$('runPageSmokeTests').onclick=async()=>{await runOnlyBeatsPageSmokeTests();renderPage();toast('Page smoke tests completed')};
     if($('exportDiagnostics'))$('exportDiagnostics').onclick=()=>exportOnlyBeatsDiagnostics();
     if($('clearRuntimeLog'))$('clearRuntimeLog').onclick=()=>{clearOnlyBeatsRuntimeLog();renderPage();toast('Runtime log cleared')};
-  }if(currentPage==='dashboard')bindUnifiedCommandDashboard();if(currentPage==='gamehub')bindGameIntelligenceHub();if(currentPage==='gameday')bindGameDayCommand();if(currentPage==='insights')bindSmartInsights();if(currentPage==='quality')bindUiQuality();if(currentPage==='about')bindAboutStorage();if(currentPage==='mission')bindCommandCenterTwo();if(currentPage==='alerts')bindLiveAlertCenter();if(currentPage==='performance')bindPerformanceCenter();if(currentPage==='datahealth')bindLiveDataHealth();if(currentPage==='analytics')bindAnalyticsCenter();if(currentPage==='archive')bindSeasonArchive();if(currentPage==='timeline')bindLiveCommandTimeline();if(currentPage==='briefing')bindSmartBriefing();if(currentPage==='watch')bindWatchCenter();if(currentPage==='rankings')bindIntelligenceEngine();if(currentPage==='predictions')bindPredictionPage();if(currentPage==='reports'){bindPredictionIntelligence();if($('reportExportPredictions'))$('reportExportPredictions').onclick=exportPredictionsCsv;if($('yearbookNote'))$('yearbookNote').oninput=e=>localStorage.setItem('onlybeats.yearbook.note.v1',e.target.value)}document.querySelectorAll('[data-predict-game]').forEach(b=>b.onclick=()=>{predictionDraftGameId=b.dataset.predictGame;editingPredictionId='';predictionView='games';navigate('predictions')});bindPersonalization();if(currentPage==='settings')bindSettings()}
+  }if(currentPage==='dashboard')bindUnifiedCommandDashboard();if(currentPage==='gamehub')bindGameIntelligenceHub();if(currentPage==='devices')bindDevicesSync();if(currentPage==='gameday')bindGameDayCommand();if(currentPage==='insights')bindSmartInsights();if(currentPage==='quality')bindUiQuality();if(currentPage==='about')bindAboutStorage();if(currentPage==='mission')bindCommandCenterTwo();if(currentPage==='alerts')bindLiveAlertCenter();if(currentPage==='performance')bindPerformanceCenter();if(currentPage==='datahealth')bindLiveDataHealth();if(currentPage==='analytics')bindAnalyticsCenter();if(currentPage==='archive')bindSeasonArchive();if(currentPage==='timeline')bindLiveCommandTimeline();if(currentPage==='briefing')bindSmartBriefing();if(currentPage==='watch')bindWatchCenter();if(currentPage==='rankings')bindIntelligenceEngine();if(currentPage==='predictions')bindPredictionPage();if(currentPage==='reports'){bindPredictionIntelligence();if($('reportExportPredictions'))$('reportExportPredictions').onclick=exportPredictionsCsv;if($('yearbookNote'))$('yearbookNote').oninput=e=>localStorage.setItem('onlybeats.yearbook.note.v1',e.target.value)}document.querySelectorAll('[data-predict-game]').forEach(b=>b.onclick=()=>{predictionDraftGameId=b.dataset.predictGame;editingPredictionId='';predictionView='games';navigate('predictions')});bindPersonalization();if(currentPage==='settings')bindSettings()}
 function gamePredictionSnapshot(game){
   const rows=predictions
     .filter(p=>p.gameId===game.id)
@@ -921,6 +922,7 @@ initializeDesktopExperience();
 initializeExperiencePolish();
 initializeSmartInsights();
 initializeGameDayCommand();
+initializeCrossDeviceFoundation();
 renderNav();
 setTimeout(()=>runOnlyBeatsDiagnostics(),250);
 setTimeout(()=>captureTimelineSnapshot('startup'),500);

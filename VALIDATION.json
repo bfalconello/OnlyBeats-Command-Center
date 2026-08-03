@@ -47,6 +47,10 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/cross-device-foundation.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/team-intelligence.js": {
     "ok": true,
     "stderr": ""
@@ -131,11 +135,19 @@
     "ok": true,
     "stderr": ""
   },
+  "app/service-worker.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "manifest_json": {
+    "ok": true,
+    "stderr": ""
+  },
   "configured_route_coverage": {
     "ok": true,
     "stderr": ""
   },
-  "gameday_runtime_symbols": {
+  "cross_device_runtime_symbols": {
     "ok": true,
     "stderr": ""
   }
