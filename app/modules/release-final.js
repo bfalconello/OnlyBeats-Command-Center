@@ -68,6 +68,7 @@ function runProductionReleaseChecks(){
     productionCheck('Prediction Intelligence single load',document.querySelectorAll('script[src="modules/prediction-intelligence.js"]').length===1,'Prevents duplicate lexical declarations'),
     productionCheck('Weather rate-limit protection',typeof onlyBeatsWeatherBackoff==='function'&&typeof onlyBeatsCachedWeather==='function','Caching, throttling, and 429 backoff'),
     productionCheck('Unified device cloud status',typeof devicesCloudState==='function'&&devicesCloudState().connected===Boolean(cloudSyncState?.connected),'Devices & Sync uses the active Firebase connection state'),
+    productionCheck('Automatic update verification release',VERSION==='6.0.3'&&typeof installedAppUpdatesPage==='function','Visible post-update version marker and verification panel'),
     productionCheck('Live Data Platform',typeof liveDataPlatformPage==='function','Provider platform renderer'),
     productionCheck('Desktop Release Center',typeof desktopReleasePage==='function','Release center renderer'),
     productionCheck('Professional Windows Experience',typeof professionalWindowsPage==='function','Windows experience renderer'),

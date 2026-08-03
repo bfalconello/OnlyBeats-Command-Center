@@ -1,7 +1,7 @@
 {
   "name": "onlybeats-command-center",
-  "version": "6.0.2",
-  "description": "OnlyBeats unified Firebase status across Devices & Sync and cloud dashboards",
+  "version": "6.0.3",
+  "description": "OnlyBeats automatic updater end-to-end verification release",
   "main": "desktop/main.js",
   "author": {
     "name": "OnlyBeats"

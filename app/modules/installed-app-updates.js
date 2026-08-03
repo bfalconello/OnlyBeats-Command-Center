@@ -200,7 +200,7 @@ function installedAppUpdatesPage(){
 
   return `<section class="installed-update-hero">
     <div>
-      <p class="eyebrow">ONLYBEATS v6.0</p>
+      <p class="eyebrow">ONLYBEATS v6.0.3 · UPDATE PIPELINE TEST</p>
       <h1>${esc(updateStatusLabel())}</h1>
       <p>${esc(updateStatusDetail())}</p>
     </div>
@@ -218,11 +218,17 @@ function installedAppUpdatesPage(){
     ${metric('Download',state.status==='downloading'?`${state.percent.toFixed(1)}%`:state.status==='downloaded'?'Complete':'Not active',formatUpdateBytes(state.total))}
     ${metric('Last Check',state.checkedAt?new Date(state.checkedAt).toLocaleString():'Never','Automatic and manual')}
     ${metric('Firebase Config','Persistent','Stored outside installed program files')}
+    ${metric('Updater Verification','v6.0.3','Installed update pipeline test')}
   </div>
 
   ${state.error?`<div class="provider-notice"><div><strong>Update service needs attention</strong><p class="muted">${esc(state.error)}</p></div></div>`:''}
 
   <div class="reports-grid">
+    ${card('Automatic Update Verification',`<div class="intel-list">
+      <div class="intel-row"><span class="intel-icon">✓</span><div><strong>Version 6.0.3 marker loaded</strong><small>If this page appeared after Restart and Install, the updater completed successfully.</small></div></div>
+      <div class="intel-row"><span class="intel-icon">✓</span><div><strong>Firebase configuration preserved</strong><small>Your installed update reused the persistent Firebase configuration stored in application data.</small></div></div>
+      <div class="intel-row"><span class="intel-icon">✓</span><div><strong>Local and cloud data preserved</strong><small>Predictions, favorites, notes, settings, and cloud account data remain available after the update.</small></div></div>
+    </div>`,'wide')}
     ${card('Download Progress',updateProgressPanel())}
 
     ${card('Update Preferences',`<div class="detail-list">

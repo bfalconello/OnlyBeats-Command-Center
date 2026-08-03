@@ -370,6 +370,7 @@ function qaModuleChecks(){
     ['Mobile Companion',typeof mobileCompanionPage==='function'],
     ['Cross-Platform Experience',typeof crossPlatformExperiencePage==='function'],
     ['Installed App Updates',typeof installedAppUpdatesPage==='function'],
+    ['v6.0.3 updater marker',VERSION==='6.0.3'],
     ['Updater desktop bridge',Boolean(window.onlyBeatsDesktop?.update)],
     ['Preload bridge health',Boolean(window.onlyBeatsDesktop?.getBridgeHealth)],
     ['Prediction Intelligence single load',document.querySelectorAll('script[src="modules/prediction-intelligence.js"]').length===1],
