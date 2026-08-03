@@ -31,24 +31,36 @@ function saveDesktopReleaseState(){
 }
 
 function desktopRuntimeInfo(){
-  const bridge=window.onlyBeatsDesktop||null;
-  const electron=Boolean(bridge||navigator.userAgent.includes('Electron'));
+  const rawBridge=(typeof window!=='undefined'&&window.onlyBeatsDesktop)
+    ?window.onlyBeatsDesktop
+    :null;
+  const bridge=(rawBridge&&typeof rawBridge==='object')?rawBridge:null;
+  const userAgent=(typeof navigator!=='undefined'&&navigator.userAgent)||'';
+  const platform=(typeof navigator!=='undefined'&&navigator.platform)||'Unknown';
+  const electron=Boolean(bridge||userAgent.includes('Electron'));
+
   return {
     electron,
     bridge,
-    platform:bridge?.platform||navigator.platform||'Unknown',
+    platform:bridge?.platform||platform,
     appVersion:bridge?.version||VERSION,
     packaged:Boolean(bridge?.packaged),
     updaterAvailable:Boolean(bridge?.updaterAvailable),
-    installerMode:Boolean(bridge?.packaged)
+    installerMode:Boolean(bridge?.packaged),
+    signed:Boolean(bridge?.signed)
   };
 }
 
 function desktopReleaseChecks(){
   const runtime=desktopRuntimeInfo();
-  const production=typeof runProductionReleaseChecks==='function'
-    ? runProductionReleaseChecks()
-    : {failed:1,passed:0};
+  let production={failed:1,passed:0};
+  try{
+    production=typeof runProductionReleaseChecks==='function'
+      ?runProductionReleaseChecks()
+      :production;
+  }catch(error){
+    production={failed:1,passed:0,error:error?.message||'Production checks unavailable'};
+  }
 
   return [
     {name:'Production checks pass',ok:production.failed===0,detail:`${production.passed||0} passing · ${production.failed||0} failing`},
@@ -57,8 +69,8 @@ function desktopReleaseChecks(){
     {name:'Installer configuration',ok:true,detail:'electron-builder NSIS configuration included'},
     {name:'Application metadata',ok:true,detail:'Name, version, publisher, and app ID included'},
     {name:'Update channel selected',ok:Boolean(desktopReleaseState.updateChannel),detail:desktopReleaseState.updateChannel},
-    {name:'Code signing configured',ok:Boolean(bridge?.signed),detail:bridge?.signed?'Signed build':'Not configured'},
-    {name:'Update publishing configured',ok:Boolean(bridge?.updaterAvailable),detail:bridge?.updaterAvailable?'Available':'Not configured'},
+    {name:'Code signing configured',ok:Boolean(runtime.bridge?.signed),detail:runtime.bridge?.signed?'Signed build':'Not configured'},
+    {name:'Update publishing configured',ok:Boolean(runtime.bridge?.updaterAvailable),detail:runtime.bridge?.updaterAvailable?'Available':'Not configured'},
     {name:'First-run setup completed',ok:desktopReleaseState.firstRunComplete,detail:desktopReleaseState.firstRunComplete?'Complete':'Pending'},
     {name:'Backup export available',ok:typeof exportOnlyBeatsBundle==='function',detail:typeof exportOnlyBeatsBundle==='function'?'Ready':'Unavailable'}
   ];

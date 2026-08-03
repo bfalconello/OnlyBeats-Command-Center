@@ -70,6 +70,7 @@ function rc4Check(name,ok,detail=''){
 function rc4RouteRendererMap(){
   return {
     dashboard:typeof unifiedCommandDashboardPage==='function',
+    launch:typeof publicReleaseHubPage==='function',
     briefing:typeof smartBriefingPage==='function',
     timeline:typeof liveCommandTimelinePage==='function',
     archive:typeof seasonArchivePage==='function',

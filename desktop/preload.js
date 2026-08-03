@@ -9,6 +9,7 @@ contextBridge.exposeInMainWorld('onlyBeatsDesktop',{
   updaterAvailable:false,
   signed:false,
   productName:'OnlyBeats',
+  releaseChannel:'stable',
   getInfo:()=>ipcRenderer.invoke('desktop:get-info'),
   openNotificationSettings:()=>ipcRenderer.invoke('desktop:open-notification-settings'),
   showItem:filePath=>ipcRenderer.invoke('desktop:show-item',filePath),

@@ -1,7 +1,7 @@
 {
   "name": "onlybeats-command-center",
-  "version": "2.9.1",
-  "description": "OnlyBeats college football command center with full-screen Saturday Mode",
+  "version": "3.0.1",
+  "description": "OnlyBeats v3.0.1 release hub runtime hotfix",
   "main": "desktop/main.js",
   "author": {
     "name": "OnlyBeats"

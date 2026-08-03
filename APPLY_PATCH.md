@@ -1,15 +1,14 @@
-# Apply OnlyBeats v2.9.1 — Command Center Hotfix
+# Apply OnlyBeats v3.0.1 — Release Hub Runtime Hotfix
 
 Copy the entire extracted package over the current master repository and replace existing files.
 
 Important changes:
 
-- updated `app/modules/live-command-center.js`
-- updated `app/modules/config.js`
-- updated `app/index.html`
-- updated `package.json`
-- updated `BUILD_WINDOWS_INSTALLER.bat`
+- fixed `app/modules/desktop-release-candidate.js`
+- hardened `app/modules/public-release.js`
+- updated `app/modules/release-final.js`
+- updated version metadata and installer script
 
 Suggested commit:
 
-`v2.9.1: fix fullscreen Command Mode and add Saturday Mode`
+`v3.0.1: fix Release Hub desktop bridge runtime`
