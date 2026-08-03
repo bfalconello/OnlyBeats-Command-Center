@@ -43,6 +43,7 @@ function runProductionReleaseChecks(){
     productionCheck('Live Command Center',typeof liveCommandCenterPage==='function','Live command renderer'),
     productionCheck('Public Release Hub',typeof publicReleaseHubPage==='function','Release hub renderer'),
     productionCheck('Desktop bridge safety',typeof desktopRuntimeInfo==='function'&&typeof publicReleaseRuntime==='function','Defensive runtime detection'),
+    productionCheck('Smart Startup',typeof initializeSmartStartup==='function'&&typeof runStartupDiagnostics==='function','Startup diagnostics and recovery'),
     productionCheck('Live Data Platform',typeof liveDataPlatformPage==='function','Provider platform renderer'),
     productionCheck('Desktop Release Center',typeof desktopReleasePage==='function','Release center renderer'),
     productionCheck('Professional Windows Experience',typeof professionalWindowsPage==='function','Windows experience renderer'),

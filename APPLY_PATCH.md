@@ -1,14 +1,18 @@
-# Apply OnlyBeats v3.0.1 — Release Hub Runtime Hotfix
+# Apply OnlyBeats v3.1 — Smart Startup & Sync Readiness
 
 Copy the entire extracted package over the current master repository and replace existing files.
 
-Important changes:
+Important additions:
 
-- fixed `app/modules/desktop-release-candidate.js`
-- hardened `app/modules/public-release.js`
+- `app/modules/smart-startup.js`
+- updated `app/app.js`
+- updated `app/index.html`
+- updated `app/modules/config.js`
+- updated `app/modules/release-rc4.js`
 - updated `app/modules/release-final.js`
-- updated version metadata and installer script
+- updated `package.json`
+- updated `BUILD_WINDOWS_INSTALLER.bat`
 
 Suggested commit:
 
-`v3.0.1: fix Release Hub desktop bridge runtime`
+`v3.1.0: add smart startup diagnostics and offline recovery`

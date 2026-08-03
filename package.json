@@ -1,7 +1,7 @@
 {
   "name": "onlybeats-command-center",
-  "version": "3.0.1",
-  "description": "OnlyBeats v3.0.1 release hub runtime hotfix",
+  "version": "3.1.0",
+  "description": "OnlyBeats smart startup, recovery, and sync readiness edition",
   "main": "desktop/main.js",
   "author": {
     "name": "OnlyBeats"

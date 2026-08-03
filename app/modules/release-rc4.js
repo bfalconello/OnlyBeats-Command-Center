@@ -71,6 +71,7 @@ function rc4RouteRendererMap(){
   return {
     dashboard:typeof unifiedCommandDashboardPage==='function',
     launch:typeof publicReleaseHubPage==='function',
+    startup:typeof startupRecoveryPage==='function',
     briefing:typeof smartBriefingPage==='function',
     timeline:typeof liveCommandTimelinePage==='function',
     archive:typeof seasonArchivePage==='function',
