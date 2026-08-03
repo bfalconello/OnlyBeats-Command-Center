@@ -76,6 +76,7 @@ function rc4RouteRendererMap(){
     analytics:typeof analyticsCenterPage==='function',
     datahealth:typeof liveDataHealthPage==='function',
     performance:typeof performanceCenterPage==='function',
+    alerts:typeof liveAlertCenterPage==='function',
     wall:typeof wallPage==='function',
     watch:typeof watchCenterPage==='function',
     gamehub:typeof gameIntelligenceHubPage==='function',

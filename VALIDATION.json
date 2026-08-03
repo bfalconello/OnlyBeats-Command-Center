@@ -91,6 +91,10 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/live-alert-center.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/diagnostics-runtime.js": {
     "ok": true,
     "stderr": ""
@@ -111,7 +115,7 @@
     "ok": true,
     "stderr": ""
   },
-  "performance_runtime_symbols": {
+  "live_alert_runtime_symbols": {
     "ok": true,
     "stderr": ""
   }

@@ -29,6 +29,7 @@ function runProductionReleaseChecks(){
     productionCheck('Analytics Center',typeof analyticsCenterPage==='function','Analytics renderer'),
     productionCheck('Data Health',typeof liveDataHealthPage==='function','Data health renderer'),
     productionCheck('Performance Center',typeof performanceCenterPage==='function','Performance renderer'),
+    productionCheck('Live Alert Center',typeof liveAlertCenterPage==='function','Alert renderer'),
     productionCheck('Smart Briefing',typeof smartBriefingPage==='function','Briefing renderer'),
     productionCheck('Watch Center',typeof watchCenterPage==='function','Watch renderer'),
     productionCheck('Runtime diagnostics',typeof runOnlyBeatsDiagnostics==='function','Diagnostics runtime'),

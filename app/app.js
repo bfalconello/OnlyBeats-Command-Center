@@ -26,7 +26,8 @@ if (
   typeof analyticsCenterPage !== 'function' ||
   typeof isOnlyBeatsProductionVersion !== 'function' ||
   typeof liveDataHealthPage !== 'function' ||
-  typeof performanceCenterPage !== 'function'
+  typeof performanceCenterPage !== 'function' ||
+  typeof liveAlertCenterPage !== 'function'
 ) {
   throw new Error('OnlyBeats core modules did not load. Verify index.html script order.');
 }
@@ -55,6 +56,8 @@ let gameHubGameId='';
 let seasonArchives=load(SEASON_ARCHIVE_KEY,[]);
 let activeSeasonArchiveId='';
 let refreshHistory=load(REFRESH_HISTORY_KEY,[]);
+let liveAlerts=load(LIVE_ALERTS_KEY,[]);
+let liveAlertPreferences=load(LIVE_ALERT_PREFS_KEY,{favoritesOnly:false,rankedOnly:false,muted:false});
 let editingPredictionId='';
 let editingFutureId='';
 let predictionDraftGameId='';
@@ -118,6 +121,7 @@ async function syncScores(silent=false){if(typeof recordRefreshAttempt==='functi
     localStorage.setItem(SCORE_CACHE_KEY,JSON.stringify(games));
     lastSync=new Date();
     if(typeof recordRefreshAttempt==='function')recordRefreshAttempt('scores','success',{duration:performance.now()-started,games:games.length});
+    if(typeof captureLiveAlerts==='function')captureLiveAlerts('score-refresh');
     captureTimelineSnapshot('score-refresh');
     updateProviderStatus(true);
   }catch(e){
@@ -669,7 +673,7 @@ function exportPredictionsCsv(){const rows=[['Record Type','Game / Title','Categ
 
 function renderPageUnsafe(){
   const label=pages.find(p=>p[0]===currentPage)?.[2]||'Module';
-  $('content').innerHTML=currentPage==='dashboard'?unifiedCommandDashboardPage():currentPage==='briefing'?smartBriefingPage():currentPage==='timeline'?liveCommandTimelinePage():currentPage==='archive'?seasonArchivePage():currentPage==='analytics'?analyticsCenterPage():currentPage==='datahealth'?liveDataHealthPage():currentPage==='performance'?performanceCenterPage():currentPage==='wall'?wallPage():currentPage==='watch'?watchCenterPage():currentPage==='gamehub'?gameIntelligenceHubPage():currentPage==='schedule'?schedulePage():currentPage==='favorites'?favoritesPage():currentPage==='teams'?teamHubPage():currentPage==='rankings'?intelligenceEnginePage():currentPage==='news'?newsPage():currentPage==='weather'?weatherPage():currentPage==='availability'?availabilityPage():currentPage==='predictions'?predictionsPage():currentPage==='reports'?predictionIntelligencePage():currentPage==='developer'?developerPage():currentPage==='settings'?settingsPage():placeholderPage(currentPage,label);
+  $('content').innerHTML=currentPage==='dashboard'?unifiedCommandDashboardPage():currentPage==='briefing'?smartBriefingPage():currentPage==='timeline'?liveCommandTimelinePage():currentPage==='archive'?seasonArchivePage():currentPage==='analytics'?analyticsCenterPage():currentPage==='datahealth'?liveDataHealthPage():currentPage==='performance'?performanceCenterPage():currentPage==='alerts'?liveAlertCenterPage():currentPage==='wall'?wallPage():currentPage==='watch'?watchCenterPage():currentPage==='gamehub'?gameIntelligenceHubPage():currentPage==='schedule'?schedulePage():currentPage==='favorites'?favoritesPage():currentPage==='teams'?teamHubPage():currentPage==='rankings'?intelligenceEnginePage():currentPage==='news'?newsPage():currentPage==='weather'?weatherPage():currentPage==='availability'?availabilityPage():currentPage==='predictions'?predictionsPage():currentPage==='reports'?predictionIntelligencePage():currentPage==='developer'?developerPage():currentPage==='settings'?settingsPage():placeholderPage(currentPage,label);
   bindPage();
 }
 function renderPage(){
@@ -701,7 +705,7 @@ if($('availabilityForm'))$('availabilityForm').onsubmit=e=>{e.preventDefault();c
     if($('runPageSmokeTests'))$('runPageSmokeTests').onclick=async()=>{await runOnlyBeatsPageSmokeTests();renderPage();toast('Page smoke tests completed')};
     if($('exportDiagnostics'))$('exportDiagnostics').onclick=()=>exportOnlyBeatsDiagnostics();
     if($('clearRuntimeLog'))$('clearRuntimeLog').onclick=()=>{clearOnlyBeatsRuntimeLog();renderPage();toast('Runtime log cleared')};
-  }if(currentPage==='dashboard')bindUnifiedCommandDashboard();if(currentPage==='gamehub')bindGameIntelligenceHub();if(currentPage==='performance')bindPerformanceCenter();if(currentPage==='datahealth')bindLiveDataHealth();if(currentPage==='analytics')bindAnalyticsCenter();if(currentPage==='archive')bindSeasonArchive();if(currentPage==='timeline')bindLiveCommandTimeline();if(currentPage==='briefing')bindSmartBriefing();if(currentPage==='watch')bindWatchCenter();if(currentPage==='rankings')bindIntelligenceEngine();if(currentPage==='predictions')bindPredictionPage();if(currentPage==='reports'){bindPredictionIntelligence();if($('reportExportPredictions'))$('reportExportPredictions').onclick=exportPredictionsCsv;if($('yearbookNote'))$('yearbookNote').oninput=e=>localStorage.setItem('onlybeats.yearbook.note.v1',e.target.value)}document.querySelectorAll('[data-predict-game]').forEach(b=>b.onclick=()=>{predictionDraftGameId=b.dataset.predictGame;editingPredictionId='';predictionView='games';navigate('predictions')});bindPersonalization();if(currentPage==='settings')bindSettings()}
+  }if(currentPage==='dashboard')bindUnifiedCommandDashboard();if(currentPage==='gamehub')bindGameIntelligenceHub();if(currentPage==='alerts')bindLiveAlertCenter();if(currentPage==='performance')bindPerformanceCenter();if(currentPage==='datahealth')bindLiveDataHealth();if(currentPage==='analytics')bindAnalyticsCenter();if(currentPage==='archive')bindSeasonArchive();if(currentPage==='timeline')bindLiveCommandTimeline();if(currentPage==='briefing')bindSmartBriefing();if(currentPage==='watch')bindWatchCenter();if(currentPage==='rankings')bindIntelligenceEngine();if(currentPage==='predictions')bindPredictionPage();if(currentPage==='reports'){bindPredictionIntelligence();if($('reportExportPredictions'))$('reportExportPredictions').onclick=exportPredictionsCsv;if($('yearbookNote'))$('yearbookNote').oninput=e=>localStorage.setItem('onlybeats.yearbook.note.v1',e.target.value)}document.querySelectorAll('[data-predict-game]').forEach(b=>b.onclick=()=>{predictionDraftGameId=b.dataset.predictGame;editingPredictionId='';predictionView='games';navigate('predictions')});bindPersonalization();if(currentPage==='settings')bindSettings()}
 function gamePredictionSnapshot(game){
   const rows=predictions
     .filter(p=>p.gameId===game.id)
@@ -904,6 +908,7 @@ initializeReleaseCandidateThree();
 initializeReleaseCandidateFour();
 initializeProductionRelease();
 initializePerformancePolish();
+initializeLiveAlertCenter();
 renderNav();
 setTimeout(()=>runOnlyBeatsDiagnostics(),250);
 setTimeout(()=>captureTimelineSnapshot('startup'),500);
