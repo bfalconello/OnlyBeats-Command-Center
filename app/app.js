@@ -30,7 +30,8 @@ if (
   typeof liveAlertCenterPage !== 'function' ||
   typeof commandCenterTwoPage !== 'function' ||
   typeof aboutStoragePage !== 'function' ||
-  typeof uiQualityPage !== 'function'
+  typeof uiQualityPage !== 'function' ||
+  typeof smartInsightsPage !== 'function'
 ) {
   throw new Error('OnlyBeats core modules did not load. Verify index.html script order.');
 }
@@ -677,7 +678,7 @@ function exportPredictionsCsv(){const rows=[['Record Type','Game / Title','Categ
 
 function renderPageUnsafe(){
   const label=pages.find(p=>p[0]===currentPage)?.[2]||'Module';
-  $('content').innerHTML=currentPage==='dashboard'?unifiedCommandDashboardPage():currentPage==='briefing'?smartBriefingPage():currentPage==='timeline'?liveCommandTimelinePage():currentPage==='archive'?seasonArchivePage():currentPage==='analytics'?analyticsCenterPage():currentPage==='datahealth'?liveDataHealthPage():currentPage==='performance'?performanceCenterPage():currentPage==='alerts'?liveAlertCenterPage():currentPage==='mission'?commandCenterTwoPage():currentPage==='about'?aboutStoragePage():currentPage==='quality'?uiQualityPage():currentPage==='wall'?wallPage():currentPage==='watch'?watchCenterPage():currentPage==='gamehub'?gameIntelligenceHubPage():currentPage==='schedule'?schedulePage():currentPage==='favorites'?favoritesPage():currentPage==='teams'?teamHubPage():currentPage==='rankings'?intelligenceEnginePage():currentPage==='news'?newsPage():currentPage==='weather'?weatherPage():currentPage==='availability'?availabilityPage():currentPage==='predictions'?predictionsPage():currentPage==='reports'?predictionIntelligencePage():currentPage==='developer'?developerPage():currentPage==='settings'?settingsPage():placeholderPage(currentPage,label);
+  $('content').innerHTML=currentPage==='dashboard'?unifiedCommandDashboardPage():currentPage==='briefing'?smartBriefingPage():currentPage==='timeline'?liveCommandTimelinePage():currentPage==='archive'?seasonArchivePage():currentPage==='analytics'?analyticsCenterPage():currentPage==='datahealth'?liveDataHealthPage():currentPage==='performance'?performanceCenterPage():currentPage==='alerts'?liveAlertCenterPage():currentPage==='mission'?commandCenterTwoPage():currentPage==='about'?aboutStoragePage():currentPage==='quality'?uiQualityPage():currentPage==='insights'?smartInsightsPage():currentPage==='wall'?wallPage():currentPage==='watch'?watchCenterPage():currentPage==='gamehub'?gameIntelligenceHubPage():currentPage==='schedule'?schedulePage():currentPage==='favorites'?favoritesPage():currentPage==='teams'?teamHubPage():currentPage==='rankings'?intelligenceEnginePage():currentPage==='news'?newsPage():currentPage==='weather'?weatherPage():currentPage==='availability'?availabilityPage():currentPage==='predictions'?predictionsPage():currentPage==='reports'?predictionIntelligencePage():currentPage==='developer'?developerPage():currentPage==='settings'?settingsPage():placeholderPage(currentPage,label);
   bindPage();
   if(typeof restorePageFocus==='function')restorePageFocus();
 }
@@ -710,7 +711,7 @@ if($('availabilityForm'))$('availabilityForm').onsubmit=e=>{e.preventDefault();c
     if($('runPageSmokeTests'))$('runPageSmokeTests').onclick=async()=>{await runOnlyBeatsPageSmokeTests();renderPage();toast('Page smoke tests completed')};
     if($('exportDiagnostics'))$('exportDiagnostics').onclick=()=>exportOnlyBeatsDiagnostics();
     if($('clearRuntimeLog'))$('clearRuntimeLog').onclick=()=>{clearOnlyBeatsRuntimeLog();renderPage();toast('Runtime log cleared')};
-  }if(currentPage==='dashboard')bindUnifiedCommandDashboard();if(currentPage==='gamehub')bindGameIntelligenceHub();if(currentPage==='quality')bindUiQuality();if(currentPage==='about')bindAboutStorage();if(currentPage==='mission')bindCommandCenterTwo();if(currentPage==='alerts')bindLiveAlertCenter();if(currentPage==='performance')bindPerformanceCenter();if(currentPage==='datahealth')bindLiveDataHealth();if(currentPage==='analytics')bindAnalyticsCenter();if(currentPage==='archive')bindSeasonArchive();if(currentPage==='timeline')bindLiveCommandTimeline();if(currentPage==='briefing')bindSmartBriefing();if(currentPage==='watch')bindWatchCenter();if(currentPage==='rankings')bindIntelligenceEngine();if(currentPage==='predictions')bindPredictionPage();if(currentPage==='reports'){bindPredictionIntelligence();if($('reportExportPredictions'))$('reportExportPredictions').onclick=exportPredictionsCsv;if($('yearbookNote'))$('yearbookNote').oninput=e=>localStorage.setItem('onlybeats.yearbook.note.v1',e.target.value)}document.querySelectorAll('[data-predict-game]').forEach(b=>b.onclick=()=>{predictionDraftGameId=b.dataset.predictGame;editingPredictionId='';predictionView='games';navigate('predictions')});bindPersonalization();if(currentPage==='settings')bindSettings()}
+  }if(currentPage==='dashboard')bindUnifiedCommandDashboard();if(currentPage==='gamehub')bindGameIntelligenceHub();if(currentPage==='insights')bindSmartInsights();if(currentPage==='quality')bindUiQuality();if(currentPage==='about')bindAboutStorage();if(currentPage==='mission')bindCommandCenterTwo();if(currentPage==='alerts')bindLiveAlertCenter();if(currentPage==='performance')bindPerformanceCenter();if(currentPage==='datahealth')bindLiveDataHealth();if(currentPage==='analytics')bindAnalyticsCenter();if(currentPage==='archive')bindSeasonArchive();if(currentPage==='timeline')bindLiveCommandTimeline();if(currentPage==='briefing')bindSmartBriefing();if(currentPage==='watch')bindWatchCenter();if(currentPage==='rankings')bindIntelligenceEngine();if(currentPage==='predictions')bindPredictionPage();if(currentPage==='reports'){bindPredictionIntelligence();if($('reportExportPredictions'))$('reportExportPredictions').onclick=exportPredictionsCsv;if($('yearbookNote'))$('yearbookNote').oninput=e=>localStorage.setItem('onlybeats.yearbook.note.v1',e.target.value)}document.querySelectorAll('[data-predict-game]').forEach(b=>b.onclick=()=>{predictionDraftGameId=b.dataset.predictGame;editingPredictionId='';predictionView='games';navigate('predictions')});bindPersonalization();if(currentPage==='settings')bindSettings()}
 function gamePredictionSnapshot(game){
   const rows=predictions
     .filter(p=>p.gameId===game.id)
@@ -917,6 +918,7 @@ initializeLiveAlertCenter();
 initializeCommandCenterTwo();
 initializeDesktopExperience();
 initializeExperiencePolish();
+initializeSmartInsights();
 renderNav();
 setTimeout(()=>runOnlyBeatsDiagnostics(),250);
 setTimeout(()=>captureTimelineSnapshot('startup'),500);

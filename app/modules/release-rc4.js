@@ -80,6 +80,7 @@ function rc4RouteRendererMap(){
     mission:typeof commandCenterTwoPage==='function',
     about:typeof aboutStoragePage==='function',
     quality:typeof uiQualityPage==='function',
+    insights:typeof smartInsightsPage==='function',
     wall:typeof wallPage==='function',
     watch:typeof watchCenterPage==='function',
     gamehub:typeof gameIntelligenceHubPage==='function',

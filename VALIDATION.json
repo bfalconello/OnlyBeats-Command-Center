@@ -51,6 +51,10 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/smart-insights.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/prediction-intelligence.js": {
     "ok": true,
     "stderr": ""
@@ -127,7 +131,7 @@
     "ok": true,
     "stderr": ""
   },
-  "experience_polish_runtime_symbols": {
+  "smart_insights_runtime_symbols": {
     "ok": true,
     "stderr": ""
   }
