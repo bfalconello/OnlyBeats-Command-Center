@@ -141,7 +141,7 @@ function runReleaseReadinessChecks(){
     : {checks:[]};
 
   const checks=[
-    releaseCheck('Version is production release',VERSION==='1.0.0',VERSION),
+    releaseCheck('Version is production release',isOnlyBeatsProductionVersion(VERSION),`${VERSION} · ${onlyBeatsVersionChannel(VERSION)}`),
     releaseCheck('Dashboard module loaded',typeof unifiedCommandDashboardPage==='function','unifiedCommandDashboardPage()'),
     releaseCheck('Prediction helper loaded',typeof refreshPredictionPickOptions==='function','refreshPredictionPickOptions()'),
     releaseCheck('Schedule module loaded',typeof schedulePage==='function','schedulePage()'),

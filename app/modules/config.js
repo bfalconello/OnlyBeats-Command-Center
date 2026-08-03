@@ -3,7 +3,7 @@
 // OnlyBeats shared application configuration.
 // Loaded before app.js as a classic script so existing global references remain compatible.
 
-const VERSION='1.1.0';
+const VERSION='1.2.1';
 const STORAGE_KEY='onlybeats.settings.v7';
 const LEGACY_STORAGE_KEY='onlybeats.settings.v6';
 const FAVORITES_KEY='onlybeats.favorites.v1';
@@ -23,4 +23,4 @@ const defaultSettings={theme:'midnight',startPage:'dashboard',compact:false,soun
 const defaultWall={status:'all',favoritesOnly:false,top25Only:false,query:''};
 const defaultDashboard=['featured','favorites','ranked','predictions','weather','alerts','notes'];
 
-const pages=[['dashboard','⌂','Dashboard'],['briefing','☷','Briefing'],['timeline','≋','Timeline'],['archive','▣','Season Archive'],['wall','▦','Saturday Wall'],['watch','◫','Watch Center'],['gamehub','◇','Game Hub'],['schedule','◷','Schedule'],['favorites','★','Favorites'],['teams','◈','Team Hub'],['rankings','♛','Rankings'],['news','▤','News'],['weather','☁','Weather'],['availability','♙','Player Availability'],['predictions','✓','Prediction Center'],['reports','▥','Reports'],['developer','⌘','Developer Tools'],['settings','⚙','Settings']];
+const pages=[['dashboard','⌂','Dashboard'],['briefing','☷','Briefing'],['timeline','≋','Timeline'],['archive','▣','Season Archive'],['analytics','▥','Analytics Center'],['wall','▦','Saturday Wall'],['watch','◫','Watch Center'],['gamehub','◇','Game Hub'],['schedule','◷','Schedule'],['favorites','★','Favorites'],['teams','◈','Team Hub'],['rankings','♛','Rankings'],['news','▤','News'],['weather','☁','Weather'],['availability','♙','Player Availability'],['predictions','✓','Prediction Center'],['reports','▥','Reports'],['developer','⌘','Developer Tools'],['settings','⚙','Settings']];

@@ -23,6 +23,10 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/production-version.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/live-command-timeline.js": {
     "ok": true,
     "stderr": ""
@@ -48,6 +52,10 @@
     "stderr": ""
   },
   "app/modules/release-readiness.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "app/modules/analytics-center.js": {
     "ok": true,
     "stderr": ""
   },
@@ -91,11 +99,11 @@
     "ok": true,
     "stderr": ""
   },
-  "configured_route_coverage": {
+  "no_stale_exact_version_checks": {
     "ok": true,
     "stderr": ""
   },
-  "archive_runtime_symbols": {
+  "semantic_version_tests": {
     "ok": true,
     "stderr": ""
   }

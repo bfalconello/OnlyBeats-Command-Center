@@ -73,6 +73,7 @@ function rc4RouteRendererMap(){
     briefing:typeof smartBriefingPage==='function',
     timeline:typeof liveCommandTimelinePage==='function',
     archive:typeof seasonArchivePage==='function',
+    analytics:typeof analyticsCenterPage==='function',
     wall:typeof wallPage==='function',
     watch:typeof watchCenterPage==='function',
     gamehub:typeof gameIntelligenceHubPage==='function',
@@ -109,7 +110,7 @@ function runRc4SmokeChecks(){
   const nav=document.getElementById('nav');
 
   const checks=[
-    rc4Check('Application version is production',VERSION==='1.0.0',VERSION),
+    rc4Check('Application version is production',isOnlyBeatsProductionVersion(VERSION),`${VERSION} · ${onlyBeatsVersionChannel(VERSION)}`),
     rc4Check('Current route is registered',currentPageKnown,currentPage),
     rc4Check('Content mount exists',Boolean(content),'#content'),
     rc4Check('Sidebar navigation mount exists',Boolean(nav),'#nav'),

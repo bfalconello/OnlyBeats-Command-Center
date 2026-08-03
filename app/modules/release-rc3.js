@@ -125,7 +125,7 @@ function runRc3SmokeChecks(){
   ];
 
   const checks=[
-    rc3Check('Application version is production',VERSION==='1.0.0',VERSION),
+    rc3Check('Application version is production',isOnlyBeatsProductionVersion(VERSION),`${VERSION} · ${onlyBeatsVersionChannel(VERSION)}`),
     rc3Check('Prediction pick helper loaded',typeof refreshPredictionPickOptions==='function','refreshPredictionPickOptions()'),
     rc3Check('Dashboard module loaded',typeof unifiedCommandDashboardPage==='function','unifiedCommandDashboardPage()'),
     rc3Check('Backup export available',typeof exportOnlyBeatsBackup==='function','JSON local-data backup'),

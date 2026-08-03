@@ -3,7 +3,7 @@
 // OnlyBeats v1.0 Final production release marker and final validation layer.
 
 const PRODUCTION_RELEASE_NAME='OnlyBeats Command Center';
-const PRODUCTION_RELEASE_VERSION='1.0.0';
+const PRODUCTION_RELEASE_VERSION=VERSION;
 
 let productionReleaseReport={time:null,checks:[],passed:0,failed:0};
 
@@ -17,7 +17,7 @@ function runProductionReleaseChecks(){
     : {checks:[]};
 
   const checks=[
-    productionCheck('Production version',VERSION===PRODUCTION_RELEASE_VERSION,VERSION),
+    productionCheck('Production version',isOnlyBeatsProductionVersion(VERSION),`${VERSION} · ${onlyBeatsVersionChannel(VERSION)}`),
     productionCheck('Unified Dashboard',typeof unifiedCommandDashboardPage==='function','Dashboard renderer'),
     productionCheck('Prediction Center',typeof predictionsPage==='function','Prediction workflow'),
     productionCheck('Prediction pick controls',typeof refreshPredictionPickOptions==='function','Winner, Spread, and Total choices'),
@@ -26,6 +26,7 @@ function runProductionReleaseChecks(){
     productionCheck('Game Intelligence Hub',typeof gameIntelligenceHubPage==='function','Game Hub renderer'),
     productionCheck('Live Command Timeline',typeof liveCommandTimelinePage==='function','Timeline renderer'),
     productionCheck('Season Archive',typeof seasonArchivePage==='function','Archive renderer'),
+    productionCheck('Analytics Center',typeof analyticsCenterPage==='function','Analytics renderer'),
     productionCheck('Smart Briefing',typeof smartBriefingPage==='function','Briefing renderer'),
     productionCheck('Watch Center',typeof watchCenterPage==='function','Watch renderer'),
     productionCheck('Runtime diagnostics',typeof runOnlyBeatsDiagnostics==='function','Diagnostics runtime'),
