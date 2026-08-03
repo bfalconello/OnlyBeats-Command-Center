@@ -187,6 +187,10 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/cross-platform-experience.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/smart-briefing.js": {
     "ok": true,
     "stderr": ""
@@ -251,19 +255,31 @@
     "ok": true,
     "stderr": ""
   },
-  "cloud_sync_engine": {
+  "existing_v5_features_preserved": {
     "ok": true
   },
-  "firebase_adapter": {
+  "cross_platform_dashboard": {
     "ok": true
   },
-  "account_security_rules": {
+  "device_registry": {
     "ok": true
   },
-  "mobile_companion": {
+  "global_sync_indicator": {
     "ok": true
   },
-  "no_embedded_credentials": {
+  "local_sync_snapshots": {
+    "ok": true
+  },
+  "live_refresh_coordinator": {
+    "ok": true
+  },
+  "mobile_polish": {
+    "ok": true
+  },
+  "firebase_config_preservation_guidance": {
+    "ok": true
+  },
+  "developer_qa_integration": {
     "ok": true
   },
   "installer_configuration": {

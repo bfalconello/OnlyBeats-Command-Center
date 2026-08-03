@@ -209,6 +209,7 @@ function qaRouteRenderers(){
     developer:typeof developerQaPage==='function',
     gamehub:typeof ultimateGameHubPage==='function',
     mobile:typeof mobileCompanionPage==='function',
+    experience:typeof crossPlatformExperiencePage==='function',
     predictions:typeof predictionsPage==='function',
     lab:typeof predictionLabPage==='function',
     analytics:typeof predictionAnalyticsPage==='function',
@@ -240,6 +241,7 @@ function qaRequiredAssets(){
     'modules/developer-qa-suite.js',
     'modules/ultimate-game-hub.js',
     'modules/mobile-companion.js',
+    'modules/cross-platform-experience.js',
     'firebase-cloud-adapter.js'
   ];
 }
@@ -364,6 +366,9 @@ function qaModuleChecks(){
     ['Live Command Center',typeof liveCommandCenterPage==='function'],
     ['Ultimate Game Hub',typeof ultimateGameHubPage==='function'],
     ['Mobile Companion',typeof mobileCompanionPage==='function'],
+    ['Cross-Platform Experience',typeof crossPlatformExperiencePage==='function'],
+    ['Device registry',typeof registerCurrentDevice==='function'],
+    ['Sync snapshots',typeof captureSyncSnapshot==='function'],
     ['Game transfer helper',typeof openUltimateGameHub==='function'],
     ['Live NCAA Setup',typeof liveNcaaSetupPage==='function'],
     ['Favorites & Watchlists',typeof favoritesWatchlistsPage==='function'],

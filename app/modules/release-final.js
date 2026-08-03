@@ -60,6 +60,8 @@ function runProductionReleaseChecks(){
     productionCheck('Game Hub transfer',typeof openUltimateGameHub==='function','Shared selected-game navigation across all pages'),
     productionCheck('Cloud private beta',typeof cloudLocalSnapshot==='function'&&typeof cloudApplyRemoteSnapshot==='function','Local-first cloud sync and conflicts'),
     productionCheck('Mobile companion',typeof mobileCompanionPage==='function','Installable responsive mobile beta'),
+    productionCheck('Cross-platform experience',typeof crossPlatformExperiencePage==='function'&&typeof registerCurrentDevice==='function','Device identity, sync feedback, snapshots, and live refresh'),
+    productionCheck('Local sync recovery',typeof captureSyncSnapshot==='function'&&typeof restoreSyncSnapshot==='function','Local pre-sync snapshot and restore workflow'),
     productionCheck('Live Data Platform',typeof liveDataPlatformPage==='function','Provider platform renderer'),
     productionCheck('Desktop Release Center',typeof desktopReleasePage==='function','Release center renderer'),
     productionCheck('Professional Windows Experience',typeof professionalWindowsPage==='function','Windows experience renderer'),

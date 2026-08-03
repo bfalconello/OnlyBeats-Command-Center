@@ -1,7 +1,7 @@
 {
   "name": "onlybeats-command-center",
-  "version": "5.0.0-beta.1",
-  "description": "OnlyBeats cloud sync and mobile private beta",
+  "version": "5.5.0",
+  "description": "OnlyBeats cross-platform experience, smart sync, mobile polish, and live refresh",
   "main": "desktop/main.js",
   "author": {
     "name": "OnlyBeats"

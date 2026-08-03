@@ -1,0 +1,14 @@
+IMPORTANT BEFORE COPYING v5.5 OVER YOUR PROJECT
+
+Your working Firebase configuration is stored in:
+
+app\firebase-config.js
+
+Back up that file before replacing project files.
+
+After copying v5.5 into your repository, restore your backed-up
+firebase-config.js so the app remains connected to your Firebase project.
+
+Do not post or commit passwords. The Firebase web configuration is public
+project-routing data, but keeping your configured file out of replacement
+steps avoids accidentally returning to blank setup values.

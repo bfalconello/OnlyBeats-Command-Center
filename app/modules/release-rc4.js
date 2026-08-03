@@ -97,6 +97,7 @@ function rc4RouteRendererMap(){
     devices:typeof devicesSyncPage==='function',
     cloud:typeof cloudSyncPage==='function',
     mobile:typeof mobileCompanionPage==='function',
+    experience:typeof crossPlatformExperiencePage==='function',
     account:typeof accountDevicesPage==='function',
     platform:typeof liveDataPlatformPage==='function',
     release:typeof desktopReleasePage==='function',
