@@ -43,6 +43,10 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/experience-polish.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/team-intelligence.js": {
     "ok": true,
     "stderr": ""
@@ -123,7 +127,7 @@
     "ok": true,
     "stderr": ""
   },
-  "desktop_experience_runtime_symbols": {
+  "experience_polish_runtime_symbols": {
     "ok": true,
     "stderr": ""
   }

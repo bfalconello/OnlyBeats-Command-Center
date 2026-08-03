@@ -32,6 +32,7 @@ function runProductionReleaseChecks(){
     productionCheck('Live Alert Center',typeof liveAlertCenterPage==='function','Alert renderer'),
     productionCheck('Mission Control',typeof commandCenterTwoPage==='function','Command Center renderer'),
     productionCheck('About & Storage',typeof aboutStoragePage==='function','About renderer'),
+    productionCheck('UI Quality Center',typeof uiQualityPage==='function','Quality renderer'),
     productionCheck('Smart Briefing',typeof smartBriefingPage==='function','Briefing renderer'),
     productionCheck('Watch Center',typeof watchCenterPage==='function','Watch renderer'),
     productionCheck('Runtime diagnostics',typeof runOnlyBeatsDiagnostics==='function','Diagnostics runtime'),

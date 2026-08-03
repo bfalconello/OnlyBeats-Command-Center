@@ -1,14 +1,10 @@
-# Apply OnlyBeats v1.6.1 — Professional Desktop Experience
+# Apply OnlyBeats v1.7 — Experience Polish & Accessibility
 
 Copy into the repository:
-
 - `app/app.js`
 - `app/index.html`
 - the complete `app/modules/` folder
-- `docs/V1_6_1_PROFESSIONAL_DESKTOP.md`
-
-Replace files when prompted.
+- `docs/V1_7_EXPERIENCE_POLISH.md`
 
 Suggested commit:
-
-`v1.6.1: add professional desktop experience`
+`v1.7.0: add experience polish and accessibility center`
