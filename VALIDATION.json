@@ -3,6 +3,10 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/unified-command-dashboard.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/navigation.js": {
     "ok": true,
     "stderr": ""
