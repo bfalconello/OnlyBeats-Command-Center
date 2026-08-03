@@ -1,7 +1,7 @@
 {
   "name": "onlybeats-command-center",
-  "version": "3.2.2",
-  "description": "OnlyBeats full-slate NCAA stadium weather matching hotfix",
+  "version": "3.3.0",
+  "description": "OnlyBeats prediction history analytics and performance dashboard",
   "main": "desktop/main.js",
   "author": {
     "name": "OnlyBeats"
