@@ -23,6 +23,10 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/favorites-watchlists.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/production-version.js": {
     "ok": true,
     "stderr": ""
@@ -68,6 +72,14 @@
     "stderr": ""
   },
   "app/modules/performance-polish.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "app/modules/season-tracker.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "app/modules/team-profiles.js": {
     "ok": true,
     "stderr": ""
   },
@@ -155,6 +167,10 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/conference-dashboards.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/release-final.js": {
     "ok": true,
     "stderr": ""
@@ -222,16 +238,19 @@
   "configured_route_coverage": {
     "ok": true
   },
-  "prediction_intelligence_runtime": {
+  "favorites_watchlists_runtime": {
     "ok": true
   },
-  "transparent_scoring": {
+  "team_profiles_runtime": {
     "ok": true
   },
-  "warning_generation": {
+  "season_tracker_runtime": {
     "ok": true
   },
-  "saved_prediction_combo_only": {
+  "conference_dashboards_runtime": {
+    "ok": true
+  },
+  "provider_boundary": {
     "ok": true
   },
   "installer_configuration": {

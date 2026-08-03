@@ -1,17 +1,16 @@
-# Apply OnlyBeats v3.5 — Prediction Intelligence
+# Apply OnlyBeats v4.4 — College Football Universe
 
 Copy the entire extracted package over the current master repository
 and replace existing files.
 
 Important additions:
 
-- `app/modules/prediction-intelligence.js`
-- updated `app/app.js`
-- updated `app/index.html`
-- updated `app/modules/config.js`
-- updated release checks
-- updated installer metadata
+- `app/modules/favorites-watchlists.js`
+- `app/modules/team-profiles.js`
+- `app/modules/season-tracker.js`
+- `app/modules/conference-dashboards.js`
+- updated routing, release checks, version metadata, and installer script
 
 Suggested commit:
 
-`v3.5.0: add transparent prediction intelligence`
+`v4.4.0: add favorites, team profiles, season tracker, and conference dashboards`

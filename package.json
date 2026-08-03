@@ -1,7 +1,7 @@
 {
   "name": "onlybeats-command-center",
-  "version": "3.5.0",
-  "description": "OnlyBeats transparent prediction intelligence and review dashboard",
+  "version": "4.4.0",
+  "description": "OnlyBeats favorites, team profiles, season tracker, and conference dashboards mega update",
   "main": "desktop/main.js",
   "author": {
     "name": "OnlyBeats"
