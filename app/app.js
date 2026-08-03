@@ -24,7 +24,8 @@ if (
   typeof initializeProductionRelease !== 'function' ||
   typeof seasonArchivePage !== 'function' ||
   typeof analyticsCenterPage !== 'function' ||
-  typeof isOnlyBeatsProductionVersion !== 'function'
+  typeof isOnlyBeatsProductionVersion !== 'function' ||
+  typeof liveDataHealthPage !== 'function'
 ) {
   throw new Error('OnlyBeats core modules did not load. Verify index.html script order.');
 }
@@ -52,6 +53,7 @@ let timelineEvents=load(TIMELINE_KEY,[]);
 let gameHubGameId='';
 let seasonArchives=load(SEASON_ARCHIVE_KEY,[]);
 let activeSeasonArchiveId='';
+let refreshHistory=load(REFRESH_HISTORY_KEY,[]);
 let editingPredictionId='';
 let editingFutureId='';
 let predictionDraftGameId='';
@@ -90,7 +92,7 @@ function updateProviderStatus(ok){const status=$('providerStatus'),dot=$('provid
 function captureChanges(nextGames){const nextChanged=new Set();for(const g of nextGames){const before=previousScores.get(g.id);const current=`${g.away.score}-${g.home.score}-${g.state}-${g.period}-${g.clock}`;if(before&&before!==current){nextChanged.add(g.id);if(g.away.score+g.home.score>Number(before.split('-')[0])+Number(before.split('-')[1]))announceScoreChange(g)}previousScores.set(g.id,current)}changedGames=nextChanged;if(changedGames.size)setTimeout(()=>{changedGames.clear();document.querySelectorAll('.score-changed').forEach(e=>e.classList.remove('score-changed'))},4200)}
 function announceScoreChange(g){const leader=g.away.score>g.home.score?g.away:g.home.score>g.away.score?g.home:null;const message=leader?`${leader.shortName} leads ${Math.max(g.away.score,g.home.score)}–${Math.min(g.away.score,g.home.score)}`:`${g.away.shortName} and ${g.home.shortName} are tied`;showAlert('SCORE UPDATE',message,g)}
 function showAlert(title,message,g){if(!settings.scoreAlerts)return;notificationHistory.unshift({title,message,time:new Date().toISOString(),gameId:g?.id||''});notificationHistory=notificationHistory.slice(0,30);localStorage.setItem('onlybeats.notifications.v1',JSON.stringify(notificationHistory));const host=$('alertStack');if(!host)return;const item=document.createElement('button');item.className='game-alert';item.innerHTML=`<span>⚡</span><div><small>${esc(title)}</small><strong>${esc(message)}</strong></div>`;item.onclick=()=>{showGame(g.id);item.remove()};host.prepend(item);setTimeout(()=>item.remove(),6500)}
-async function syncScores(silent=false){
+async function syncScores(silent=false){if(typeof recordRefreshAttempt==='function')recordRefreshAttempt('scores','started');
   if(loading)return;
   const requestId=++refreshRequestId;
   const started=performance.now();
@@ -114,10 +116,12 @@ async function syncScores(silent=false){
     games=next;
     localStorage.setItem(SCORE_CACHE_KEY,JSON.stringify(games));
     lastSync=new Date();
+    if(typeof recordRefreshAttempt==='function')recordRefreshAttempt('scores','success',{duration:performance.now()-started,games:games.length});
     captureTimelineSnapshot('score-refresh');
     updateProviderStatus(true);
   }catch(e){
     if(requestId!==refreshRequestId)return;
+    if(typeof recordRefreshAttempt==='function')recordRefreshAttempt('scores','failure',{duration:performance.now()-started,error:String(e?.message||e)});
     syncError=String(e?.message||e);
     updateProviderStatus(false);
     if(!silent)toast('Could not refresh live scores; cached scores remain available','error');
@@ -125,7 +129,7 @@ async function syncScores(silent=false){
     if(requestId===refreshRequestId){
       loading=false;
       lastRefreshDuration=Math.round(performance.now()-started);
-      if(['wall','dashboard','briefing','timeline','watch','gamehub','schedule','rankings','news','favorites','teams','developer'].includes(currentPage))renderPage();
+      if(['wall','dashboard','briefing','timeline','watch','gamehub','schedule','rankings','news','favorites','teams','developer','datahealth'].includes(currentPage))renderPage();
       if(activeGameId&&games.some(g=>g.id===activeGameId))showGame(activeGameId,false);
     }
   }
@@ -663,7 +667,7 @@ function exportPredictionsCsv(){const rows=[['Record Type','Game / Title','Categ
 
 function renderPageUnsafe(){
   const label=pages.find(p=>p[0]===currentPage)?.[2]||'Module';
-  $('content').innerHTML=currentPage==='dashboard'?unifiedCommandDashboardPage():currentPage==='briefing'?smartBriefingPage():currentPage==='timeline'?liveCommandTimelinePage():currentPage==='archive'?seasonArchivePage():currentPage==='analytics'?analyticsCenterPage():currentPage==='wall'?wallPage():currentPage==='watch'?watchCenterPage():currentPage==='gamehub'?gameIntelligenceHubPage():currentPage==='schedule'?schedulePage():currentPage==='favorites'?favoritesPage():currentPage==='teams'?teamHubPage():currentPage==='rankings'?intelligenceEnginePage():currentPage==='news'?newsPage():currentPage==='weather'?weatherPage():currentPage==='availability'?availabilityPage():currentPage==='predictions'?predictionsPage():currentPage==='reports'?predictionIntelligencePage():currentPage==='developer'?developerPage():currentPage==='settings'?settingsPage():placeholderPage(currentPage,label);
+  $('content').innerHTML=currentPage==='dashboard'?unifiedCommandDashboardPage():currentPage==='briefing'?smartBriefingPage():currentPage==='timeline'?liveCommandTimelinePage():currentPage==='archive'?seasonArchivePage():currentPage==='analytics'?analyticsCenterPage():currentPage==='datahealth'?liveDataHealthPage():currentPage==='wall'?wallPage():currentPage==='watch'?watchCenterPage():currentPage==='gamehub'?gameIntelligenceHubPage():currentPage==='schedule'?schedulePage():currentPage==='favorites'?favoritesPage():currentPage==='teams'?teamHubPage():currentPage==='rankings'?intelligenceEnginePage():currentPage==='news'?newsPage():currentPage==='weather'?weatherPage():currentPage==='availability'?availabilityPage():currentPage==='predictions'?predictionsPage():currentPage==='reports'?predictionIntelligencePage():currentPage==='developer'?developerPage():currentPage==='settings'?settingsPage():placeholderPage(currentPage,label);
   bindPage();
 }
 function renderPage(){
@@ -695,7 +699,7 @@ if($('availabilityForm'))$('availabilityForm').onsubmit=e=>{e.preventDefault();c
     if($('runPageSmokeTests'))$('runPageSmokeTests').onclick=async()=>{await runOnlyBeatsPageSmokeTests();renderPage();toast('Page smoke tests completed')};
     if($('exportDiagnostics'))$('exportDiagnostics').onclick=()=>exportOnlyBeatsDiagnostics();
     if($('clearRuntimeLog'))$('clearRuntimeLog').onclick=()=>{clearOnlyBeatsRuntimeLog();renderPage();toast('Runtime log cleared')};
-  }if(currentPage==='dashboard')bindUnifiedCommandDashboard();if(currentPage==='gamehub')bindGameIntelligenceHub();if(currentPage==='analytics')bindAnalyticsCenter();if(currentPage==='archive')bindSeasonArchive();if(currentPage==='timeline')bindLiveCommandTimeline();if(currentPage==='briefing')bindSmartBriefing();if(currentPage==='watch')bindWatchCenter();if(currentPage==='rankings')bindIntelligenceEngine();if(currentPage==='predictions')bindPredictionPage();if(currentPage==='reports'){bindPredictionIntelligence();if($('reportExportPredictions'))$('reportExportPredictions').onclick=exportPredictionsCsv;if($('yearbookNote'))$('yearbookNote').oninput=e=>localStorage.setItem('onlybeats.yearbook.note.v1',e.target.value)}document.querySelectorAll('[data-predict-game]').forEach(b=>b.onclick=()=>{predictionDraftGameId=b.dataset.predictGame;editingPredictionId='';predictionView='games';navigate('predictions')});bindPersonalization();if(currentPage==='settings')bindSettings()}
+  }if(currentPage==='dashboard')bindUnifiedCommandDashboard();if(currentPage==='gamehub')bindGameIntelligenceHub();if(currentPage==='datahealth')bindLiveDataHealth();if(currentPage==='analytics')bindAnalyticsCenter();if(currentPage==='archive')bindSeasonArchive();if(currentPage==='timeline')bindLiveCommandTimeline();if(currentPage==='briefing')bindSmartBriefing();if(currentPage==='watch')bindWatchCenter();if(currentPage==='rankings')bindIntelligenceEngine();if(currentPage==='predictions')bindPredictionPage();if(currentPage==='reports'){bindPredictionIntelligence();if($('reportExportPredictions'))$('reportExportPredictions').onclick=exportPredictionsCsv;if($('yearbookNote'))$('yearbookNote').oninput=e=>localStorage.setItem('onlybeats.yearbook.note.v1',e.target.value)}document.querySelectorAll('[data-predict-game]').forEach(b=>b.onclick=()=>{predictionDraftGameId=b.dataset.predictGame;editingPredictionId='';predictionView='games';navigate('predictions')});bindPersonalization();if(currentPage==='settings')bindSettings()}
 function gamePredictionSnapshot(game){
   const rows=predictions
     .filter(p=>p.gameId===game.id)

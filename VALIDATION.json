@@ -31,6 +31,10 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/live-data-reliability.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/smart-briefing.js": {
     "ok": true,
     "stderr": ""
@@ -99,11 +103,11 @@
     "ok": true,
     "stderr": ""
   },
-  "no_stale_exact_version_checks": {
+  "configured_route_coverage": {
     "ok": true,
     "stderr": ""
   },
-  "semantic_version_tests": {
+  "live_data_runtime_symbols": {
     "ok": true,
     "stderr": ""
   }
