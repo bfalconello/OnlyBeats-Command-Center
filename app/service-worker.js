@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE_NAME='onlybeats-v2-shell';
+const CACHE_NAME='onlybeats-v6-0-4-mobile-startup';
 const CORE=['./','./index.html','./manifest.webmanifest'];
 
 self.addEventListener('install',event=>{

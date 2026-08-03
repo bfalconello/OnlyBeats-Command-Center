@@ -1,7 +1,7 @@
 {
   "name": "onlybeats-command-center",
-  "version": "6.0.3",
-  "description": "OnlyBeats automatic updater end-to-end verification release",
+  "version": "6.0.4",
+  "description": "OnlyBeats mobile PWA startup gate hotfix",
   "main": "desktop/main.js",
   "author": {
     "name": "OnlyBeats"

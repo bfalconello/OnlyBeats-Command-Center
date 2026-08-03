@@ -1,5 +1,14 @@
 'use strict';
 
+function onlyBeatsDesktopRuntimeRequired(){
+  return location.protocol==='file:' || onlyBeatsDesktopRuntimeReady();
+}
+
+function onlyBeatsDesktopRuntimeReady(){
+  return !onlyBeatsDesktopRuntimeRequired() || onlyBeatsDesktopRuntimeReady();
+}
+
+
 // OnlyBeats v4.5.1 QA Shell Detection Hotfix.
 // Performs in-app runtime checks. It does not replace manual visual testing
 // of the installed Windows build.
@@ -368,6 +377,7 @@ function qaModuleChecks(){
     ['Live Command Center',typeof liveCommandCenterPage==='function'],
     ['Ultimate Game Hub',typeof ultimateGameHubPage==='function'],
     ['Mobile Companion',typeof mobileCompanionPage==='function'],
+    ['Mobile startup desktop runtime gate',typeof onlyBeatsDesktopRuntimeReady==='function'&&onlyBeatsDesktopRuntimeReady()],
     ['Cross-Platform Experience',typeof crossPlatformExperiencePage==='function'],
     ['Installed App Updates',typeof installedAppUpdatesPage==='function'],
     ['v6.0.3 updater marker',VERSION==='6.0.3'],

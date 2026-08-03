@@ -1,5 +1,14 @@
 'use strict';
 
+function onlyBeatsDesktopRuntimeRequired(){
+  return location.protocol==='file:' || onlyBeatsDesktopRuntimeReady();
+}
+
+function onlyBeatsDesktopRuntimeReady(){
+  return !onlyBeatsDesktopRuntimeRequired() || onlyBeatsDesktopRuntimeReady();
+}
+
+
 // OnlyBeats v3.1 Smart Startup & Sync Readiness.
 // Performs transparent startup checks and continues in a safe local mode when
 // optional providers or cloud services are not configured.
@@ -110,7 +119,7 @@ function startupChecks(){
     startupCheck(
       'Desktop runtime',
       ()=>Boolean(bridge||navigator.userAgent.includes('Electron')),
-      {required:true,detail:'Electron bridge or runtime'}
+      {required:true,detail:(location.protocol==='http:'||location.protocol==='https:')?'Not required for mobile web app':'Electron bridge or runtime'}
     ),
     startupCheck(
       'Prediction database',

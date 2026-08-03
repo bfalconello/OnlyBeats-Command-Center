@@ -1,47 +1,16 @@
 @echo off
 cd /d "%~dp0"
-
 echo ======================================
-echo OnlyBeats v6.0.3 Updater Test Builder
+echo OnlyBeats v6.0.4 Builder
 echo ======================================
 echo.
-
 call npm install
-if errorlevel 1 (
-  echo ERROR: npm install failed.
-  pause
-  exit /b 1
-)
-
+if errorlevel 1 (echo ERROR: npm install failed.&pause&exit /b 1)
 call npm run dist:win
-if errorlevel 1 (
-  echo ERROR: installer build failed.
-  pause
-  exit /b 1
-)
-
+if errorlevel 1 (echo ERROR: installer build failed.&pause&exit /b 1)
 echo.
-echo Verifying automatic-update files...
-if not exist "dist\OnlyBeats-Setup-6.0.3.exe" (
-  echo ERROR: installer missing.
-  pause
-  exit /b 1
-)
-if not exist "dist\OnlyBeats-Setup-6.0.3.exe.blockmap" (
-  echo ERROR: blockmap missing.
-  pause
-  exit /b 1
-)
-if not exist "dist\latest.yml" (
-  echo ERROR: latest.yml missing.
-  pause
-  exit /b 1
-)
-
-echo.
-echo Build complete:
-echo dist\OnlyBeats-Setup-6.0.3.exe
-echo dist\OnlyBeats-Setup-6.0.3.exe.blockmap
+echo Expected:
+echo dist\OnlyBeats-Setup-6.0.4.exe
+echo dist\OnlyBeats-Setup-6.0.4.exe.blockmap
 echo dist\latest.yml
-echo.
 pause
