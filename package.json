@@ -10,6 +10,7 @@
     "start": "electron .",
     "pack": "electron-builder --dir",
     "dist:win": "electron-builder --win nsis",
+    "desktop:build": "electron-builder --win nsis",
     "dist": "electron-builder"
   },
   "devDependencies": {
