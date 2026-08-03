@@ -67,6 +67,10 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/live-command-center.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/live-command-timeline.js": {
     "ok": true,
     "stderr": ""
@@ -195,15 +199,11 @@
     "ok": true,
     "stderr": ""
   },
-  "configured_route_coverage": {
+  "fullscreen_layout_fix": {
     "ok": true,
     "stderr": ""
   },
-  "prediction_lab_runtime_symbols": {
-    "ok": true,
-    "stderr": ""
-  },
-  "transparent_scoring_boundary": {
+  "saturday_mode_integration": {
     "ok": true,
     "stderr": ""
   },

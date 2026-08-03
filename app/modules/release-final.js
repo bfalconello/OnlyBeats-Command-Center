@@ -40,6 +40,7 @@ function runProductionReleaseChecks(){
     productionCheck('Account & Device Platform',typeof accountDevicesPage==='function','Account renderer'),
     productionCheck('Unlimited Combo Builder',typeof predictionComboPanel==='function','Combo builder renderer'),
     productionCheck('Prediction Lab',typeof predictionLabPage==='function','Prediction analytics renderer'),
+    productionCheck('Live Command Center',typeof liveCommandCenterPage==='function','Live command renderer'),
     productionCheck('Live Data Platform',typeof liveDataPlatformPage==='function','Provider platform renderer'),
     productionCheck('Desktop Release Center',typeof desktopReleasePage==='function','Release center renderer'),
     productionCheck('Professional Windows Experience',typeof professionalWindowsPage==='function','Windows experience renderer'),
