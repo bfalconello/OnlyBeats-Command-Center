@@ -1,7 +1,7 @@
 {
   "name": "onlybeats-command-center",
-  "version": "3.2.1",
-  "description": "OnlyBeats live NCAA weather with built-in FBS stadium coordinates",
+  "version": "3.2.2",
+  "description": "OnlyBeats full-slate NCAA stadium weather matching hotfix",
   "main": "desktop/main.js",
   "author": {
     "name": "OnlyBeats"

@@ -1,6 +1,6 @@
 'use strict';
 
-// OnlyBeats v3.2.1 Stadium Weather Hotfix.
+// OnlyBeats v3.2.2 Weather Matching Hotfix.
 // Scores and rankings use a user-configured CollegeFootballData-compatible API.
 // Weather uses Open-Meteo and does not require an API key.
 // No odds, sportsbook, or wagering feeds are included.
@@ -214,6 +214,7 @@ function normalizeCfbdGame(raw){
   if(coordinates.latitude!==null&&coordinates.longitude!==null){
     liveNcaaCache.gameLocations[id]={
       ...coordinates,
+      gameId:id,
       source:'provider'
     };
   }else if(typeof findBuiltInStadium==='function'){
@@ -233,6 +234,7 @@ function normalizeCfbdGame(raw){
 
     if(builtIn){
       liveNcaaCache.gameLocations[id]={
+        gameId:id,
         latitude:builtIn.latitude,
         longitude:builtIn.longitude,
         location:`${builtIn.stadium}, ${builtIn.city}, ${builtIn.state}`,
@@ -427,7 +429,10 @@ async function resolveMissingGameLocations(){
     }
 
     if(location){
-      liveNcaaCache.gameLocations[game.id]=location;
+      liveNcaaCache.gameLocations[game.id]={
+        ...location,
+        gameId:game.id
+      };
       saveLiveNcaaConfig();
     }
   }
@@ -438,48 +443,79 @@ async function fetchOpenMeteoWeather(){
 
   await resolveMissingGameLocations();
 
-  const locations=Object.values(liveNcaaCache.gameLocations||{})
+  const gameLocations=Object.entries(liveNcaaCache.gameLocations||{})
+    .map(([gameId,location])=>({
+      ...location,
+      gameId:String(location.gameId||gameId)
+    }))
     .filter(item=>Number.isFinite(item.latitude)&&Number.isFinite(item.longitude));
 
-  const unique=[];
-  const seen=new Set();
-  locations.forEach(location=>{
-    const key=`${location.latitude.toFixed(3)},${location.longitude.toFixed(3)}`;
-    if(!seen.has(key)){
-      seen.add(key);
-      unique.push(location);
+  // Group games sharing the same venue so one weather request can serve all of them.
+  const groups=new Map();
+  gameLocations.forEach(location=>{
+    const key=`${location.latitude.toFixed(4)},${location.longitude.toFixed(4)}`;
+    if(!groups.has(key)){
+      groups.set(key,{
+        latitude:location.latitude,
+        longitude:location.longitude,
+        location:location.location||`${location.latitude}, ${location.longitude}`,
+        gameIds:[],
+        source:location.source||'resolved'
+      });
     }
+    groups.get(key).gameIds.push(location.gameId);
   });
 
-  const selected=unique.slice(0,20);
+  const locations=[...groups.values()];
   const records=[];
 
-  for(const location of selected){
-    const url=new URL('https://api.open-meteo.com/v1/forecast');
-    url.searchParams.set('latitude',String(location.latitude));
-    url.searchParams.set('longitude',String(location.longitude));
-    url.searchParams.set('current','temperature_2m,precipitation,weather_code,wind_speed_10m,wind_gusts_10m');
-    url.searchParams.set('temperature_unit','fahrenheit');
-    url.searchParams.set('wind_speed_unit','mph');
-    url.searchParams.set('timezone','auto');
+  // Fetch the full visible slate in small concurrent batches rather than
+  // silently dropping every venue after the first 20.
+  for(let start=0;start<locations.length;start+=8){
+    const batch=locations.slice(start,start+8);
 
-    const response=await fetch(url.toString());
-    if(!response.ok)continue;
-    const payload=await response.json();
-    const current=payload?.current||{};
+    const results=await Promise.allSettled(batch.map(async location=>{
+      const url=new URL('https://api.open-meteo.com/v1/forecast');
+      url.searchParams.set('latitude',String(location.latitude));
+      url.searchParams.set('longitude',String(location.longitude));
+      url.searchParams.set('current','temperature_2m,precipitation,weather_code,wind_speed_10m,wind_gusts_10m');
+      url.searchParams.set('temperature_unit','fahrenheit');
+      url.searchParams.set('wind_speed_unit','mph');
+      url.searchParams.set('timezone','auto');
 
-    records.push({
-      location:location.location||`${location.latitude}, ${location.longitude}`,
-      temperature:Number(current.temperature_2m),
-      wind:Number(current.wind_speed_10m),
-      gust:Number(current.wind_gusts_10m),
-      precipitation:Number(current.precipitation),
-      condition:weatherCodeLabel(current.weather_code),
-      observedAt:String(current.time||new Date().toISOString())
+      const response=await fetch(url.toString());
+      if(!response.ok){
+        throw new Error(`Weather returned ${response.status}`);
+      }
+
+      const payload=await response.json();
+      const current=payload?.current||{};
+
+      return location.gameIds.map(gameId=>({
+        gameId,
+        location:location.location,
+        latitude:location.latitude,
+        longitude:location.longitude,
+        source:location.source,
+        temperature:Number(current.temperature_2m),
+        wind:Number(current.wind_speed_10m),
+        gust:Number(current.wind_gusts_10m),
+        precipitation:Number(current.precipitation),
+        condition:weatherCodeLabel(current.weather_code),
+        observedAt:String(current.time||new Date().toISOString())
+      }));
+    }));
+
+    results.forEach(result=>{
+      if(result.status==='fulfilled'){
+        records.push(...result.value);
+      }
     });
   }
 
   liveNcaaCache.weatherAt=new Date().toISOString();
+  liveNcaaCache.weatherRecords=records.length;
+  liveNcaaCache.weatherGames=[...new Set(records.map(record=>record.gameId))].length;
   saveLiveNcaaConfig();
   return records;
 }
@@ -621,6 +657,8 @@ function liveNcaaSetupPage(){
       <div><span>Scoreboard</span><strong>${liveNcaaCache.rawScoresAt?new Date(liveNcaaCache.rawScoresAt).toLocaleString():'Not refreshed'}</strong></div>
       <div><span>Rankings</span><strong>${liveNcaaCache.rawRankingsAt?new Date(liveNcaaCache.rawRankingsAt).toLocaleString():'Not refreshed'}</strong></div>
       <div><span>Weather</span><strong>${liveNcaaCache.weatherAt?new Date(liveNcaaCache.weatherAt).toLocaleString():'Not refreshed'}</strong></div>
+      <div><span>Weather game matches</span><strong>${liveNcaaCache.weatherGames||0}</strong></div>
+      <div><span>Weather records</span><strong>${liveNcaaCache.weatherRecords||0}</strong></div>
       <div><span>Resolved game venues</span><strong>${Object.keys(liveNcaaCache.gameLocations||{}).length}</strong></div>
       <div><span>Built-in stadiums</span><strong>${Array.isArray(window.ONLYBEATS_FBS_STADIUMS)?window.ONLYBEATS_FBS_STADIUMS.length:0}</strong></div>
       <div><span>Geocoder cache</span><strong>${Object.keys(stadiumGeocodeCache||{}).length}</strong></div>

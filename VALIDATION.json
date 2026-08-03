@@ -211,24 +211,16 @@
     "ok": true,
     "stderr": ""
   },
-  "stadium_records": {
-    "ok": true,
-    "count": 128
+  "direct_game_weather_matching": {
+    "ok": true
   },
-  "stadium_alias_matching": {
-    "ok": true,
-    "stderr": ""
+  "full_slate_weather_batches": {
+    "ok": true
   },
-  "geocoding_fallback": {
-    "ok": true,
-    "stderr": ""
-  },
-  "weather_resolution_order": {
-    "ok": true,
-    "stderr": ""
+  "weather_failure_isolation": {
+    "ok": true
   },
   "installer_configuration": {
-    "ok": true,
-    "stderr": ""
+    "ok": true
   }
 }

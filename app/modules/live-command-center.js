@@ -99,9 +99,13 @@ function liveCommandFilteredGames(){
 
 function liveCommandWeatherFor(game){
   const rows=window.ONLYBEATS_NORMALIZED_WEATHER||[];
+
+  const direct=rows.find(item=>String(item.gameId||'')===String(game.id||''));
+  if(direct)return direct;
+
   return rows.find(item=>{
-    const venue=String(game.venue||'').toLowerCase();
-    const location=String(item.location||'').toLowerCase();
+    const venue=String(game.venue||'').toLowerCase().trim();
+    const location=String(item.location||'').toLowerCase().trim();
     return venue&&location&&(venue.includes(location)||location.includes(venue));
   })||null;
 }
@@ -258,7 +262,7 @@ function liveCommandGameCard(game){
 
     <div class="live-command-meta">
       <span>${game.venue?esc(game.venue):'Venue unavailable'}</span>
-      <span>${weather?`${Number(weather.temperature).toFixed(0)}° · ${esc(weather.condition||'Weather')}`:'Weather feed unavailable'}</span>
+      <span>${weather?`${Number(weather.temperature).toFixed(0)}° · ${esc(weather.condition||'Weather')} · Wind ${Number(weather.wind||0).toFixed(0)} mph${Number(weather.precipitation||0)>0?` · Precip ${Number(weather.precipitation).toFixed(2)} in`:''}`:'Weather feed unavailable'}</span>
       <span>${prediction?`Prediction: ${esc(liveCommandPredictionSelection(prediction))}`:'No saved prediction'}</span>
     </div>
 

@@ -46,6 +46,7 @@ function runProductionReleaseChecks(){
     productionCheck('Smart Startup',typeof initializeSmartStartup==='function'&&typeof runStartupDiagnostics==='function','Startup diagnostics and recovery'),
     productionCheck('Live NCAA integration',typeof initializeLiveNcaaIntegration==='function'&&typeof liveNcaaSetupPage==='function','Scores, rankings, and weather adapters'),
     productionCheck('FBS stadium weather fallback',Array.isArray(window.ONLYBEATS_FBS_STADIUMS)&&typeof findBuiltInStadium==='function','Bundled stadium coordinates and geocoding fallback'),
+    productionCheck('Weather game matching',typeof liveCommandWeatherFor==='function','Direct game ID weather mapping'),
     productionCheck('Live Data Platform',typeof liveDataPlatformPage==='function','Provider platform renderer'),
     productionCheck('Desktop Release Center',typeof desktopReleasePage==='function','Release center renderer'),
     productionCheck('Professional Windows Experience',typeof professionalWindowsPage==='function','Windows experience renderer'),
