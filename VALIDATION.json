@@ -55,6 +55,10 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/release-rc2.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/diagnostics-runtime.js": {
     "ok": true,
     "stderr": ""

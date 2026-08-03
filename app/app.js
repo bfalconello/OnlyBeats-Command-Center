@@ -17,7 +17,8 @@ if (
   typeof predictionIntelligencePage !== 'function' ||
   typeof gameIntelligenceHubPage !== 'function' ||
   typeof unifiedCommandDashboardPage !== 'function' ||
-  typeof initializeReleaseCandidate !== 'function'
+  typeof initializeReleaseCandidate !== 'function' ||
+  typeof initializeReleaseCandidateTwo !== 'function'
 ) {
   throw new Error('OnlyBeats core modules did not load. Verify index.html script order.');
 }
@@ -661,7 +662,9 @@ function renderPage(){
   const content=$('content');
   if(!content)return;
   try{
+    const __renderStarted=performance.now();
     renderPageUnsafe();
+    if(typeof recordPageRenderMetric==='function')recordPageRenderMetric(currentPage,performance.now()-__renderStarted);
   }catch(error){
     const message=String(error?.message||error);
     runtimeErrors.unshift({page:currentPage,message,time:new Date().toISOString()});
@@ -882,6 +885,7 @@ window.addEventListener('unhandledrejection',event=>{
 });
 applyTheme();
 initializeReleaseCandidate();
+initializeReleaseCandidateTwo();
 renderNav();
 setTimeout(()=>runOnlyBeatsDiagnostics(),250);
 setTimeout(()=>captureTimelineSnapshot('startup'),500);
