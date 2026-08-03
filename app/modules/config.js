@@ -3,7 +3,7 @@
 // OnlyBeats shared application configuration.
 // Loaded before app.js as a classic script so existing global references remain compatible.
 
-const VERSION='2.7.0';
+const VERSION='2.7.1';
 const STORAGE_KEY='onlybeats.settings.v7';
 const LEGACY_STORAGE_KEY='onlybeats.settings.v6';
 const FAVORITES_KEY='onlybeats.favorites.v1';
@@ -34,6 +34,8 @@ const BACKUP_HISTORY_KEY='onlybeats.backup-history.v1';
 const CLOUD_PLATFORM_KEY='onlybeats.cloud-platform.v1';
 const CLOUD_DEVICE_SESSIONS_KEY='onlybeats.cloud-device-sessions.v1';
 const CLOUD_BACKUP_HISTORY_KEY='onlybeats.cloud-backup-history.v1';
+const PREDICTION_COMBOS_KEY='onlybeats.prediction-combos.v1';
+const PREDICTION_COMBO_DRAFT_KEY='onlybeats.prediction-combo-draft.v1';
 const AVAILABILITY_KEY='onlybeats.availability.v1';
 const SCORE_REFRESH_TIMEOUT_MS=12000;
 const defaultSettings={theme:'midnight',startPage:'dashboard',compact:false,sounds:false,animations:true,refresh:'30',favoriteTeam:'',scoreAlerts:true,favoriteAlerts:true,kickoffAlerts:true,weatherLocation:'',dashboardDensity:'comfortable',pushScoring:'full',highContrast:false,largeText:false,performanceMode:false};

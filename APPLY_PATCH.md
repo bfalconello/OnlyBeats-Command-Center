@@ -1,16 +1,16 @@
-# Apply OnlyBeats v2.7 — Cloud Platform
+# Apply OnlyBeats v2.7.1 — Unlimited Combo Builder
 
-Copy the entire extracted package into the repository and replace existing files.
+Copy the entire extracted package over the current master repository and replace existing files.
 
 Important additions:
 
-- `app/modules/cloud-platform.js`
+- `app/modules/prediction-combo-builder.js`
 - updated `app/app.js`
 - updated `app/index.html`
 - updated `app/modules/config.js`
 - updated `package.json`
-- `docs/V2_7_CLOUD_PLATFORM.md`
+- updated `BUILD_WINDOWS_INSTALLER.bat`
 
 Suggested commit:
 
-`v2.7.0: add account, trusted devices, and automatic backup platform`
+`v2.7.1: add unlimited prediction combo builder`

@@ -1,7 +1,7 @@
 {
   "name": "onlybeats-command-center",
-  "version": "2.7.0",
-  "description": "OnlyBeats college football command center with cloud-ready account and device platform",
+  "version": "2.7.1",
+  "description": "OnlyBeats college football command center with unlimited prediction combo builder",
   "main": "desktop/main.js",
   "author": {
     "name": "OnlyBeats"

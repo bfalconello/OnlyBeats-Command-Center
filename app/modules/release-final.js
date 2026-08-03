@@ -38,6 +38,7 @@ function runProductionReleaseChecks(){
     productionCheck('Devices & Sync',typeof devicesSyncPage==='function','Cross-device renderer'),
     productionCheck('Cloud Sync Foundation',typeof cloudSyncPage==='function','Cloud sync renderer'),
     productionCheck('Account & Device Platform',typeof accountDevicesPage==='function','Account renderer'),
+    productionCheck('Unlimited Combo Builder',typeof predictionComboPanel==='function','Combo builder renderer'),
     productionCheck('Live Data Platform',typeof liveDataPlatformPage==='function','Provider platform renderer'),
     productionCheck('Desktop Release Center',typeof desktopReleasePage==='function','Release center renderer'),
     productionCheck('Professional Windows Experience',typeof professionalWindowsPage==='function','Windows experience renderer'),
