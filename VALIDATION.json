@@ -103,6 +103,10 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/desktop-experience.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/intelligence-engine.js": {
     "ok": true,
     "stderr": ""
@@ -119,7 +123,7 @@
     "ok": true,
     "stderr": ""
   },
-  "command_center_runtime_symbols": {
+  "desktop_experience_runtime_symbols": {
     "ok": true,
     "stderr": ""
   }

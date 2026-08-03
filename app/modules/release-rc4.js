@@ -78,6 +78,7 @@ function rc4RouteRendererMap(){
     performance:typeof performanceCenterPage==='function',
     alerts:typeof liveAlertCenterPage==='function',
     mission:typeof commandCenterTwoPage==='function',
+    about:typeof aboutStoragePage==='function',
     wall:typeof wallPage==='function',
     watch:typeof watchCenterPage==='function',
     gamehub:typeof gameIntelligenceHubPage==='function',
