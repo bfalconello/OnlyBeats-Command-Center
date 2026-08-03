@@ -1,11 +1,11 @@
-# Apply OnlyBeats v3.4 — Saturday Dashboard
+# Apply OnlyBeats v3.5 — Prediction Intelligence
 
 Copy the entire extracted package over the current master repository
 and replace existing files.
 
 Important additions:
 
-- `app/modules/saturday-dashboard.js`
+- `app/modules/prediction-intelligence.js`
 - updated `app/app.js`
 - updated `app/index.html`
 - updated `app/modules/config.js`
@@ -14,4 +14,4 @@ Important additions:
 
 Suggested commit:
 
-`v3.4.0: add unified Saturday Dashboard`
+`v3.5.0: add transparent prediction intelligence`

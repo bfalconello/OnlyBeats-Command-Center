@@ -75,6 +75,7 @@ function rc4RouteRendererMap(){
     liveprovider:typeof liveNcaaSetupPage==='function',
     analytics:typeof predictionAnalyticsPage==='function',
     saturday:typeof saturdayDashboardPage==='function',
+    intelligence:typeof predictionIntelligencePage==='function',
     briefing:typeof smartBriefingPage==='function',
     timeline:typeof liveCommandTimelinePage==='function',
     archive:typeof seasonArchivePage==='function',

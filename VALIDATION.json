@@ -222,16 +222,16 @@
   "configured_route_coverage": {
     "ok": true
   },
-  "saturday_dashboard_runtime": {
+  "prediction_intelligence_runtime": {
     "ok": true
   },
-  "prediction_health": {
+  "transparent_scoring": {
     "ok": true
   },
-  "combo_tracking": {
+  "warning_generation": {
     "ok": true
   },
-  "automatic_game_sections": {
+  "saved_prediction_combo_only": {
     "ok": true
   },
   "installer_configuration": {
