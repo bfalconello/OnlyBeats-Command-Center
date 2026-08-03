@@ -36,6 +36,7 @@ function runProductionReleaseChecks(){
     productionCheck('Smart Insights',typeof smartInsightsPage==='function','Insights renderer'),
     productionCheck('GameDay Command',typeof gameDayCommandPage==='function','GameDay renderer'),
     productionCheck('Devices & Sync',typeof devicesSyncPage==='function','Cross-device renderer'),
+    productionCheck('Cloud Sync Foundation',typeof cloudSyncPage==='function','Cloud sync renderer'),
     productionCheck('Smart Briefing',typeof smartBriefingPage==='function','Briefing renderer'),
     productionCheck('Watch Center',typeof watchCenterPage==='function','Watch renderer'),
     productionCheck('Runtime diagnostics',typeof runOnlyBeatsDiagnostics==='function','Diagnostics runtime'),

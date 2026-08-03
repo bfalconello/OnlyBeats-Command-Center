@@ -1,0 +1,2 @@
+'use strict';
+window.ONLYBEATS_FIREBASE_CONFIG=window.ONLYBEATS_FIREBASE_CONFIG||null;

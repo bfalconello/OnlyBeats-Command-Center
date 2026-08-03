@@ -1,61 +1,9 @@
 {
+  "app/modules/desktop-experience.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/ui-core.js": {
-    "ok": true,
-    "stderr": ""
-  },
-  "app/modules/unified-command-dashboard.js": {
-    "ok": true,
-    "stderr": ""
-  },
-  "app/modules/navigation.js": {
-    "ok": true,
-    "stderr": ""
-  },
-  "app/modules/multi-game-watch.js": {
-    "ok": true,
-    "stderr": ""
-  },
-  "app/modules/season-archive.js": {
-    "ok": true,
-    "stderr": ""
-  },
-  "app/modules/schedule-center.js": {
-    "ok": true,
-    "stderr": ""
-  },
-  "app/modules/production-version.js": {
-    "ok": true,
-    "stderr": ""
-  },
-  "app/modules/live-command-timeline.js": {
-    "ok": true,
-    "stderr": ""
-  },
-  "app/modules/live-data-reliability.js": {
-    "ok": true,
-    "stderr": ""
-  },
-  "app/modules/smart-briefing.js": {
-    "ok": true,
-    "stderr": ""
-  },
-  "app/modules/storage.js": {
-    "ok": true,
-    "stderr": ""
-  },
-  "app/modules/experience-polish.js": {
-    "ok": true,
-    "stderr": ""
-  },
-  "app/modules/cross-device-foundation.js": {
-    "ok": true,
-    "stderr": ""
-  },
-  "app/modules/team-intelligence.js": {
-    "ok": true,
-    "stderr": ""
-  },
-  "app/modules/smart-insights.js": {
     "ok": true,
     "stderr": ""
   },
@@ -63,23 +11,43 @@
     "ok": true,
     "stderr": ""
   },
-  "app/modules/release-rc3.js": {
+  "app/modules/team-intelligence.js": {
     "ok": true,
     "stderr": ""
   },
-  "app/modules/gameday-command.js": {
+  "app/modules/intelligence-engine.js": {
     "ok": true,
     "stderr": ""
   },
-  "app/modules/release-readiness.js": {
+  "app/modules/production-version.js": {
     "ok": true,
     "stderr": ""
   },
-  "app/modules/analytics-center.js": {
+  "app/modules/release-rc2.js": {
     "ok": true,
     "stderr": ""
   },
   "app/modules/live-game-focus.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "app/modules/release-rc4.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "app/modules/diagnostics-runtime.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "app/modules/config.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "app/modules/multi-game-watch.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "app/modules/live-data-reliability.js": {
     "ok": true,
     "stderr": ""
   },
@@ -91,7 +59,11 @@
     "ok": true,
     "stderr": ""
   },
-  "app/modules/refresh-ui.js": {
+  "app/modules/live-command-timeline.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "app/modules/release-readiness.js": {
     "ok": true,
     "stderr": ""
   },
@@ -99,15 +71,11 @@
     "ok": true,
     "stderr": ""
   },
-  "app/modules/release-rc2.js": {
+  "app/modules/unified-command-dashboard.js": {
     "ok": true,
     "stderr": ""
   },
-  "app/modules/release-final.js": {
-    "ok": true,
-    "stderr": ""
-  },
-  "app/modules/release-rc4.js": {
+  "app/modules/gameday-command.js": {
     "ok": true,
     "stderr": ""
   },
@@ -115,19 +83,55 @@
     "ok": true,
     "stderr": ""
   },
-  "app/modules/diagnostics-runtime.js": {
+  "app/modules/release-rc3.js": {
     "ok": true,
     "stderr": ""
   },
-  "app/modules/desktop-experience.js": {
+  "app/modules/navigation.js": {
     "ok": true,
     "stderr": ""
   },
-  "app/modules/intelligence-engine.js": {
+  "app/modules/experience-polish.js": {
     "ok": true,
     "stderr": ""
   },
-  "app/modules/config.js": {
+  "app/modules/cross-device-foundation.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "app/modules/storage.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "app/modules/refresh-ui.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "app/modules/season-archive.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "app/modules/analytics-center.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "app/modules/release-final.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "app/modules/smart-briefing.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "app/modules/cloud-sync-foundation.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "app/modules/smart-insights.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "app/modules/schedule-center.js": {
     "ok": true,
     "stderr": ""
   },
@@ -139,7 +143,11 @@
     "ok": true,
     "stderr": ""
   },
-  "manifest_json": {
+  "app/firebase-config.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "app/firebase-config.example.js": {
     "ok": true,
     "stderr": ""
   },
@@ -147,7 +155,11 @@
     "ok": true,
     "stderr": ""
   },
-  "cross_device_runtime_symbols": {
+  "safe_firebase_placeholder": {
+    "ok": true,
+    "stderr": ""
+  },
+  "cloud_sync_runtime_symbols": {
     "ok": true,
     "stderr": ""
   }

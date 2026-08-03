@@ -1,16 +1,12 @@
-# Apply OnlyBeats v2.0 — Cross-Device Foundation
+# Apply OnlyBeats v2.1 — Cloud Sync Foundation
 
 Copy into the repository:
-
 - `app/app.js`
 - `app/index.html`
-- `app/manifest.webmanifest`
-- `app/service-worker.js`
+- `app/firebase-config.js`
+- `app/firebase-config.example.js`
 - the complete `app/modules/` folder
-- `docs/V2_0_CROSS_DEVICE_FOUNDATION.md`
-
-Replace files when prompted.
+- `docs/V2_1_CLOUD_SYNC_FOUNDATION.md`
 
 Suggested commit:
-
-`v2.0.0: add PWA and cross-device foundation`
+`v2.1.0: add cloud sync adapter and offline queue foundation`
