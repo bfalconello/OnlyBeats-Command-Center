@@ -54,6 +54,8 @@ function runProductionReleaseChecks(){
     productionCheck('Team Profiles',typeof teamProfilesPage==='function'&&typeof buildTeamProfile==='function','Team profile navigation and records'),
     productionCheck('Season Tracker',typeof seasonTrackerPage==='function'&&typeof buildSeasonTracker==='function','Season performance tracking'),
     productionCheck('Conference Dashboards',typeof conferenceDashboardsPage==='function'&&typeof buildConferenceDashboard==='function','Conference-level schedules and prediction history'),
+    productionCheck('Developer QA Suite',typeof developerQaPage==='function'&&typeof runDeveloperQaSuite==='function','Runtime diagnostics and smoke tests'),
+    productionCheck('Adaptive shell detection',typeof qaApplicationShellSnapshot==='function'&&typeof qaWaitForApplicationShell==='function','Detects the actual mounted interface without assuming #app'),
     productionCheck('Live Data Platform',typeof liveDataPlatformPage==='function','Provider platform renderer'),
     productionCheck('Desktop Release Center',typeof desktopReleasePage==='function','Release center renderer'),
     productionCheck('Professional Windows Experience',typeof professionalWindowsPage==='function','Windows experience renderer'),

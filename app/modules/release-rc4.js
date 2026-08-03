@@ -80,6 +80,7 @@ function rc4RouteRendererMap(){
     teamprofiles:typeof teamProfilesPage==='function',
     seasontracker:typeof seasonTrackerPage==='function',
     conferences:typeof conferenceDashboardsPage==='function',
+    developer:typeof developerQaPage==='function',
     briefing:typeof smartBriefingPage==='function',
     timeline:typeof liveCommandTimelinePage==='function',
     archive:typeof seasonArchivePage==='function',

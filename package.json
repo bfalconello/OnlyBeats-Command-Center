@@ -1,7 +1,7 @@
 {
   "name": "onlybeats-command-center",
-  "version": "4.4.0",
-  "description": "OnlyBeats favorites, team profiles, season tracker, and conference dashboards mega update",
+  "version": "4.5.1",
+  "description": "OnlyBeats QA shell detection and startup timing hotfix",
   "main": "desktop/main.js",
   "author": {
     "name": "OnlyBeats"

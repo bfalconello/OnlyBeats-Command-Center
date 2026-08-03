@@ -135,6 +135,10 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/developer-qa-suite.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/cross-device-foundation.js": {
     "ok": true,
     "stderr": ""
@@ -235,22 +239,13 @@
     "ok": true,
     "stderr": ""
   },
-  "configured_route_coverage": {
+  "adaptive_shell_detection": {
     "ok": true
   },
-  "favorites_watchlists_runtime": {
+  "startup_timing_wait": {
     "ok": true
   },
-  "team_profiles_runtime": {
-    "ok": true
-  },
-  "season_tracker_runtime": {
-    "ok": true
-  },
-  "conference_dashboards_runtime": {
-    "ok": true
-  },
-  "provider_boundary": {
+  "shell_state_reporting": {
     "ok": true
   },
   "installer_configuration": {

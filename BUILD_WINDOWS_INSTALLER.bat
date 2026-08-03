@@ -2,7 +2,7 @@
 cd /d "%~dp0"
 
 echo ======================================
-echo OnlyBeats v4.4 Installer Builder
+echo OnlyBeats v4.5.1 Installer Builder
 echo ======================================
 echo.
 
@@ -16,7 +16,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo Building OnlyBeats v4.4.0 installer...
+echo Building OnlyBeats v4.5.1 installer...
 call npm run dist:win
 if errorlevel 1 (
   echo.
@@ -32,9 +32,9 @@ echo Installer build completed
 echo ======================================
 echo.
 
-if exist "dist\OnlyBeats-Setup-4.4.0.exe" (
+if exist "dist\OnlyBeats-Setup-4.5.1.exe" (
   echo Installer found:
-  echo dist\OnlyBeats-Setup-4.4.0.exe
+  echo dist\OnlyBeats-Setup-4.5.1.exe
 ) else (
   echo WARNING: Expected installer was not found.
   echo Check the dist folder.
