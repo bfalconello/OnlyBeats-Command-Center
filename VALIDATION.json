@@ -39,6 +39,10 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/release-rc3.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/release-readiness.js": {
     "ok": true,
     "stderr": ""
@@ -59,6 +63,10 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/release-rc4.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/diagnostics-runtime.js": {
     "ok": true,
     "stderr": ""
@@ -72,6 +80,10 @@
     "stderr": ""
   },
   "app/app.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "configured_route_coverage": {
     "ok": true,
     "stderr": ""
   },

@@ -18,7 +18,9 @@ if (
   typeof gameIntelligenceHubPage !== 'function' ||
   typeof unifiedCommandDashboardPage !== 'function' ||
   typeof initializeReleaseCandidate !== 'function' ||
-  typeof initializeReleaseCandidateTwo !== 'function'
+  typeof initializeReleaseCandidateTwo !== 'function' ||
+  typeof initializeReleaseCandidateThree !== 'function' ||
+  typeof initializeReleaseCandidateFour !== 'function'
 ) {
   throw new Error('OnlyBeats core modules did not load. Verify index.html script order.');
 }
@@ -854,7 +856,7 @@ function showGame(id,open=true){
 }
 
 function closeGame(){activeGameId=null;$('gameDrawer').classList.remove('open');setTimeout(()=>$('gameDrawerBackdrop').classList.add('hidden'),180)}
-function bindSettings(){const t=$('themeSelect');t.value=settings.theme==='dark'?'midnight':settings.theme;t.onchange=()=>{settings.theme=t.value;applyTheme();saveSettings()};const d=$('densitySelect');d.value=settings.dashboardDensity||'comfortable';d.onchange=()=>{settings.dashboardDensity=d.value;applyTheme();saveSettings()};const r=$('refreshSelect');r.value=settings.refresh;r.onchange=()=>{settings.refresh=r.value;saveSettings()};const s=$('startPageSelect');s.value=settings.startPage;s.onchange=()=>{settings.startPage=s.value;saveSettings()};const ps=$('pushScoringSelect');if(ps){ps.value=settings.pushScoring||'full';ps.onchange=()=>{settings.pushScoring=ps.value;saveSettings()}};[['compactToggle','compact'],['animationToggle','animations'],['highContrastToggle','highContrast'],['largeTextToggle','largeText'],['scoreAlertsToggle','scoreAlerts'],['favoriteAlertsToggle','favoriteAlerts'],['kickoffAlertsToggle','kickoffAlerts']].forEach(([id,k])=>$(id).onclick=e=>{settings[k]=!settings[k];e.currentTarget.classList.toggle('on',settings[k]);applyTheme();saveSettings()});$('testProvider').onclick=()=>syncScores();$('settingsResetDashboard').onclick=()=>{dashboardLayout=[...defaultDashboard];saveDashboard()};$('exportButton').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({settings,favorites,wallState,dashboardLayout,quickNotes,predictions,futures,futuresLocked},null,2)],{type:'application/json'}));a.download='OnlyBeats-settings-v0.9.1.json';a.click();toast('Settings export created')};$('resetButton').onclick=()=>{if(confirm('Reset preferences, dashboard, notes, filters, and favorites?')){settings={...defaultSettings};favorites=[];wallState={...defaultWall};dashboardLayout=[...defaultDashboard];quickNotes='';predictions=[];futures=[];futuresLocked=false;localStorage.clear();applyTheme();renderPage()}};bindReleaseReadinessSettings()}
+function bindSettings(){const t=$('themeSelect');t.value=settings.theme==='dark'?'midnight':settings.theme;t.onchange=()=>{settings.theme=t.value;applyTheme();saveSettings()};const d=$('densitySelect');d.value=settings.dashboardDensity||'comfortable';d.onchange=()=>{settings.dashboardDensity=d.value;applyTheme();saveSettings()};const r=$('refreshSelect');r.value=settings.refresh;r.onchange=()=>{settings.refresh=r.value;saveSettings()};const s=$('startPageSelect');s.value=settings.startPage;s.onchange=()=>{settings.startPage=s.value;saveSettings()};const ps=$('pushScoringSelect');if(ps){ps.value=settings.pushScoring||'full';ps.onchange=()=>{settings.pushScoring=ps.value;saveSettings()}};[['compactToggle','compact'],['animationToggle','animations'],['highContrastToggle','highContrast'],['largeTextToggle','largeText'],['scoreAlertsToggle','scoreAlerts'],['favoriteAlertsToggle','favoriteAlerts'],['kickoffAlertsToggle','kickoffAlerts']].forEach(([id,k])=>$(id).onclick=e=>{settings[k]=!settings[k];e.currentTarget.classList.toggle('on',settings[k]);applyTheme();saveSettings()});$('testProvider').onclick=()=>syncScores();$('settingsResetDashboard').onclick=()=>{dashboardLayout=[...defaultDashboard];saveDashboard()};$('exportButton').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({settings,favorites,wallState,dashboardLayout,quickNotes,predictions,futures,futuresLocked},null,2)],{type:'application/json'}));a.download='OnlyBeats-settings-v0.9.1.json';a.click();toast('Settings export created')};$('resetButton').onclick=()=>{if(confirm('Reset preferences, dashboard, notes, filters, and favorites?')){settings={...defaultSettings};favorites=[];wallState={...defaultWall};dashboardLayout=[...defaultDashboard];quickNotes='';predictions=[];futures=[];futuresLocked=false;localStorage.clear();applyTheme();renderPage()}};bindReleaseReadinessSettings();bindRc3Settings();bindRc4Settings()}
 const palette=$('commandPalette'),input=$('commandInput'),results=$('commandResults');
 function openPalette(){palette.classList.remove('hidden');input.value='';renderCommands('');setTimeout(()=>input.focus(),0)}
 function closePalette(){palette.classList.add('hidden')}
@@ -886,6 +888,8 @@ window.addEventListener('unhandledrejection',event=>{
 applyTheme();
 initializeReleaseCandidate();
 initializeReleaseCandidateTwo();
+initializeReleaseCandidateThree();
+initializeReleaseCandidateFour();
 renderNav();
 setTimeout(()=>runOnlyBeatsDiagnostics(),250);
 setTimeout(()=>captureTimelineSnapshot('startup'),500);
