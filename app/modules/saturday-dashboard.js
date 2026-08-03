@@ -478,8 +478,7 @@ function bindSaturdayDashboard(){
 
   document.querySelectorAll('[data-saturday-open]').forEach(button=>{
     button.onclick=()=>{
-      sessionStorage.setItem('onlybeats.selected-game',button.dataset.saturdayOpen);
-      navigate('gamehub');
+      openUltimateGameHub(button.dataset.saturdayOpen);
     };
   });
 

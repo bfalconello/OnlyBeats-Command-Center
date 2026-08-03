@@ -325,8 +325,7 @@ function bindCommandCenterTwo(){
       if(button.dataset.missionAction==='focus'){
         openFocus(gameId);
       }else{
-        gameHubGameId=gameId;
-        navigate('gamehub');
+        openUltimateGameHub(gameId);
       }
     };
   });

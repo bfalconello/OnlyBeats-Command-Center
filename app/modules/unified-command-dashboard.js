@@ -255,8 +255,7 @@ function bindUnifiedCommandDashboard(){
 
   document.querySelectorAll('[data-dashboard-hub]').forEach(button=>{
     button.onclick=()=>{
-      gameHubGameId=button.dataset.dashboardHub;
-      navigate('gamehub');
+      openUltimateGameHub(button.dataset.dashboardHub);
     };
   });
 }

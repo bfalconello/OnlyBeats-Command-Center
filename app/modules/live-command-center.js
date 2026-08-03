@@ -521,8 +521,7 @@ function bindLiveCommandCenter(){
 
   document.querySelectorAll('[data-live-game]').forEach(button=>{
     button.onclick=()=>{
-      sessionStorage.setItem('onlybeats.selected-game',button.dataset.liveGame);
-      navigate('gamehub');
+      openUltimateGameHub(button.dataset.liveGame);
     };
   });
 

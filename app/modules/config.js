@@ -3,7 +3,7 @@
 // OnlyBeats shared application configuration.
 // Loaded before app.js as a classic script so existing global references remain compatible.
 
-const VERSION='4.5.1';
+const VERSION='4.6.1';
 const STORAGE_KEY='onlybeats.settings.v7';
 const LEGACY_STORAGE_KEY='onlybeats.settings.v6';
 const FAVORITES_KEY='onlybeats.favorites.v1';
@@ -55,10 +55,12 @@ const SEASON_TRACKER_KEY='onlybeats.season-tracker.v1';
 const CONFERENCE_DASHBOARDS_KEY='onlybeats.conference-dashboards.v1';
 const DEVELOPER_QA_KEY='onlybeats.developer-qa.v1';
 const DEVELOPER_ERROR_LOG_KEY='onlybeats.developer-errors.v1';
+const ULTIMATE_GAME_HUB_KEY='onlybeats.ultimate-game-hub.v1';
+const GAME_NOTES_KEY='onlybeats.game-notes.v1';
 const AVAILABILITY_KEY='onlybeats.availability.v1';
 const SCORE_REFRESH_TIMEOUT_MS=12000;
 const defaultSettings={theme:'midnight',startPage:'dashboard',compact:false,sounds:false,animations:true,refresh:'30',favoriteTeam:'',scoreAlerts:true,favoriteAlerts:true,kickoffAlerts:true,weatherLocation:'',dashboardDensity:'comfortable',pushScoring:'full',highContrast:false,largeText:false,performanceMode:false};
 const defaultWall={status:'all',favoritesOnly:false,top25Only:false,query:''};
 const defaultDashboard=['featured','favorites','ranked','predictions','weather','alerts','notes'];
 
-const pages=[['dashboard','⌂','Dashboard'],['saturday','◉','Saturday Dashboard'],['launch','⬢','Release Hub'],['developer','⚙','Developer & QA'],['startup','◌','Startup & Recovery'],['briefing','☷','Briefing'],['timeline','≋','Timeline'],['archive','▣','Season Archive'],['analytics','▥','Analytics Center'],['datahealth','⌁','Data Health'],['performance','⚡','Performance'],['alerts','⚠','Live Alerts'],['mission','⌘','Mission Control'],['about','ⓘ','About & Storage'],['quality','◎','UI Quality'],['insights','✦','Smart Insights'],['gameday','◉','GameDay Command'],['livecommand','◈','Live Command Center'],['devices','▱','Devices & Sync'],['cloud','☁','Cloud Sync'],['account','◉','Account & Devices'],['platform','⌁','Live Data Platform'],['liveprovider','◎','Live NCAA Setup'],['release','⬡','Desktop Release'],['windows','◆','Windows Experience'],['wall','▦','Saturday Wall'],['watch','◫','Watch Center'],['gamehub','◇','Game Hub'],['schedule','◷','Schedule'],['favorites','★','Favorites'],['favoriteshub','★','Favorites & Watchlists'],['teamprofiles','◈','Team Profiles'],['seasontracker','▦','Season Tracker'],['conferences','▤','Conference Dashboards'],['teams','◈','Team Hub'],['rankings','♛','Rankings'],['news','▤','News'],['weather','☁','Weather'],['availability','♙','Player Availability'],['predictions','✓','Prediction Center'],['lab','◇','Prediction Lab'],['analytics','▥','Prediction Analytics'],['intelligence','✦','Prediction Intelligence'],['reports','▥','Reports'],['developer','⌘','Developer Tools'],['settings','⚙','Settings']];
+const pages=[['dashboard','⌂','Dashboard'],['saturday','◉','Saturday Dashboard'],['launch','⬢','Release Hub'],['developer','⚙','Developer & QA'],['startup','◌','Startup & Recovery'],['briefing','☷','Briefing'],['timeline','≋','Timeline'],['archive','▣','Season Archive'],['analytics','▥','Analytics Center'],['datahealth','⌁','Data Health'],['performance','⚡','Performance'],['alerts','⚠','Live Alerts'],['mission','⌘','Mission Control'],['about','ⓘ','About & Storage'],['quality','◎','UI Quality'],['insights','✦','Smart Insights'],['gameday','◉','GameDay Command'],['livecommand','◈','Live Command Center'],['devices','▱','Devices & Sync'],['cloud','☁','Cloud Sync'],['account','◉','Account & Devices'],['platform','⌁','Live Data Platform'],['liveprovider','◎','Live NCAA Setup'],['release','⬡','Desktop Release'],['windows','◆','Windows Experience'],['wall','▦','Saturday Wall'],['watch','◫','Watch Center'],['gamehub','◉','Ultimate Game Hub'],['schedule','◷','Schedule'],['favorites','★','Favorites'],['favoriteshub','★','Favorites & Watchlists'],['teamprofiles','◈','Team Profiles'],['seasontracker','▦','Season Tracker'],['conferences','▤','Conference Dashboards'],['teams','◈','Team Hub'],['rankings','♛','Rankings'],['news','▤','News'],['weather','☁','Weather'],['availability','♙','Player Availability'],['predictions','✓','Prediction Center'],['lab','◇','Prediction Lab'],['analytics','▥','Prediction Analytics'],['intelligence','✦','Prediction Intelligence'],['reports','▥','Reports'],['developer','⌘','Developer Tools'],['settings','⚙','Settings']];

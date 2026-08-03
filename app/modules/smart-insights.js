@@ -379,8 +379,7 @@ function bindSmartInsights(){
 
   document.querySelectorAll('[data-insight-game]').forEach(button=>{
     button.onclick=()=>{
-      gameHubGameId=button.dataset.insightGame;
-      navigate('gamehub');
+      openUltimateGameHub(button.dataset.insightGame);
     };
   });
 

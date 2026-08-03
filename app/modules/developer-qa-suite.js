@@ -207,6 +207,7 @@ function qaRouteRenderers(){
     saturday:typeof saturdayDashboardPage==='function',
     launch:typeof publicReleaseHubPage==='function',
     developer:typeof developerQaPage==='function',
+    gamehub:typeof ultimateGameHubPage==='function',
     predictions:typeof predictionsPage==='function',
     lab:typeof predictionLabPage==='function',
     analytics:typeof predictionAnalyticsPage==='function',
@@ -235,7 +236,8 @@ function qaRequiredAssets(){
     'modules/team-profiles.js',
     'modules/season-tracker.js',
     'modules/conference-dashboards.js',
-    'modules/developer-qa-suite.js'
+    'modules/developer-qa-suite.js',
+    'modules/ultimate-game-hub.js'
   ];
 }
 
@@ -357,6 +359,8 @@ function qaModuleChecks(){
     ['Prediction Intelligence',typeof predictionIntelligencePage==='function'],
     ['Saturday Dashboard',typeof saturdayDashboardPage==='function'],
     ['Live Command Center',typeof liveCommandCenterPage==='function'],
+    ['Ultimate Game Hub',typeof ultimateGameHubPage==='function'],
+    ['Game transfer helper',typeof openUltimateGameHub==='function'],
     ['Live NCAA Setup',typeof liveNcaaSetupPage==='function'],
     ['Favorites & Watchlists',typeof favoritesWatchlistsPage==='function'],
     ['Team Profiles',typeof teamProfilesPage==='function'],

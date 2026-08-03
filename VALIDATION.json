@@ -1,4 +1,8 @@
 {
+  "app/modules/ultimate-game-hub.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/desktop-experience.js": {
     "ok": true,
     "stderr": ""
@@ -239,13 +243,19 @@
     "ok": true,
     "stderr": ""
   },
-  "adaptive_shell_detection": {
+  "shared_game_transfer_helper": {
     "ok": true
   },
-  "startup_timing_wait": {
+  "legacy_state_synchronization": {
     "ok": true
   },
-  "shell_state_reporting": {
+  "session_storage_synchronization": {
+    "ok": true
+  },
+  "all_known_navigation_paths": {
+    "ok": true
+  },
+  "developer_qa_integration": {
     "ok": true
   },
   "installer_configuration": {

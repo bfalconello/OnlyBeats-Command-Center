@@ -180,8 +180,7 @@ function bindConferenceDashboards(){
 
   document.querySelectorAll('[data-conference-game]').forEach(button=>{
     button.onclick=()=>{
-      sessionStorage.setItem('onlybeats.selected-game',button.dataset.conferenceGame);
-      navigate('gamehub');
+      openUltimateGameHub(button.dataset.conferenceGame);
     };
   });
 }

@@ -278,8 +278,7 @@ function bindGameDayCommand(){
 
   document.querySelectorAll('[data-gameday-game]').forEach(button=>{
     button.onclick=()=>{
-      gameHubGameId=button.dataset.gamedayGame;
-      navigate('gamehub');
+      openUltimateGameHub(button.dataset.gamedayGame);
     };
   });
 

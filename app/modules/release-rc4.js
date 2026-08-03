@@ -102,7 +102,7 @@ function rc4RouteRendererMap(){
     windows:typeof professionalWindowsPage==='function',
     wall:typeof wallPage==='function',
     watch:typeof watchCenterPage==='function',
-    gamehub:typeof gameIntelligenceHubPage==='function',
+    gamehub:typeof ultimateGameHubPage==='function',
     schedule:typeof schedulePage==='function',
     favorites:typeof favoritesPage==='function',
     teams:typeof teamHubPage==='function',

@@ -212,8 +212,7 @@ function bindTeamProfiles(){
 
   document.querySelectorAll('[data-team-game]').forEach(button=>{
     button.onclick=()=>{
-      sessionStorage.setItem('onlybeats.selected-game',button.dataset.teamGame);
-      navigate('gamehub');
+      openUltimateGameHub(button.dataset.teamGame);
     };
   });
 }
