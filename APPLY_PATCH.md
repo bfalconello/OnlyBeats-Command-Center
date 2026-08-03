@@ -1,14 +1,14 @@
-# Apply OnlyBeats v1.5 — Live Alert Center
+# Apply OnlyBeats v1.6 — Command Center 2.0
 
 Copy into the repository:
 
 - `app/app.js`
 - `app/index.html`
 - the complete `app/modules/` folder
-- `docs/V1_5_LIVE_ALERT_CENTER.md`
+- `docs/V1_6_COMMAND_CENTER_2.md`
 
 Replace files when prompted.
 
 Suggested commit:
 
-`v1.5.0: add Live Alert Center phase 1`
+`v1.6.0: add Command Center 2.0 phase 1`
