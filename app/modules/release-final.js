@@ -38,6 +38,7 @@ function runProductionReleaseChecks(){
     productionCheck('Devices & Sync',typeof devicesSyncPage==='function','Cross-device renderer'),
     productionCheck('Cloud Sync Foundation',typeof cloudSyncPage==='function','Cloud sync renderer'),
     productionCheck('Live Data Platform',typeof liveDataPlatformPage==='function','Provider platform renderer'),
+    productionCheck('Desktop Release Center',typeof desktopReleasePage==='function','Release center renderer'),
     productionCheck('Smart Briefing',typeof smartBriefingPage==='function','Briefing renderer'),
     productionCheck('Watch Center',typeof watchCenterPage==='function','Watch renderer'),
     productionCheck('Runtime diagnostics',typeof runOnlyBeatsDiagnostics==='function','Diagnostics runtime'),

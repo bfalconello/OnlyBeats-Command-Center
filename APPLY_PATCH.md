@@ -1,14 +1,15 @@
-# Apply OnlyBeats v2.5 — Live Data Platform
+# Apply OnlyBeats v2.6 — Desktop Release Candidate
 
-Copy into the repository:
+Copy the complete package into the repository, including:
 
-- `app/app.js`
-- `app/index.html`
-- `app/live-data-providers.js`
-- `app/live-data-providers.example.js`
-- the complete `app/modules/` folder
-- `docs/V2_5_LIVE_DATA_PLATFORM.md`
+- `app/`
+- `desktop/`
+- `.github/workflows/windows-release.yml`
+- `package.json`
+- `RUN_DESKTOP.bat`
+- `BUILD_WINDOWS_INSTALLER.bat`
+- `docs/V2_6_DESKTOP_RELEASE_CANDIDATE.md`
 
 Suggested commit:
 
-`v2.5.0: add live data provider platform`
+`v2.6.0-rc.1: add Windows installer release candidate`

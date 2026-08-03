@@ -39,6 +39,10 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/desktop-release-candidate.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/config.js": {
     "ok": true,
     "stderr": ""
@@ -155,11 +159,23 @@
     "ok": true,
     "stderr": ""
   },
+  "app/live-data-providers.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/live-data-providers.example.js": {
     "ok": true,
     "stderr": ""
   },
-  "app/live-data-providers.js": {
+  "desktop/main.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "desktop/preload.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "package_json": {
     "ok": true,
     "stderr": ""
   },
@@ -167,11 +183,11 @@
     "ok": true,
     "stderr": ""
   },
-  "provider_placeholder_safe": {
+  "installer_configuration": {
     "ok": true,
     "stderr": ""
   },
-  "live_data_platform_runtime_symbols": {
+  "desktop_release_runtime_symbols": {
     "ok": true,
     "stderr": ""
   }

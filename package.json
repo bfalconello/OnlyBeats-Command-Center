@@ -1,15 +1,55 @@
 {
   "name": "onlybeats-command-center",
-  "version": "0.9.1",
+  "version": "2.6.0",
+  "description": "OnlyBeats college football command center",
+  "main": "desktop/main.js",
+  "author": "OnlyBeats",
+  "license": "UNLICENSED",
   "private": true,
-  "description": "OnlyBeats Command Center desktop application",
   "scripts": {
-    "preview": "npx --yes serve app -l 4173",
-    "tauri": "tauri",
-    "desktop:dev": "tauri dev",
-    "desktop:build": "tauri build"
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist:win": "electron-builder --win nsis",
+    "dist": "electron-builder"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^2.8.0"
+    "electron": "^37.2.0",
+    "electron-builder": "^26.0.12",
+    "electron-updater": "^6.6.2"
+  },
+  "build": {
+    "appId": "com.onlybeats.commandcenter",
+    "productName": "OnlyBeats",
+    "asar": true,
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "app/**/*",
+      "desktop/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "OnlyBeats-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "OnlyBeats",
+      "deleteAppDataOnUninstall": false,
+      "runAfterFinish": true
+    },
+    "publish": null
   }
 }
