@@ -1,12 +1,14 @@
-# Apply OnlyBeats v2.1 — Cloud Sync Foundation
+# Apply OnlyBeats v2.5 — Live Data Platform
 
 Copy into the repository:
+
 - `app/app.js`
 - `app/index.html`
-- `app/firebase-config.js`
-- `app/firebase-config.example.js`
+- `app/live-data-providers.js`
+- `app/live-data-providers.example.js`
 - the complete `app/modules/` folder
-- `docs/V2_1_CLOUD_SYNC_FOUNDATION.md`
+- `docs/V2_5_LIVE_DATA_PLATFORM.md`
 
 Suggested commit:
-`v2.1.0: add cloud sync adapter and offline queue foundation`
+
+`v2.5.0: add live data provider platform`

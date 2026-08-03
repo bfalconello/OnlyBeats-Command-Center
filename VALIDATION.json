@@ -127,6 +127,10 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/live-data-platform.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/smart-insights.js": {
     "ok": true,
     "stderr": ""
@@ -151,15 +155,23 @@
     "ok": true,
     "stderr": ""
   },
+  "app/live-data-providers.example.js": {
+    "ok": true,
+    "stderr": ""
+  },
+  "app/live-data-providers.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "configured_route_coverage": {
     "ok": true,
     "stderr": ""
   },
-  "safe_firebase_placeholder": {
+  "provider_placeholder_safe": {
     "ok": true,
     "stderr": ""
   },
-  "cloud_sync_runtime_symbols": {
+  "live_data_platform_runtime_symbols": {
     "ok": true,
     "stderr": ""
   }
