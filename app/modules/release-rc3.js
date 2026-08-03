@@ -125,7 +125,7 @@ function runRc3SmokeChecks(){
   ];
 
   const checks=[
-    rc3Check('Application version is RC3',VERSION==='1.0.0-rc.3',VERSION),
+    rc3Check('Application version is production',VERSION==='1.0.0',VERSION),
     rc3Check('Prediction pick helper loaded',typeof refreshPredictionPickOptions==='function','refreshPredictionPickOptions()'),
     rc3Check('Dashboard module loaded',typeof unifiedCommandDashboardPage==='function','unifiedCommandDashboardPage()'),
     rc3Check('Backup export available',typeof exportOnlyBeatsBackup==='function','JSON local-data backup'),
@@ -150,7 +150,7 @@ function runRc3SmokeChecks(){
   if(typeof writeOnlyBeatsRuntimeLog==='function'){
     writeOnlyBeatsRuntimeLog(
       rc3SmokeReport.failed?'warn':'info',
-      rc3SmokeReport.failed?`${rc3SmokeReport.failed} RC3 smoke checks failed`:'All RC3 smoke checks passed',
+      rc3SmokeReport.failed?`${rc3SmokeReport.failed} RC3 smoke checks failed`:'All regression checks passed',
       'rc3-smoke'
     );
   }
@@ -168,7 +168,7 @@ function getRc3SmokeReport(){
 function exportRc3ReleaseReport(){
   const report=runRc3SmokeChecks();
   rc3DownloadJson(
-    `onlybeats-v1-rc3-release-report-${new Date().toISOString().replace(/[:.]/g,'-')}.json`,
+    `onlybeats-v1-regression-report-${new Date().toISOString().replace(/[:.]/g,'-')}.json`,
     {
       generatedAt:new Date().toISOString(),
       version:VERSION,
@@ -185,10 +185,10 @@ function rc3SettingsCard(){
   const backup=rc3CreateBackupPayload();
   const savedKeys=Object.keys(backup.storage).length;
   return `<section class="card settings-card">
-    <h3>RC3 backup & final regression checks</h3>
+    <h3>Backup & regression checks</h3>
     <p class="muted">${report.passed}/${report.checks.length} smoke checks passing · ${savedKeys} local data entries available to back up.</p>
     <div class="button-row">
-      <button class="button primary" id="runRc3Smoke">Run RC3 smoke checks</button>
+      <button class="button primary" id="runRc3Smoke">Run regression checks</button>
       <button class="button" id="exportRc3Report">Export final release report</button>
       <button class="button" id="exportOnlyBeatsBackup">Back up local data</button>
       <button class="button" id="restoreOnlyBeatsBackup">Restore local data</button>
@@ -217,7 +217,7 @@ function bindRc3Settings(){
   if($('runRc3Smoke'))$('runRc3Smoke').onclick=()=>{
     const report=runRc3SmokeChecks();
     toast(
-      report.failed?`${report.failed} RC3 smoke checks need attention`:'All RC3 smoke checks passed',
+      report.failed?`${report.failed} regression checks need attention`:'All regression checks passed',
       report.failed?'error':'success'
     );
     renderPage();

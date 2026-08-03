@@ -2,7 +2,7 @@
 
 // OnlyBeats v1.0 Release Candidate readiness and product polish.
 
-const RELEASE_CHANNEL='Release Candidate';
+const RELEASE_CHANNEL='Production';
 const RELEASE_SHORTCUTS=[
   ['Alt + 1','Dashboard','dashboard'],
   ['Alt + 2','Briefing','briefing'],
@@ -70,7 +70,7 @@ function ensureShortcutOverlay(){
   overlay.innerHTML=`
     <section class="release-shortcut-dialog">
       <div class="card-head">
-        <div><p class="eyebrow">ONLYBEATS v1.0 RC1</p><h2 id="releaseShortcutTitle">Keyboard shortcuts</h2></div>
+        <div><p class="eyebrow">ONLYBEATS v1.0</p><h2 id="releaseShortcutTitle">Keyboard shortcuts</h2></div>
         <button class="icon-button" id="closeShortcutGuide" aria-label="Close shortcut guide">×</button>
       </div>
       <div class="release-shortcut-grid">
@@ -141,7 +141,7 @@ function runReleaseReadinessChecks(){
     : {checks:[]};
 
   const checks=[
-    releaseCheck('Version is release candidate',String(VERSION).startsWith('1.0.0-rc'),VERSION),
+    releaseCheck('Version is production release',VERSION==='1.0.0',VERSION),
     releaseCheck('Dashboard module loaded',typeof unifiedCommandDashboardPage==='function','unifiedCommandDashboardPage()'),
     releaseCheck('Prediction helper loaded',typeof refreshPredictionPickOptions==='function','refreshPredictionPickOptions()'),
     releaseCheck('Schedule module loaded',typeof schedulePage==='function','schedulePage()'),
@@ -172,7 +172,7 @@ function getReleaseReadinessReport(){
 function releaseReadinessSettingsCard(){
   const report=getReleaseReadinessReport();
   return `<section class="card settings-card">
-    <h3>v1.0 Release readiness</h3>
+    <h3>v1.0 Production readiness</h3>
     <p class="muted">${RELEASE_CHANNEL} · ${report.passed}/${report.checks.length} checks currently passing.</p>
     <div class="button-row">
       <button class="button primary" id="runReleaseChecks">Run final checks</button>
@@ -203,7 +203,7 @@ function exportReleaseReadinessReport(){
   const url=URL.createObjectURL(blob);
   const anchor=document.createElement('a');
   anchor.href=url;
-  anchor.download=`onlybeats-v1-rc1-release-report-${new Date().toISOString().replace(/[:.]/g,'-')}.json`;
+  anchor.download=`onlybeats-v1-production-report-${new Date().toISOString().replace(/[:.]/g,'-')}.json`;
   document.body.appendChild(anchor);
   anchor.click();
   anchor.remove();
@@ -234,6 +234,6 @@ function initializeReleaseCandidate(){
   applyReleasePreferences();
   ensureShortcutOverlay();
   document.addEventListener('keydown',handleReleaseKeyboardShortcut);
-  updateReleaseStartupStatus('Preparing v1.0 Release Candidate…');
+  updateReleaseStartupStatus('Preparing OnlyBeats v1.0…');
   setTimeout(()=>runReleaseReadinessChecks(),350);
 }

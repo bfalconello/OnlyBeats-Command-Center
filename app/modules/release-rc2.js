@@ -152,7 +152,7 @@ function exportRc2RecoverySnapshot(){
   const url=URL.createObjectURL(blob);
   const anchor=document.createElement('a');
   anchor.href=url;
-  anchor.download=`onlybeats-rc2-recovery-${new Date().toISOString().replace(/[:.]/g,'-')}.json`;
+  anchor.download=`onlybeats-v1-recovery-${new Date().toISOString().replace(/[:.]/g,'-')}.json`;
   document.body.appendChild(anchor);
   anchor.click();
   anchor.remove();
@@ -178,21 +178,21 @@ function rc2SettingsCard(){
   const metrics=summarizePageRenderMetrics();
   const slowest=metrics[0];
   return `<section class="card settings-card">
-    <h3>RC2 performance & recovery</h3>
+    <h3>Performance & recovery</h3>
     <div class="detail-list">
       <div><span>Startup time</span><strong>${startup?`${startup.duration.toFixed(0)} ms`:'Pending'}</strong></div>
       <div><span>Pages measured</span><strong>${metrics.length}</strong></div>
       <div><span>Slowest average page</span><strong>${slowest?`${esc(slowest.page)} · ${slowest.average.toFixed(1)} ms`:'Not enough data'}</strong></div>
       <div><span>Provider state</span><strong>${!navigator.onLine?'Offline':syncError?'Cached':'Online'}</strong></div>
     </div>
-    <div class="button-row"><button class="button primary" id="runRc2Checks">Run RC2 checks</button><button class="button" id="exportRc2Recovery">Export recovery snapshot</button></div>
+    <div class="button-row"><button class="button primary" id="runRc2Checks">Run performance checks</button><button class="button" id="exportRc2Recovery">Export recovery snapshot</button></div>
   </section>`;
 }
 
 function bindRc2Settings(){
   if($('runRc2Checks'))$('runRc2Checks').onclick=()=>{
     const report=rc2ReleaseChecks();
-    toast(report.failed?`${report.failed} RC2 checks need attention`:'All RC2 checks passed',report.failed?'error':'success');
+    toast(report.failed?`${report.failed} performance checks need attention`:'All performance checks passed',report.failed?'error':'success');
     renderPage();
   };
   if($('exportRc2Recovery'))$('exportRc2Recovery').onclick=()=>{exportRc2RecoverySnapshot();toast('Recovery snapshot exported')};

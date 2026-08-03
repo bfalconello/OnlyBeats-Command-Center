@@ -63,6 +63,10 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/release-final.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/release-rc4.js": {
     "ok": true,
     "stderr": ""
@@ -84,6 +88,10 @@
     "stderr": ""
   },
   "configured_route_coverage": {
+    "ok": true,
+    "stderr": ""
+  },
+  "production_version_checks": {
     "ok": true,
     "stderr": ""
   },

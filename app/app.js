@@ -20,7 +20,8 @@ if (
   typeof initializeReleaseCandidate !== 'function' ||
   typeof initializeReleaseCandidateTwo !== 'function' ||
   typeof initializeReleaseCandidateThree !== 'function' ||
-  typeof initializeReleaseCandidateFour !== 'function'
+  typeof initializeReleaseCandidateFour !== 'function' ||
+  typeof initializeProductionRelease !== 'function'
 ) {
   throw new Error('OnlyBeats core modules did not load. Verify index.html script order.');
 }
@@ -380,7 +381,7 @@ function availabilityPage(){
 function placeholderPage(id,label){setHeading(label,'COMING IN A PLANNED RELEASE');return `<div class="hero"><div class="hero-copy"><p class="eyebrow">ROADMAP MODULE</p><h2>${label}</h2><p>This route is prepared and will receive its full module in a future release.</p></div><img src="assets/onlybeats-icon.png"></div>`}
 function toggle(id,label,on){return `<div class="toggle-row"><div><strong>${label}</strong></div><button id="${id}" class="toggle ${on?'on':''}"></button></div>`}
 function settingsPage(){
-  setHeading('Settings','RELEASE CANDIDATE · PERSONAL COMMAND CENTER');
+  setHeading('Settings','PRODUCTION RELEASE · PERSONAL COMMAND CENTER');
   return `<div class="settings-layout">
     <section class="card settings-card">
       <h3>Appearance & accessibility</h3>
@@ -890,6 +891,7 @@ initializeReleaseCandidate();
 initializeReleaseCandidateTwo();
 initializeReleaseCandidateThree();
 initializeReleaseCandidateFour();
+initializeProductionRelease();
 renderNav();
 setTimeout(()=>runOnlyBeatsDiagnostics(),250);
 setTimeout(()=>captureTimelineSnapshot('startup'),500);
@@ -897,7 +899,7 @@ renderPage();
 scheduleRefresh();
 const splash=$('splash');
 const splashFailSafe=setTimeout(()=>splash?.classList.add('hide'),3500);
-const startupMessages=['Loading release configuration…','Checking local storage…','Preparing GameDay services…','Running startup health check…','Ready.'];
+const startupMessages=['Loading production configuration…','Checking local storage…','Preparing GameDay services…','Running final health check…','OnlyBeats v1.0 is ready.'];
 let startupIndex=0;
 const startupTimer=setInterval(()=>{
   const el=$('splashStatus');

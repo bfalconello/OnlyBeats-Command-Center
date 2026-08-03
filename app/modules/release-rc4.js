@@ -108,7 +108,7 @@ function runRc4SmokeChecks(){
   const nav=document.getElementById('nav');
 
   const checks=[
-    rc4Check('Application version is RC4',VERSION==='1.0.0-rc.4',VERSION),
+    rc4Check('Application version is production',VERSION==='1.0.0',VERSION),
     rc4Check('Current route is registered',currentPageKnown,currentPage),
     rc4Check('Content mount exists',Boolean(content),'#content'),
     rc4Check('Sidebar navigation mount exists',Boolean(nav),'#nav'),
@@ -165,7 +165,7 @@ function exportRc4ReleaseReport(){
   const url=URL.createObjectURL(blob);
   const anchor=document.createElement('a');
   anchor.href=url;
-  anchor.download=`onlybeats-v1-rc4-release-report-${new Date().toISOString().replace(/[:.]/g,'-')}.json`;
+  anchor.download=`onlybeats-v1-production-report-${new Date().toISOString().replace(/[:.]/g,'-')}.json`;
   document.body.appendChild(anchor);
   anchor.click();
   anchor.remove();
@@ -175,11 +175,11 @@ function exportRc4ReleaseReport(){
 function rc4SettingsCard(){
   const report=getRc4SmokeReport();
   return `<section class="card settings-card">
-    <h3>RC4 navigation & corrected smoke checks</h3>
+    <h3>Production navigation & smoke checks</h3>
     <p class="muted">${report.passed}/${report.checks.length} checks passing. The old false-positive page-render test has been replaced.</p>
     <div class="button-row">
-      <button class="button primary" id="runRc4Smoke">Run corrected smoke checks</button>
-      <button class="button" id="exportRc4Report">Export RC4 report</button>
+      <button class="button primary" id="runRc4Smoke">Run final smoke checks</button>
+      <button class="button" id="exportRc4Report">Export production report</button>
       <button class="button" id="scrollActiveSidebar">Show active sidebar tab</button>
     </div>
     <div class="release-status-list">
@@ -206,7 +206,7 @@ function bindRc4Settings(){
   if($('runRc4Smoke'))$('runRc4Smoke').onclick=()=>{
     const report=runRc4SmokeChecks();
     toast(
-      report.failed?`${report.failed} RC4 checks need attention`:'All corrected RC4 checks passed',
+      report.failed?`${report.failed} final checks need attention`:'All final checks passed',
       report.failed?'error':'success'
     );
     renderPage();
@@ -214,7 +214,7 @@ function bindRc4Settings(){
 
   if($('exportRc4Report'))$('exportRc4Report').onclick=()=>{
     exportRc4ReleaseReport();
-    toast('RC4 report exported');
+    toast('Production report exported');
   };
 
   if($('scrollActiveSidebar'))$('scrollActiveSidebar').onclick=()=>{
