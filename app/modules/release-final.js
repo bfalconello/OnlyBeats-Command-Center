@@ -48,6 +48,7 @@ function runProductionReleaseChecks(){
     productionCheck('FBS stadium weather fallback',Array.isArray(window.ONLYBEATS_FBS_STADIUMS)&&typeof findBuiltInStadium==='function','Bundled stadium coordinates and geocoding fallback'),
     productionCheck('Weather game matching',typeof liveCommandWeatherFor==='function','Direct game ID weather mapping'),
     productionCheck('Prediction Analytics',typeof predictionAnalyticsPage==='function'&&typeof buildPredictionAnalytics==='function','Historical performance analytics'),
+    productionCheck('Saturday Dashboard',typeof saturdayDashboardPage==='function'&&typeof buildSaturdayDashboardModel==='function','Unified game-day dashboard'),
     productionCheck('Live Data Platform',typeof liveDataPlatformPage==='function','Provider platform renderer'),
     productionCheck('Desktop Release Center',typeof desktopReleasePage==='function','Release center renderer'),
     productionCheck('Professional Windows Experience',typeof professionalWindowsPage==='function','Windows experience renderer'),

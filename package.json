@@ -1,7 +1,7 @@
 {
   "name": "onlybeats-command-center",
-  "version": "3.3.0",
-  "description": "OnlyBeats prediction history analytics and performance dashboard",
+  "version": "3.4.0",
+  "description": "OnlyBeats unified Saturday college football dashboard",
   "main": "desktop/main.js",
   "author": {
     "name": "OnlyBeats"
