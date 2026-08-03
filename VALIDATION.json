@@ -151,6 +151,10 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/prediction-lab.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/schedule-center.js": {
     "ok": true,
     "stderr": ""
@@ -191,11 +195,15 @@
     "ok": true,
     "stderr": ""
   },
-  "unlimited_leg_design": {
+  "configured_route_coverage": {
     "ok": true,
     "stderr": ""
   },
-  "prediction_combo_runtime_symbols": {
+  "prediction_lab_runtime_symbols": {
+    "ok": true,
+    "stderr": ""
+  },
+  "transparent_scoring_boundary": {
     "ok": true,
     "stderr": ""
   },

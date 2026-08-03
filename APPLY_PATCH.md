@@ -1,10 +1,10 @@
-# Apply OnlyBeats v2.7.1 — Unlimited Combo Builder
+# Apply OnlyBeats v2.8 — Prediction Lab
 
 Copy the entire extracted package over the current master repository and replace existing files.
 
 Important additions:
 
-- `app/modules/prediction-combo-builder.js`
+- `app/modules/prediction-lab.js`
 - updated `app/app.js`
 - updated `app/index.html`
 - updated `app/modules/config.js`
@@ -13,4 +13,4 @@ Important additions:
 
 Suggested commit:
 
-`v2.7.1: add unlimited prediction combo builder`
+`v2.8.0: add transparent Prediction Lab analytics`

@@ -99,6 +99,7 @@ function rc4RouteRendererMap(){
     weather:typeof weatherPage==='function',
     availability:typeof availabilityPage==='function',
     predictions:typeof predictionsPage==='function',
+    lab:typeof predictionLabPage==='function',
     reports:typeof predictionIntelligencePage==='function',
     developer:typeof developerPage==='function',
     settings:typeof settingsPage==='function'
