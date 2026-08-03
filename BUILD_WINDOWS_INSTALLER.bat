@@ -2,7 +2,7 @@
 cd /d "%~dp0"
 
 echo ======================================
-echo OnlyBeats v5.5 Installer Builder
+echo OnlyBeats v6.0.2 Update Test Builder
 echo ======================================
 echo.
 
@@ -21,12 +21,27 @@ if errorlevel 1 (
 )
 
 echo.
-if exist "dist\OnlyBeats-Setup-5.5.0.exe" (
-  echo Installer found:
-  echo dist\OnlyBeats-Setup-5.5.0.exe
-) else (
-  echo WARNING: expected installer was not found.
+echo Verifying automatic-update files...
+if not exist "dist\OnlyBeats-Setup-6.0.2.exe" (
+  echo ERROR: installer missing.
+  pause
+  exit /b 1
+)
+if not exist "dist\OnlyBeats-Setup-6.0.2.exe.blockmap" (
+  echo ERROR: blockmap missing.
+  pause
+  exit /b 1
+)
+if not exist "dist\latest.yml" (
+  echo ERROR: latest.yml missing.
+  pause
+  exit /b 1
 )
 
+echo.
+echo Build complete:
+echo dist\OnlyBeats-Setup-6.0.2.exe
+echo dist\OnlyBeats-Setup-6.0.2.exe.blockmap
+echo dist\latest.yml
 echo.
 pause

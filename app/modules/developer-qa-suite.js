@@ -210,6 +210,7 @@ function qaRouteRenderers(){
     gamehub:typeof ultimateGameHubPage==='function',
     mobile:typeof mobileCompanionPage==='function',
     experience:typeof crossPlatformExperiencePage==='function',
+    updates:typeof installedAppUpdatesPage==='function',
     predictions:typeof predictionsPage==='function',
     lab:typeof predictionLabPage==='function',
     analytics:typeof predictionAnalyticsPage==='function',
@@ -242,6 +243,7 @@ function qaRequiredAssets(){
     'modules/ultimate-game-hub.js',
     'modules/mobile-companion.js',
     'modules/cross-platform-experience.js',
+    'modules/installed-app-updates.js',
     'firebase-cloud-adapter.js'
   ];
 }
@@ -367,6 +369,13 @@ function qaModuleChecks(){
     ['Ultimate Game Hub',typeof ultimateGameHubPage==='function'],
     ['Mobile Companion',typeof mobileCompanionPage==='function'],
     ['Cross-Platform Experience',typeof crossPlatformExperiencePage==='function'],
+    ['Installed App Updates',typeof installedAppUpdatesPage==='function'],
+    ['Updater desktop bridge',Boolean(window.onlyBeatsDesktop?.update)],
+    ['Preload bridge health',Boolean(window.onlyBeatsDesktop?.getBridgeHealth)],
+    ['Prediction Intelligence single load',document.querySelectorAll('script[src="modules/prediction-intelligence.js"]').length===1],
+    ['Weather request control',typeof onlyBeatsWeatherBackoff==='function'&&typeof onlyBeatsCachedWeather==='function'],
+    ['Persistent Firebase bridge',Boolean(window.onlyBeatsDesktop?.saveFirebaseConfig)],
+    ['Unified cloud status',typeof devicesCloudState==='function'&&devicesCloudState().connected===Boolean(cloudSyncState?.connected)],
     ['Device registry',typeof registerCurrentDevice==='function'],
     ['Sync snapshots',typeof captureSyncSnapshot==='function'],
     ['Game transfer helper',typeof openUltimateGameHub==='function'],

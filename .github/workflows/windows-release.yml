@@ -10,24 +10,71 @@ permissions:
   contents: write
 
 jobs:
-  windows:
+  windows-release:
     runs-on: windows-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-      - run: npm install
-      - run: npm run dist:win
+
+      - name: Verify tag matches package version
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: pwsh
+        run: |
+          $packageVersion = (Get-Content package.json | ConvertFrom-Json).version
+          $tagVersion = "${{ github.ref_name }}".TrimStart("v")
+          if ($packageVersion -ne $tagVersion) {
+            throw "Tag v$tagVersion does not match package.json version $packageVersion"
+          }
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Windows installer and update metadata
+        run: npm run dist:win
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/upload-artifact@v4
+
+      - name: Verify updater files
+        shell: pwsh
+        run: |
+          $required = @(
+            "dist\OnlyBeats-Setup-*.exe",
+            "dist\OnlyBeats-Setup-*.exe.blockmap",
+            "dist\latest.yml"
+          )
+          foreach ($pattern in $required) {
+            if (-not (Get-ChildItem $pattern -ErrorAction SilentlyContinue)) {
+              throw "Missing required update artifact: $pattern"
+            }
+          }
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: OnlyBeats-Windows-Installer
-          path: dist/*.exe
-      - name: Attach installer to tagged release
+          name: OnlyBeats-Windows-${{ github.ref_name }}
+          path: |
+            dist/OnlyBeats-Setup-*.exe
+            dist/OnlyBeats-Setup-*.exe.blockmap
+            dist/latest.yml
+            dist/builder-effective-config.yaml
+
+      - name: Publish GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/*.exe
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          files: |
+            dist/OnlyBeats-Setup-*.exe
+            dist/OnlyBeats-Setup-*.exe.blockmap
+            dist/latest.yml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

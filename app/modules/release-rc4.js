@@ -101,6 +101,7 @@ function rc4RouteRendererMap(){
     account:typeof accountDevicesPage==='function',
     platform:typeof liveDataPlatformPage==='function',
     release:typeof desktopReleasePage==='function',
+    updates:typeof installedAppUpdatesPage==='function',
     windows:typeof professionalWindowsPage==='function',
     wall:typeof wallPage==='function',
     watch:typeof watchCenterPage==='function',

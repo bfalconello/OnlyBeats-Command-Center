@@ -23,6 +23,10 @@
     "ok": true,
     "stderr": ""
   },
+  "app/modules/installed-app-updates.js": {
+    "ok": true,
+    "stderr": ""
+  },
   "app/modules/intelligence-engine.js": {
     "ok": true,
     "stderr": ""
@@ -255,31 +259,28 @@
     "ok": true,
     "stderr": ""
   },
-  "existing_v5_features_preserved": {
+  "existing_v6_0_1_features_preserved": {
     "ok": true
   },
-  "cross_platform_dashboard": {
+  "devices_cloud_state_helper": {
     "ok": true
   },
-  "device_registry": {
+  "firebase_connection_unification": {
     "ok": true
   },
-  "global_sync_indicator": {
+  "cloud_account_display": {
     "ok": true
   },
-  "local_sync_snapshots": {
+  "cloud_queue_display": {
     "ok": true
   },
-  "live_refresh_coordinator": {
-    "ok": true
-  },
-  "mobile_polish": {
-    "ok": true
-  },
-  "firebase_config_preservation_guidance": {
+  "conflict_policy_display": {
     "ok": true
   },
   "developer_qa_integration": {
+    "ok": true
+  },
+  "automatic_update_test_release": {
     "ok": true
   },
   "installer_configuration": {

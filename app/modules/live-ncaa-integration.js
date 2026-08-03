@@ -334,6 +334,73 @@ async function fetchCfbdRankings(){
   return records;
 }
 
+
+const ONLYBEATS_WEATHER_REQUEST_KEY='onlybeats.weather-request-control.v1';
+let onlyBeatsWeatherRequestControl={
+  cache:{},
+  lastRunAt:0,
+  backoffUntil:0,
+  consecutive429s:0,
+  minimumRunIntervalMs:5*60*1000,
+  venueCacheTtlMs:10*60*1000
+};
+
+function loadOnlyBeatsWeatherRequestControl(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(ONLYBEATS_WEATHER_REQUEST_KEY)||'{}');
+    onlyBeatsWeatherRequestControl={
+      ...onlyBeatsWeatherRequestControl,
+      ...saved,
+      cache:saved?.cache&&typeof saved.cache==='object'?saved.cache:{}
+    };
+  }catch{}
+}
+
+function saveOnlyBeatsWeatherRequestControl(){
+  try{
+    localStorage.setItem(
+      ONLYBEATS_WEATHER_REQUEST_KEY,
+      JSON.stringify(onlyBeatsWeatherRequestControl)
+    );
+  }catch{}
+}
+
+function onlyBeatsWeatherCacheKey(location){
+  return `${Number(location.latitude).toFixed(4)},${Number(location.longitude).toFixed(4)}`;
+}
+
+function onlyBeatsCachedWeather(location,now=Date.now()){
+  const entry=onlyBeatsWeatherRequestControl.cache[onlyBeatsWeatherCacheKey(location)];
+  if(!entry)return null;
+  if(now-Number(entry.cachedAt||0)>onlyBeatsWeatherRequestControl.venueCacheTtlMs)return null;
+  return entry.records||null;
+}
+
+function onlyBeatsStoreWeather(location,records){
+  onlyBeatsWeatherRequestControl.cache[onlyBeatsWeatherCacheKey(location)]={
+    cachedAt:Date.now(),
+    records
+  };
+  saveOnlyBeatsWeatherRequestControl();
+}
+
+function onlyBeatsWeatherBackoff(status){
+  if(Number(status)!==429)return;
+
+  onlyBeatsWeatherRequestControl.consecutive429s=
+    Math.min(8,(Number(onlyBeatsWeatherRequestControl.consecutive429s)||0)+1);
+
+  const delay=Math.min(
+    60*60*1000,
+    60*1000*Math.pow(2,onlyBeatsWeatherRequestControl.consecutive429s-1)
+  );
+
+  onlyBeatsWeatherRequestControl.backoffUntil=Date.now()+delay;
+  saveOnlyBeatsWeatherRequestControl();
+}
+
+loadOnlyBeatsWeatherRequestControl();
+
 function weatherCodeLabel(code){
   const value=Number(code);
   if(value===0)return 'Clear';
@@ -441,6 +508,26 @@ async function resolveMissingGameLocations(){
 async function fetchOpenMeteoWeather(){
   if(!liveNcaaConfig.weatherEnabled)return [];
 
+  const now=Date.now();
+
+  if(now<Number(onlyBeatsWeatherRequestControl.backoffUntil||0)){
+    return Array.isArray(window.ONLYBEATS_NORMALIZED_WEATHER)
+      ?window.ONLYBEATS_NORMALIZED_WEATHER
+      :[];
+  }
+
+  if(
+    now-Number(onlyBeatsWeatherRequestControl.lastRunAt||0)<
+    onlyBeatsWeatherRequestControl.minimumRunIntervalMs
+  ){
+    const cached=Object.values(onlyBeatsWeatherRequestControl.cache)
+      .flatMap(entry=>Array.isArray(entry?.records)?entry.records:[]);
+    if(cached.length)return cached;
+  }
+
+  onlyBeatsWeatherRequestControl.lastRunAt=now;
+  saveOnlyBeatsWeatherRequestControl();
+
   await resolveMissingGameLocations();
 
   const gameLocations=Object.entries(liveNcaaCache.gameLocations||{})
@@ -475,6 +562,9 @@ async function fetchOpenMeteoWeather(){
     const batch=locations.slice(start,start+8);
 
     const results=await Promise.allSettled(batch.map(async location=>{
+      const cached=onlyBeatsCachedWeather(location);
+      if(cached)return cached;
+
       const url=new URL('https://api.open-meteo.com/v1/forecast');
       url.searchParams.set('latitude',String(location.latitude));
       url.searchParams.set('longitude',String(location.longitude));
@@ -484,6 +574,14 @@ async function fetchOpenMeteoWeather(){
       url.searchParams.set('timezone','auto');
 
       const response=await fetch(url.toString());
+
+      if(response.status===429){
+        onlyBeatsWeatherBackoff(429);
+        const stale=onlyBeatsWeatherRequestControl.cache[onlyBeatsWeatherCacheKey(location)]?.records;
+        if(Array.isArray(stale)&&stale.length)return stale;
+        throw new Error('Weather temporarily rate limited');
+      }
+
       if(!response.ok){
         throw new Error(`Weather returned ${response.status}`);
       }
@@ -491,7 +589,7 @@ async function fetchOpenMeteoWeather(){
       const payload=await response.json();
       const current=payload?.current||{};
 
-      return location.gameIds.map(gameId=>({
+      const mapped=location.gameIds.map(gameId=>({
         gameId,
         location:location.location,
         latitude:location.latitude,
@@ -504,6 +602,11 @@ async function fetchOpenMeteoWeather(){
         condition:weatherCodeLabel(current.weather_code),
         observedAt:String(current.time||new Date().toISOString())
       }));
+
+      onlyBeatsWeatherRequestControl.consecutive429s=0;
+      onlyBeatsWeatherRequestControl.backoffUntil=0;
+      onlyBeatsStoreWeather(location,mapped);
+      return mapped;
     }));
 
     results.forEach(result=>{

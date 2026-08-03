@@ -34,11 +34,18 @@ function clearOnlyBeatsRuntimeLog(){
   sessionStorage.removeItem(ONLYBEATS_RUNTIME_LOG_KEY);
 }
 
+
+function onlyBeatsDiagnosticPage(){
+  return typeof currentPage==='string'&&currentPage
+    ?currentPage
+    :'startup';
+}
+
 window.addEventListener('error',event=>{
   writeOnlyBeatsRuntimeLog(
     'error',
     event.message||'Unhandled runtime error',
-    currentPage||'unknown page',
+    onlyBeatsDiagnosticPage(),
     event.error?.stack||''
   );
 });
@@ -48,7 +55,7 @@ window.addEventListener('unhandledrejection',event=>{
   writeOnlyBeatsRuntimeLog(
     'error',
     reason?.message||String(reason||'Unhandled promise rejection'),
-    currentPage||'unknown page',
+    onlyBeatsDiagnosticPage(),
     reason?.stack||''
   );
 });
@@ -112,8 +119,16 @@ function getOnlyBeatsDiagnostics(){
 
 async function runOnlyBeatsPageSmokeTests(){
   const routes=['dashboard','briefing','wall','watch','schedule','teams','rankings','news','weather','availability','predictions','reports','developer','settings'];
-  const original=currentPage;
+  const original=typeof currentPage==='string'?currentPage:'dashboard';
   const results=[];
+
+  if(typeof currentPage!=='string'){
+    return routes.map(route=>({
+      route,
+      ok:false,
+      detail:'Application navigation has not initialized yet.'
+    }));
+  }
 
   for(const route of routes){
     try{

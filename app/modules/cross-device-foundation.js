@@ -240,15 +240,50 @@ function installCrossDeviceStyles(){
   document.head.appendChild(style);
 }
 
+
+function devicesCloudState(){
+  const available=typeof cloudSyncState==='object'&&cloudSyncState!==null;
+  const connected=Boolean(available&&cloudSyncState.connected);
+  const queue=Array.isArray(typeof cloudQueue!=='undefined'?cloudQueue:null)
+    ?cloudQueue
+    :[];
+
+  return {
+    available,
+    connected,
+    backend:connected?'Firebase connected':available?'Firebase configured':'Cloud unavailable',
+    account:connected
+      ?String(cloudSyncState.accountEmail||cloudSyncState.accountId||'Connected account')
+      :'Not signed in',
+    sync:connected
+      ?(cloudSyncState.autoSync?'Automatic cloud sync':'Manual cloud sync')
+      :'Local snapshot transfer',
+    queue:queue.length,
+    lastSyncAt:connected?cloudSyncState.lastSyncAt||null:null,
+    status:connected?String(cloudSyncState.status||'Connected'):'Not connected',
+    conflictPolicy:connected?String(cloudSyncState.conflictPolicy||'newest-wins'):'Not active'
+  };
+}
+
+function devicesCloudDetail(cloud){
+  if(!cloud.connected)return 'Sign in through Cloud Sync Beta';
+  if(cloud.queue>0)return `${cloud.queue} cloud change${cloud.queue===1?'':'s'} pending`;
+  if(cloud.lastSyncAt)return `Last sync ${new Date(cloud.lastSyncAt).toLocaleTimeString()}`;
+  return cloud.status;
+}
+
 function syncReadinessStatus(){
   const env=pwaEnvironment();
+  const cloud=devicesCloudState();
+
   return {
     install:env.standalone?'Installed':env.installable?'Ready to install':env.fileMode?'Desktop app mode':'Browser mode',
     offline:serviceWorkerState,
-    backend:'Not connected',
-    sync:'Manual snapshot transfer',
+    backend:cloud.backend,
+    sync:cloud.sync,
     device:crossDeviceState.deviceName,
-    secure:env.secure?'Yes':'No'
+    secure:env.secure?'Yes':'No',
+    cloud
   };
 }
 
@@ -261,9 +296,11 @@ function devicesSyncPage(){
 
   return `<section class="intel-hero">
     <div>
-      <p class="eyebrow">ONLYBEATS v2 CROSS-DEVICE FOUNDATION</p>
-      <h2>${env.standalone?'Installed app mode active.':installAvailable?'OnlyBeats is ready to install.':'Cross-device foundation is ready.'}</h2>
-      <p>Install the hosted web edition on a phone, use the offline application shell, and move data safely with device snapshots while cloud sync remains unconnected.</p>
+      <p class="eyebrow">ONLYBEATS v6.0.2 UNIFIED DEVICE STATUS</p>
+      <h2>${status.cloud.connected?'Cloud and device sync are connected.':env.standalone?'Installed app mode active.':installAvailable?'OnlyBeats is ready to install.':'Cross-device foundation is ready.'}</h2>
+      <p>${status.cloud.connected
+        ?`Signed in as ${esc(status.cloud.account)}. Cloud sync, offline queueing, device snapshots, and mobile installation are available from one device workspace.`
+        :'Install the hosted web edition on a phone, use the offline application shell, and connect through Cloud Sync Beta for automatic cross-device synchronization.'}</p>
     </div>
     <div class="button-row">
       <button class="button primary" id="installOnlyBeats" ${installAvailable?'':'disabled'}>Install OnlyBeats</button>
@@ -275,10 +312,10 @@ function devicesSyncPage(){
   <div class="metric-grid">
     ${metric('App Mode',status.install,env.fileMode?'Windows desktop build':'PWA/browser')}
     ${metric('Offline Shell',status.offline,'Hosted PWA only')}
-    ${metric('Cloud Backend',status.backend,'No account service configured')}
-    ${metric('Current Sync',status.sync,'Validated JSON transfer')}
+    ${metric('Cloud Backend',status.backend,devicesCloudDetail(status.cloud))}
+    ${metric('Current Sync',status.sync,status.cloud.connected?status.cloud.conflictPolicy:'Validated JSON transfer')}
     ${metric('Device Name',status.device,'Saved locally')}
-    ${metric('Pending Changes',crossDeviceState.pendingChanges,'Since last snapshot')}
+    ${metric('Pending Changes',status.cloud.connected?status.cloud.queue:crossDeviceState.pendingChanges,status.cloud.connected?'Cloud queue':'Since last snapshot')}
   </div>
 
   <div class="reports-grid">
@@ -300,22 +337,25 @@ function devicesSyncPage(){
       <div class="sync-readiness-item"><span>Offline shell</span><strong>${esc(serviceWorkerState)}</strong></div>
       <div class="sync-readiness-item"><span>Secure host</span><strong>${status.secure}</strong></div>
       <div class="sync-readiness-item"><span>Local data keys</span><strong>${Object.keys(storage).length}</strong></div>
-      <div class="sync-readiness-item"><span>Cloud account</span><strong>Not connected</strong></div>
+      <div class="sync-readiness-item"><span>Cloud account</span><strong>${esc(status.cloud.account)}</strong></div>
+      <div class="sync-readiness-item"><span>Cloud status</span><strong>${esc(status.cloud.status)}</strong></div>
+      <div class="sync-readiness-item"><span>Conflict policy</span><strong>${esc(status.cloud.conflictPolicy)}</strong></div>
     </div>`)}
 
     ${card('Phone Installation',`<div class="intel-list">
       <div class="intel-row"><span class="intel-icon">1</span><div><strong>Host over HTTPS</strong><small>Service workers and installation require a secure website or localhost.</small></div></div>
       <div class="intel-row"><span class="intel-icon">2</span><div><strong>Open on the phone</strong><small>Use Safari on iPhone or Chrome on Android.</small></div></div>
       <div class="intel-row"><span class="intel-icon">3</span><div><strong>Add to Home Screen</strong><small>Install through the browser menu when the install button is unavailable.</small></div></div>
-      <div class="intel-row"><span class="intel-icon">4</span><div><strong>Transfer data</strong><small>Export a device snapshot on one installation and import it on the other.</small></div></div>
+      <div class="intel-row"><span class="intel-icon">4</span><div><strong>Synchronize or transfer data</strong><small>Use Firebase cloud sync for normal use and snapshots for local recovery or manual transfer.</small></div></div>
     </div>`,'wide')}
 
-    ${card('What v2.0 Does Not Claim',`<div class="detail-list">
-      <div><span>Automatic cloud sync</span><strong>Not included</strong></div>
-      <div><span>User accounts</span><strong>Not included</strong></div>
-      <div><span>Remote push notifications</span><strong>Not included</strong></div>
-      <div><span>Conflict-free background merging</span><strong>Not included</strong></div>
-      <div><span>Current transfer method</span><strong>Manual validated snapshots</strong></div>
+    ${card('Cross-Device Capabilities',`<div class="detail-list">
+      <div><span>Automatic cloud sync</span><strong>${status.cloud.connected?(cloudSyncState.autoSync?'Enabled':'Available'):'Connect account'}</strong></div>
+      <div><span>User account</span><strong>${esc(status.cloud.account)}</strong></div>
+      <div><span>Offline queue</span><strong>${status.cloud.queue} pending</strong></div>
+      <div><span>Conflict policy</span><strong>${esc(status.cloud.conflictPolicy)}</strong></div>
+      <div><span>Local recovery</span><strong>Snapshots available</strong></div>
+      <div><span>Mobile installation</span><strong>PWA ready</strong></div>
     </div>`,'wide')}
   </div>`;
 }

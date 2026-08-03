@@ -1,13 +1,13 @@
-# Apply OnlyBeats v5.5
+# Apply OnlyBeats v6.0.2
 
-1. Back up `app/firebase-config.js`.
-2. Keep v5.0 as a rollback copy.
-3. Copy the entire extracted v5.5 package over the repository.
-4. Restore the backed-up `app/firebase-config.js`.
-5. Run `RUN_DESKTOP.bat`.
-6. Open Developer & QA and run the full suite.
-7. Test cloud sync before building the installer.
+1. Copy the full v6.0.2 package over the v6 repository.
+2. Run RUN_DESKTOP.bat.
+3. Confirm Devices & Sync shows Firebase connected.
+4. Confirm the account email matches Cloud Sync Beta.
+5. Confirm the pending queue matches the cloud queue.
+6. Run Developer & QA.
+7. Build and publish tag v6.0.2.
 
 Suggested commit:
 
-`v5.5.0: add cross-platform experience, smart sync, and live refresh`
+`v6.0.2: unify device and Firebase cloud status`
